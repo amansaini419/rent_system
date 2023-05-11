@@ -1,7 +1,7 @@
 <nav class="pcoded-navbar">
   <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
   <div class="pcoded-inner-navbar main-menu">
-    <div class="">
+    {{-- <div class="">
       <div class="main-menu-header">
         <img class="img-40 img-radius" src="assets/images/avatar-4.jpg" alt="User-Profile-Image">
         <div class="user-details">
@@ -19,15 +19,113 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="pcoded-search">
+    </div> --}}
+    {{-- <div class="pcoded-search">
       <span class="searchbar-toggle"> </span>
       <div class="pcoded-search-box ">
         <input type="text" placeholder="Search">
         <span class="search-icon"><i class="ti-search" aria-hidden="true"></i></span>
       </div>
-    </div>
-    <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Navigation</div>
+    </div> --}}
+    <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">User/Tenant</div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a href="{{ route('dashboard') }}">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Dashboard</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Application</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Payment History</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="{{ route('notifications') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Notifications</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Chat</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-key"></i><b>C</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Change Password</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-power-off"></i><b>L</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Log Out</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+    <hr />
+    <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Super Admin</div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Dashboard</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="pcoded-hasmenu">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-layout"></i><b>A</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.page_layout.main">Applications</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li class=" ">
+            <a href="{{ route('application-all') }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li class=" ">
+            <a href="box-layout.html" target="_blank">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Pending</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <hr />
+    <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Rent Admin</div>
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="">
+        <a href="navbar-light.html">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Dashboard</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+    </ul>
+
+
     <ul class="pcoded-item pcoded-left-item">
       <li class="pcoded-hasmenu active pcoded-trigger">
         <a href="javascript:void(0)">
@@ -280,8 +378,7 @@
           <li class=" ">
             <a href="accordion.html">
               <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext"
-                data-i18n="nav.basic-components.collapse–accordion">Accordion</span>
+              <span class="pcoded-mtext" data-i18n="nav.basic-components.collapse–accordion">Accordion</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
@@ -399,8 +496,7 @@
           <li class=" ">
             <a href="notification.html">
               <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext"
-                data-i18n="nav.advance-components.notifications">Notifications</span>
+              <span class="pcoded-mtext" data-i18n="nav.advance-components.notifications">Notifications</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
@@ -950,8 +1046,7 @@
               <li class=" ">
                 <a href="dt-ext-basic-buttons.html">
                   <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                  <span class="pcoded-mtext"
-                    data-i18n="nav.data-table-extensions.button.basic-button">Basic
+                  <span class="pcoded-mtext" data-i18n="nav.data-table-extensions.button.basic-button">Basic
                     Button</span>
                   <span class="pcoded-mcaret"></span>
                 </a>
@@ -960,8 +1055,7 @@
               <li class=" ">
                 <a href="dt-ext-buttons-html-5-data-export.html">
                   <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                  <span class="pcoded-mtext"
-                    data-i18n="nav.data-table-extensions.button.html-data-export">Html-5
+                  <span class="pcoded-mtext" data-i18n="nav.data-table-extensions.button.html-data-export">Html-5
                     Data Export</span>
                   <span class="pcoded-mcaret"></span>
                 </a>
@@ -1003,8 +1097,7 @@
           <li class=" ">
             <a href="dt-ext-responsive.html">
               <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext"
-                data-i18n="nav.data-table-extensions.responsive">Responsive</span>
+              <span class="pcoded-mtext" data-i18n="nav.data-table-extensions.responsive">Responsive</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
@@ -1573,8 +1666,7 @@
               <li class="">
                 <a href="email-templates/email-newsletter.html">
                   <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                  <span class="pcoded-mtext"
-                    data-i18n="nav.email.email-template.newsletter-email">Newsletter
+                  <span class="pcoded-mtext" data-i18n="nav.email.email-template.newsletter-email">Newsletter
                     Email</span>
                   <span class="pcoded-mcaret"></span>
                 </a>
@@ -1590,8 +1682,7 @@
               <li class="">
                 <a href="email-templates/email-activation.html">
                   <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                  <span class="pcoded-mtext"
-                    data-i18n="nav.email.email-template.activation-code">Activation
+                  <span class="pcoded-mtext" data-i18n="nav.email.email-template.activation-code">Activation
                     Code</span>
                   <span class="pcoded-mcaret"></span>
                 </a>

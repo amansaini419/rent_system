@@ -8,7 +8,7 @@
         <i class="ti-search"></i>
       </a>
       <a href="index.html">
-        <img class="img-fluid" src="assets/images/logo.png" alt="Theme-Logo" />
+        <img class="img-fluid" src="{{ asset('assets/images/logo.png ') }}" alt="Theme-Logo" />
       </a>
       <a class="mobile-options">
         <i class="ti-more"></i>
@@ -104,24 +104,24 @@
             <li class="col-sm-3">
               <h6 class="mega-menu-title">Gallery</h6>
               <div class="row m-b-20">
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-2.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-2.jpg ') }}"
                     alt="Gallery-1">
                 </div>
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-3.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-3.jpg ') }}"
                     alt="Gallery-2">
                 </div>
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-4.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-4.jpg ') }}"
                     alt="Gallery-3">
                 </div>
               </div>
               <div class="row m-b-20">
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-3.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-3.jpg ') }}"
                     alt="Gallery-4">
                 </div>
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-4.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-4.jpg ') }}"
                     alt="Gallery-5">
                 </div>
-                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="assets/images/avatar-2.jpg"
+                <div class="col-sm-4"><img class="img-fluid img-thumbnail" src="{{ asset('assets/images/avatar-2.jpg ') }}"
                     alt="Gallery-6">
                 </div>
               </div>
@@ -168,27 +168,27 @@
       <ul class="nav-right">
         <li class="header-notification lng-dropdown">
           <a href="#" id="dropdown-active-item">
-            <img src="assets/images/flags/ENGLISH.jpg" alt=""> English
+            <img src="{{ asset('assets/images/flags/ENGLISH.jpg ') }}" alt=""> English
           </a>
           <ul class="show-notification">
             <li>
               <a href="#" data-lng="en">
-                <img src="assets/images/flags/ENGLISH.jpg" alt=""> English
+                <img src="{{ asset('assets/images/flags/ENGLISH.jpg ') }}" alt=""> English
               </a>
             </li>
             <li>
               <a href="#" data-lng="es">
-                <img src="assets/images/flags/SPAIN.jpg" alt=""> Spanish
+                <img src="{{ asset('assets/images/flags/SPAIN.jpg ') }}" alt=""> Spanish
               </a>
             </li>
             <li>
               <a href="#" data-lng="pt">
-                <img src="assets/images/flags/PORTO.jpg" alt=""> Portuguese
+                <img src="{{ asset('assets/images/flags/PORTO.jpg ') }}" alt=""> Portuguese
               </a>
             </li>
             <li>
               <a href="#" data-lng="fr">
-                <img src="assets/images/flags/FRANCE.jpg" alt=""> French
+                <img src="{{ asset('assets/images/flags/FRANCE.jpg ') }}" alt=""> French
               </a>
             </li>
           </ul>
@@ -205,7 +205,7 @@
             </li>
             <li>
               <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-4.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-4.jpg ') }}"
                   alt="Generic placeholder image">
                 <div class="media-body">
                   <h5 class="notification-user">John Doe</h5>
@@ -217,7 +217,7 @@
             </li>
             <li>
               <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-3.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-3.jpg ') }}"
                   alt="Generic placeholder image">
                 <div class="media-body">
                   <h5 class="notification-user">Joseph William</h5>
@@ -229,7 +229,7 @@
             </li>
             <li>
               <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-4.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-4.jpg ') }}"
                   alt="Generic placeholder image">
                 <div class="media-body">
                   <h5 class="notification-user">Sara Soudein</h5>
@@ -249,7 +249,7 @@
         </li>
         <li class="user-profile header-notification">
           <a href="#!">
-            <img src="assets/images/avatar-4.jpg" class="img-radius" alt="User-Profile-Image">
+            <img src="{{ asset('assets/images/avatar-4.jpg ') }}" class="img-radius" alt="User-Profile-Image">
             <span>John Doe</span>
             <i class="ti-angle-down"></i>
           </a>
@@ -292,33 +292,33 @@
           <div class="dummy-column">
             <h2>People</h2>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-4.jpg" class="img-radius" alt="Sara Soueidan" />
+              <img src="{{ asset('assets/images/avatar-4.jpg ') }}" class="img-radius" alt="Sara Soueidan" />
               <h3>Sara Soueidan</h3>
             </a>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-2.jpg" class="img-radius" alt="Shaun Dona" />
+              <img src="{{ asset('assets/images/avatar-2.jpg ') }}" class="img-radius" alt="Shaun Dona" />
               <h3>Shaun Dona</h3>
             </a>
           </div>
           <div class="dummy-column">
             <h2>Popular</h2>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-3.jpg" class="img-radius" alt="PagePreloadingEffect" />
+              <img src="{{ asset('assets/images/avatar-3.jpg ') }}" class="img-radius" alt="PagePreloadingEffect" />
               <h3>Page Preloading Effect</h3>
             </a>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-4.jpg" class="img-radius" alt="DraggableDualViewSlideshow" />
+              <img src="{{ asset('assets/images/avatar-4.jpg ') }}" class="img-radius" alt="DraggableDualViewSlideshow" />
               <h3>Draggable Dual-View Slideshow</h3>
             </a>
           </div>
           <div class="dummy-column">
             <h2>Recent</h2>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-2.jpg" class="img-radius" alt="TooltipStylesInspiration" />
+              <img src="{{ asset('assets/images/avatar-2.jpg ') }}" class="img-radius" alt="TooltipStylesInspiration" />
               <h3>Tooltip Styles Inspiration</h3>
             </a>
             <a class="dummy-media-object img-radius" href="#!">
-              <img src="assets/images/avatar-3.jpg" class="img-radius" alt="NotificationStyles" />
+              <img src="{{ asset('assets/images/avatar-3.jpg ') }}" class="img-radius" alt="NotificationStyles" />
               <h3>Notification Styles Inspiration</h3>
             </a>
           </div>
@@ -349,7 +349,7 @@
           <div class="media userlist-box" data-id="1" data-status="online" data-username="Josephin Doe"
             data-toggle="tooltip" data-placement="left" title="Josephin Doe">
             <a class="media-left" href="#!">
-              <img class="media-object img-radius img-radius" src="assets/images/avatar-3.jpg"
+              <img class="media-object img-radius img-radius" src="{{ asset('assets/images/avatar-3.jpg ') }}"
                 alt="Generic placeholder image ">
               <div class="live-status bg-success"></div>
             </a>
@@ -360,7 +360,7 @@
           <div class="media userlist-box" data-id="2" data-status="online" data-username="Lary Doe"
             data-toggle="tooltip" data-placement="left" title="Lary Doe">
             <a class="media-left" href="#!">
-              <img class="media-object img-radius" src="assets/images/avatar-2.jpg"
+              <img class="media-object img-radius" src="{{ asset('assets/images/avatar-2.jpg ') }}"
                 alt="Generic placeholder image">
               <div class="live-status bg-success"></div>
             </a>
@@ -371,7 +371,7 @@
           <div class="media userlist-box" data-id="3" data-status="online" data-username="Alice"
             data-toggle="tooltip" data-placement="left" title="Alice">
             <a class="media-left" href="#!">
-              <img class="media-object img-radius" src="assets/images/avatar-4.jpg"
+              <img class="media-object img-radius" src="{{ asset('assets/images/avatar-4.jpg ') }}"
                 alt="Generic placeholder image">
               <div class="live-status bg-success"></div>
             </a>
@@ -382,7 +382,7 @@
           <div class="media userlist-box" data-id="4" data-status="online" data-username="Alia"
             data-toggle="tooltip" data-placement="left" title="Alia">
             <a class="media-left" href="#!">
-              <img class="media-object img-radius" src="assets/images/avatar-3.jpg"
+              <img class="media-object img-radius" src="{{ asset('assets/images/avatar-3.jpg ') }}"
                 alt="Generic placeholder image">
               <div class="live-status bg-success"></div>
             </a>
@@ -393,7 +393,7 @@
           <div class="media userlist-box" data-id="5" data-status="online" data-username="Suzen"
             data-toggle="tooltip" data-placement="left" title="Suzen">
             <a class="media-left" href="#!">
-              <img class="media-object img-radius" src="assets/images/avatar-2.jpg"
+              <img class="media-object img-radius" src="{{ asset('assets/images/avatar-2.jpg ') }}"
                 alt="Generic placeholder image">
               <div class="live-status bg-success"></div>
             </a>
@@ -415,7 +415,7 @@
   </div>
   <div class="media chat-messages">
     <a class="media-left photo-table" href="#!">
-      <img class="media-object img-radius img-radius m-t-5" src="assets/images/avatar-3.jpg"
+      <img class="media-object img-radius img-radius m-t-5" src="{{ asset('assets/images/avatar-3.jpg ') }}"
         alt="Generic placeholder image">
     </a>
     <div class="media-body chat-menu-content">
@@ -436,7 +436,7 @@
     </div>
     <div class="media-right photo-table">
       <a href="#!">
-        <img class="media-object img-radius img-radius m-t-5" src="assets/images/avatar-4.jpg"
+        <img class="media-object img-radius img-radius m-t-5" src="{{ asset('assets/images/avatar-4.jpg ') }}"
           alt="Generic placeholder image">
       </a>
     </div>
