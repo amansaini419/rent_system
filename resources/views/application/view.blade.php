@@ -5,11 +5,12 @@
 @endsection
 
 @section('own-style')
-<style>
-  .table td, .table th{
-    width: 50%;
-  }
-</style>
+  <style>
+    .table td,
+    .table th {
+      width: 50%;
+    }
+  </style>
 @endsection
 
 @section('content')
@@ -41,6 +42,62 @@
   <div class="page-body">
     <div class="row">
       <div class="col-lg-12">
+        <div class="card">
+          <div class="card-block">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="table-responsive">
+                  <table class="table m-0 nowrap">
+                    <tbody>
+                      <tr>
+                        <th>Application ID</th>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <th>Tenant Name</th>
+                        <td>Abc Xyz</td>
+                      </tr>
+                      <tr>
+                        <th>Application Type</th>
+                        <td>RENEW</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="table-responsive">
+                  <table class="table m-0 nowrap">
+                    <tbody>
+                      <tr>
+                        <th>Application Status</th>
+                        <td>PENDING</td>
+                      </tr>
+                      <tr>
+                        <th>Staff Assigned</th>
+                        <td>None</td>
+                      </tr>
+                      <tr>
+                        <th>Remark</th>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-12">
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#assignApplicationModal">ASSIGN STAFF</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#reviewApplicationModal">FINAL REVIEWED</button>
+                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger" data-toggle="modal" data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#monthlyPlanModal">MONTHLY PLAN</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="tab-header card">
           <ul class="nav nav-tabs md-tabs tab-timeline" role="tablist" id="mytab">
             <li class="nav-item">
@@ -82,15 +139,15 @@
                                     <td>Josephine Villa</td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.other_names')  }}</th>
+                                    <th scope="row">{{ __('application.other_names') }}</th>
                                     <td>Josephine Villa</td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.surname')  }}</th>
+                                    <th scope="row">{{ __('application.surname') }}</th>
                                     <td>Josephine Villa</td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.gender')  }}</th>
+                                    <th scope="row">{{ __('application.gender') }}</th>
                                     <td>Female</td>
                                   </tr>
                                   <tr>
@@ -110,7 +167,7 @@
                                     <td>Single</td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.current_location')  }}</th>
+                                    <th scope="row">{{ __('application.current_location') }}</th>
                                     <td>Ghana</td>
                                   </tr>
                                   <tr>
@@ -118,7 +175,7 @@
                                     <td><a href="#!">4567891</a></td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.social_media_handles')  }}</th>
+                                    <th scope="row">{{ __('application.social_media_handles') }}</th>
                                     <td>@xyz</td>
                                   </tr>
                                 </tbody>
@@ -134,7 +191,7 @@
             </div>
             <div class="card">
               <div class="card-header">
-                <h5 class="sub-title d-block border-0">{{ __('application.employment_heading')  }}</h5>
+                <h5 class="sub-title d-block border-0">{{ __('application.employment_heading') }}</h5>
               </div>
               <div class="card-block">
                 <div class="view-info">
@@ -151,7 +208,7 @@
                                     <td>Josephine Villa</td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.company_name')  }}</th>
+                                    <th scope="row">{{ __('application.company_name') }}</th>
                                     <td>Josephine Villa</td>
                                   </tr>
                                 </tbody>
@@ -163,7 +220,7 @@
                               <table class="table">
                                 <tbody>
                                   <tr>
-                                    <th scope="row">{{ __('application.monthly_net_income')  }}</th>
+                                    <th scope="row">{{ __('application.monthly_net_income') }}</th>
                                     <td>Single</td>
                                   </tr>
                                   <tr>
@@ -396,4 +453,134 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="assignApplicationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Assign Application</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label>Select Staff</label>
+              <select class="form-control">
+                <option>Staff 1</option>
+                <option>Staff 2</option>
+                <option>Staff 3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Assign</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="reviewApplicationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Review Application</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Send for approval</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="rejectApplicationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Reject Application</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label>Remark</label>
+              <textarea class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-danger waves-effect waves-light text-uppercase">Reject</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="approveApplicationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Approve Application</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Approved</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="monthlyPlanModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Monthly Plan</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="startingDate">Starting Date</label>
+              <input type="text" name="startingDate" id="startingDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="startingDate">Amount</label>
+              <input type="text" name="startingDate" id="startingDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="startingDate">Amount</label>
+              <input type="text" name="startingDate" id="startingDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 @endsection
