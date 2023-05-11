@@ -114,7 +114,7 @@
                           <div class="col-md-6">
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="maritalStatus" class="block">{{ __('application.gender') }}</label>
+                                <label for="maritalStatus" class="block">{{ __('application.marital_status') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <select id="maritalStatus" name="maritalStatus" class="form-control">
@@ -355,7 +355,7 @@
                           <div class="col-md-6">
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="passportPicture" class="block">Upload Passport Picture</label>
+                                <label for="passportPicture" class="block">{{ __('application.upload_profile_picture') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <input id="passportPicture" name="passportPicture" type="file"
@@ -364,7 +364,7 @@
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="ghanaCard" class="block">Ghana Card</label>
+                                <label for="ghanaCard" class="block">{{ __('application.ghana_card') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <input id="ghanaCard" name="ghanaCard" type="text" class="form-control" />
@@ -372,29 +372,28 @@
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="propertyType" class="block">Upload Ghana Card</label>
+                                <label for="ghanaCardFile" class="block">{{ __('application.upload_ghana_card') }}</label>
                               </div>
                               <div class="col-sm-12">
-                                <input id="propertyType" name="propertyType" type="file" class="form-control" />
+                                <input id="ghanaCardFile" name="ghanaCardFile" type="file" class="form-control" />
                               </div>
                             </div>
                           </div>
                           <div class="col-md-6">
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="monthlyRent" class="block">Upload 4 months Bank Statement / MoMo
-                                  Statement</label>
+                                <label for="bankStatementFile" class="block">{{ __('application.upload_bank_statement') }}</label>
                               </div>
                               <div class="col-sm-12">
-                                <input id="monthlyRent" name="monthlyRent" type="file" class="form-control" />
+                                <input id="bankStatementFile" name="bankStatementFile" type="file" class="form-control" />
                               </div>
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="propertyType" class="block">Upload Employment Letter</label>
+                                <label for="employmentLetterFile" class="block">{{ __('application.upload_employment_letter') }}</label>
                               </div>
                               <div class="col-sm-12">
-                                <input id="propertyType" name="propertyType" type="file" class="form-control" />
+                                <input id="employmentLetterFile" name="employmentLetterFile" type="file" class="form-control" />
                               </div>
                             </div>
                           </div>
@@ -406,7 +405,7 @@
                           <div class="col-md-6">
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="landlordName" class="block">Name of Landlord</label>
+                                <label for="landlordName" class="block">{{ __('application.landlord_name') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <input id="landlordName" name="landlordName" type="text" class="form-control" />
@@ -414,7 +413,7 @@
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="landlordNumber" class="block">Contact Number</label>
+                                <label for="landlordNumber" class="block">{{ __('application.landlord_number') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <input id="landlordNumber" name="landlordNumber" type="text"
@@ -423,7 +422,7 @@
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="landlordAddress" class="block">Address</label>
+                                <label for="landlordAddress" class="block">{{ __('application.landlord_address') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <textarea id="landlordAddress" name="landlordAddress" type="text" class="form-control" rows="5"></textarea>
@@ -431,7 +430,7 @@
                             </div>
                             <div class="form-group row">
                               <div class="col-sm-12">
-                                <label for="landlordEmail" class="block">Email</label>
+                                <label for="landlordEmail" class="block">{{ __('application.landlord_email') }}</label>
                               </div>
                               <div class="col-sm-12">
                                 <input id="landlordEmail" name="landlordEmail" type="text" class="form-control" />

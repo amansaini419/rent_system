@@ -40,6 +40,17 @@ return [
   //
   'tab3' => 'Documents Verification',
   //
+  'upload_profile_picture' => 'Upload Passport Picture',
+  'ghana_card' => 'Ghana Card',
+  'upload_ghana_card' => 'Upload Ghana Card',
+  'upload_bank_statement' => 'Upload 4 months Bank Statement / MoMo Statement',
+  'upload_employment_letter' => 'Upload Employment Letter',
   //
-  'tab4' => 'landlord Verification',
+  //
+  'tab4' => 'Landlord Verification',
+  //
+  'landlord_name' => 'Name of Landlord',
+  'landlord_number' => 'Contact Number',
+  'landlord_address' => 'Address',
+  'landlord_email' => 'Email',
 ];
