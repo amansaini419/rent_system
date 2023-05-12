@@ -51,8 +51,6 @@ Route::get('/application/view/{status}/{id?}', function () {
 })->name('application-view');
 
 
-
-
 Route::get('/payment/history', function () {
     return view('payment-history');
 })->name('payment-history');

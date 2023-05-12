@@ -4,11 +4,21 @@
   View Application
 @endsection
 
+@section('theme-style')
+  <!-- Date-Dropper css -->
+  <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/datedropper/css/datedropper.min.css') }}" />
+@endsection
+
 @section('own-style')
   <style>
     .table td,
     .table th {
       width: 50%;
+    }
+
+    .dd-w,
+    .sp-container {
+      z-index: 100000000010 !important;
     }
   </style>
 @endsection
@@ -33,7 +43,8 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('application-list', ['status' => $applicationStatus]) }}">Application</a></li>
+            <li class="breadcrumb-item"><a
+                href="{{ route('application-list', ['status' => $applicationStatus]) }}">Application</a></li>
             <li class="breadcrumb-item"><a href="#!">View</a></li>
           </ul>
         </div>
@@ -570,23 +581,137 @@
           <form>
             <div class="form-group">
               <label for="startingDate">Starting Date</label>
-              <input type="text" name="startingDate" id="startingDate" class="form-control">
+              <input type="text" name="startingDate" id="startingDate" class="form-control date-dropper">
             </div>
             <div class="form-group">
-              <label for="startingDate">Amount</label>
-              <input type="text" name="startingDate" id="startingDate" class="form-control">
+              <label for="loanAmount">Loan Amount</label>
+              <input type="text" name="loanAmount" id="loanAmount" class="form-control">
             </div>
             <div class="form-group">
-              <label for="startingDate">Amount</label>
-              <input type="text" name="startingDate" id="startingDate" class="form-control">
+              <label for="interestRate">Annual Interest Rate</label>
+              <input type="text" name="interestRate" id="interestRate" class="form-control">
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
+              <label for="loanPeriod">Loan Period in years</label>
+              <select name="loanPeriod" id="loanPeriod" class="form-control">
+                <option value="1">1 year</option>
+                <option value="2">2 years</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" id="generateBtn"
+                class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>
+          <hr />
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Monthly Payment</th>
+                <td id="monthlyPaymentCell">0</td>
+              </tr>
+              <tr>
+                <th>Number of Payments</th>
+                <td id="totalInstallmentCell">0</td>
+              </tr>
+              <tr>
+                <th>Total Interest</th>
+                <td id="totalInterestCell">0</td>
+              </tr>
+              <tr>
+                <th>Total Cost of Loan</th>
+                <td id="totalLoanCostCell">0</td>
+              </tr>
+            </table>
+          </div>
+          <table class="table" id="monthlyPlanTable">
+            <thead>
+              <tr>
+                <th>S.N.</th>
+                <th>Payment Date</th>
+                <th>Beginning Balance</th>
+                <th>Payment</th>
+                <th>Principal</th>
+                <th>Interest</th>
+                <th>Ending Balance</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+@endsection
+
+@section('theme-script')
+  <script type="text/javascript" src="{{ asset('bower_components/datedropper/js/datedropper.min.js') }}"></script>
+@endsection
+
+@section('own-script')
+  <script>
+    $(".date-dropper").dateDropper({
+      dropWidth: 200,
+      dropPrimaryColor: "#1abc9c",
+      dropBorder: "1px solid #1abc9c"
+    });
+
+    
+    /* P = Principal Amount
+    R = Interest per annum
+    r = monthly interest rate ( R / 12 / 100 )
+    n = tenure/total installments (in months)
+    adj = (1 + r) ^ n
+
+    EMI = P * r * adj / (adj - 1) */
+          
+          
+
+    $('#generateBtn').click((e) => {
+      e.preventDefault();
+
+      const startingDate =  $('#startingDate').val();
+      //console.log(dateFormat(startingDate));
+      const loanAmount = $('#loanAmount').val();
+      const interestRate = $('#interestRate').val();
+      const loanPeriod = $('#loanPeriod').val();
+
+      const monthlyInterest = interestRate / 12 / 100;
+      const totalInstallments = loanPeriod * 12;
+      const adj = Math.pow((1 + monthlyInterest), totalInstallments);
+
+      const monthlyPayment = (loanAmount * monthlyInterest * adj / (adj - 1)).toFixed(2);
+      const totalLoanCost = (monthlyPayment * totalInstallments).toFixed(2);
+      const totalInterest = (totalLoanCost - loanAmount).toFixed(2);
+
+      $('#monthlyPaymentCell').text(monthlyPayment);
+      $('#totalInstallmentCell').text(totalInstallments);
+      $('#totalInterestCell').text(totalInterest);
+      $('#totalLoanCostCell').text(totalLoanCost);
+
+      let beginningBalance = loanAmount;
+      for(let i=1; i<=totalInstallments; i++){
+        moment(startingDate).add(i, 'months');
+        const monthlyInterestAmt = beginningBalance * monthlyInterest;
+        const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
+        let endingBalance = beginningBalance - monthlyPrincipalAmt;
+        const decimal = 2;
+        const tableRow = '\
+          <tr>\
+            <td>' + i + '</td>\
+            <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
+            <td>' + currencyFormat(beginningBalance, decimal) + '</td>\
+            <td>' + currencyFormat(monthlyPayment, decimal) + '</td>\
+            <td>' + currencyFormat(monthlyPrincipalAmt, decimal) + '</td>\
+            <td>' + currencyFormat(monthlyInterestAmt, decimal) + '</td>\
+            <td>' + currencyFormat((endingBalance > 0 ? endingBalance : 0), decimal) + '</td>\
+          </tr>\
+        ';
+        $('#monthlyPlanTable tbody').append(tableRow);
+        console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
+        beginningBalance = endingBalance;
+      }
+    });
+  </script>
 @endsection

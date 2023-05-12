@@ -115,6 +115,7 @@
   <script src="{{ asset('assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
   @yield('theme-script')
   <script type="text/javascript" src="{{ asset('assets/js/script.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script type="text/javascript" src="{{ asset('assets/js/aman.js') }}"></script>
   @yield('own-script')
 </body>
