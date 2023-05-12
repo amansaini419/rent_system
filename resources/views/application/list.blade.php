@@ -14,6 +14,8 @@
 @endsection
 
 @section('content')
+  @aware(['applicationStatus' => request('status')])
+
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
@@ -65,7 +67,8 @@
                 <td>PENDING</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view') }}" class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
@@ -75,7 +78,8 @@
                 <td>UNDER_REVIEW</td>
                 <td>Staff 1</td>
                 <td>
-                  <a href="{{ route('application-view') }}" class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
@@ -85,7 +89,8 @@
                 <td>APPROVED</td>
                 <td>Staff 2</td>
                 <td>
-                  <a href="{{ route('application-view') }}" class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
@@ -95,7 +100,8 @@
                 <td>PENDING</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view') }}" class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
@@ -105,7 +111,8 @@
                 <td>INCOMPLETE</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view') }}" class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
             </tbody>

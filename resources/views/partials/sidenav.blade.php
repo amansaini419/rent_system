@@ -97,14 +97,14 @@
         </a>
         <ul class="pcoded-submenu">
           <li class=" ">
-            <a href="{{ route('application-all') }}">
+            <a href="{{ route('application-list', ['status' => 'ALL']) }}">
               <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
               <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
           <li class=" ">
-            <a href="box-layout.html" target="_blank">
+            <a href="{{ route('application-list', ['status' => 'PENDING']) }}">
               <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
               <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Pending</span>
               <span class="pcoded-mcaret"></span>

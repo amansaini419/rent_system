@@ -14,6 +14,7 @@
 @endsection
 
 @section('content')
+  @aware(['applicationStatus' => request('status')])
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
@@ -32,7 +33,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('application-all') }}">Application</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('application-list', ['status' => $applicationStatus]) }}">Application</a></li>
             <li class="breadcrumb-item"><a href="#!">View</a></li>
           </ul>
         </div>
@@ -89,11 +90,16 @@
             <hr>
             <div class="row">
               <div class="col-lg-12">
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#assignApplicationModal">ASSIGN STAFF</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#reviewApplicationModal">FINAL REVIEWED</button>
-                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger" data-toggle="modal" data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal" data-target="#monthlyPlanModal">MONTHLY PLAN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
+                  data-target="#assignApplicationModal">ASSIGN STAFF</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
+                  data-target="#reviewApplicationModal">FINAL REVIEWED</button>
+                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger" data-toggle="modal"
+                  data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
+                  data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
+                  data-target="#monthlyPlanModal">MONTHLY PLAN</button>
               </div>
             </div>
           </div>
@@ -495,7 +501,8 @@
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Send for approval</button>
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Send for
+                approval</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>
@@ -582,5 +589,4 @@
       </div>
     </div>
   </div>
-
 @endsection

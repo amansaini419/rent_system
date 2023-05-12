@@ -42,11 +42,11 @@ Route::get('/register', function () {
     return view('register');
 })->name('register');
 
-Route::get('/application/all', function () {
-    return view('application.all');
-})->name('application-all');
+Route::get('/application/list/{status}', function () {
+    return view('application.list');
+})->where('status', '[A-Z]+')->name('application-list');
 
-Route::get('/application/view', function () {
+Route::get('/application/view/{status}/{id?}', function () {
     return view('application.view');
 })->name('application-view');
 
