@@ -681,7 +681,7 @@
       const totalInstallments = loanPeriod * 12;
       const adj = Math.pow((1 + monthlyInterest), totalInstallments);
 
-      const monthlyPayment = (loanAmount * monthlyInterest * adj / (adj - 1)).toFixed(2);
+      const monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterest, totalInstallments);
       const totalLoanCost = (monthlyPayment * totalInstallments).toFixed(2);
       const totalInterest = (totalLoanCost - loanAmount).toFixed(2);
 
@@ -693,7 +693,7 @@
       let beginningBalance = loanAmount;
       for(let i=1; i<=totalInstallments; i++){
         moment(startingDate).add(i, 'months');
-        const monthlyInterestAmt = beginningBalance * monthlyInterest;
+        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod/12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const decimal = 2;
@@ -713,5 +713,9 @@
         beginningBalance = endingBalance;
       }
     });
+
+    /*
+    Add new page for monthly plan, loan
+    */
   </script>
 @endsection
