@@ -31,7 +31,7 @@
   </div>
   <div class="page-body">
     <div class="row">
-      <h1>AUTOMATIC TESTING</h1>
+      <h1>FIXING AUTOMATIC TESTING</h1>
     </div>
   </div>
 @endsection
