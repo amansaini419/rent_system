@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/delrzrzk/rent.techmindsgh.xyz/
+    - /routes web.php $DEPLOYPATH
+    - /resources/views blank.blade.php $DEPLOYPATH
