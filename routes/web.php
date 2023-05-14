@@ -33,6 +33,9 @@ Route::get('/reset-password', function () {
     return view('reset-password');
 })->name('reset-password');
 
+Route::get('/blank', function () {
+    return view('blank');
+})->name('blank');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
