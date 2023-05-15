@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  Applications List
+  Loans List
 @endsection
 
 @section('theme-style')
@@ -14,15 +14,13 @@
 @endsection
 
 @section('content')
-  @aware(['applicationStatus' => request('status')])
-
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
         <div class="page-header-title">
           <i class="icofont icofont-file-alt bg-c-orenge"></i>
           <div class="d-inline">
-            <h4>Applications</h4>
+            <h4>Loans</h4>
           </div>
         </div>
       </div>
@@ -34,7 +32,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="#!">Applications</a></li>
+            <li class="breadcrumb-item"><a href="#!">Loans</a></li>
           </ul>
         </div>
       </div>
@@ -43,7 +41,7 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
-        <h5>All Applications (for admins)</h5>
+        <h5>All Loans (for admins)</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -51,11 +49,13 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Application ID</th>
+                <th>Loan ID</th>
                 <th>Tenant Name</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Staff Assigned</th>
+                <th>Starting Date</th>
+                <th>Loan Amount</th>
+                <th>Interest Rate</th>
+                <th>Monthly Payment</th>
+                <th>Total Installment</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -63,56 +63,61 @@
               <tr>
                 <td>1</td>
                 <td>Abc Xyz</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>None</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
                 <td>2</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>UNDER_REVIEW</td>
-                <td>Staff 1</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
                 <td>3</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>APPROVED</td>
-                <td>Staff 2</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
                 <td>4</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>PENDING</td>
-                <td>None</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 4]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
-                <td>4</td>
+                <td>5</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>INCOMPLETE</td>
-                <td>None</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 5]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
             </tbody>
@@ -120,9 +125,10 @@
         </div>
       </div>
     </div>
+
     <div class="card">
       <div class="card-header">
-        <h5>All Applications (for tenant)</h5>
+        <h5>All Loans (for tenants)</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -130,32 +136,36 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Application ID</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Staff Assigned</th>
+                <th>Loan ID</th>
+                <th>Starting Date</th>
+                <th>Loan Amount</th>
+                <th>Interest Rate</th>
+                <th>Monthly Payment</th>
+                <th>Total Installment</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>GHYGDSHABDH</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>None</td>
+                <td>ABCDGIH</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
-                <td>GHYGDSHABDH</td>
-                <td>NEW</td>
-                <td>LOAN_FINISHED</td>
-                <td>Staff 1</td>
+                <td>DSHDVBH</td>
+                <td>16-Jun-2023</td>
+                <td>10,000</td>
+                <td>24%</td>
+                <td>640</td>
+                <td>12</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                  <a href="{{ route('loan-view', ['id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
             </tbody>

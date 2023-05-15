@@ -53,6 +53,14 @@ Route::get('/application/view/{status}/{id?}', function () {
     return view('application.view');
 })->name('application-view');
 
+Route::get('/loan/list', function () {
+    return view('loan.list');
+})->name('loan-list');
+
+Route::get('/loan/view/{id?}', function () {
+    return view('loan.view');
+})->name('loan-view');
+
 
 Route::get('/payment/history', function () {
     return view('payment-history');

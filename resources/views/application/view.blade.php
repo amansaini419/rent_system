@@ -11,8 +11,8 @@
 
 @section('own-style')
   <style>
-    .table td,
-    .table th {
+    .table.application-table td,
+    .table.application-table th {
       width: 50%;
     }
 
@@ -56,10 +56,11 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-block">
+            <p>(ONLY FOR ADMINS)</p>
             <div class="row">
               <div class="col-lg-6">
                 <div class="table-responsive">
-                  <table class="table m-0 nowrap">
+                  <table class="table application-table m-0">
                     <tbody>
                       <tr>
                         <th>Application ID</th>
@@ -79,7 +80,7 @@
               </div>
               <div class="col-lg-6">
                 <div class="table-responsive">
-                  <table class="table m-0 nowrap">
+                  <table class="table application-table m-0">
                     <tbody>
                       <tr>
                         <th>Application Status</th>
@@ -149,7 +150,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.first_name') }}</th>
@@ -177,7 +178,7 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.marital_status') }}</th>
@@ -218,7 +219,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.employment_status') }}</th>
@@ -234,7 +235,7 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.monthly_net_income') }}</th>
@@ -267,7 +268,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_fullname') }}</th>
@@ -283,7 +284,7 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_number') }}</th>
@@ -318,7 +319,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.currenct_accommodation_status') }}</th>
@@ -342,7 +343,7 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.rent_years') }}</th>
@@ -381,7 +382,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_profile_picture') }}</th>
@@ -401,7 +402,7 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_bank_statement') }}</th>
@@ -436,7 +437,7 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table m-0">
+                              <table class="table application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_name') }}</th>
@@ -569,7 +570,7 @@
   </div>
 
   <div class="modal fade" id="monthlyPlanModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog" style="max-width: 90%;" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Monthly Plan</h4>
@@ -603,42 +604,50 @@
                 class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
+            <hr />
+            <div class="table-responsive" style="max-width: 300px;">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Monthly Payment</th>
+                  <td id="monthlyPaymentCell">0</td>
+                </tr>
+                <tr>
+                  <th>Number of Payments</th>
+                  <td id="totalInstallmentCell">0</td>
+                </tr>
+                <tr>
+                  <th>Total Interest</th>
+                  <td id="totalInterestCell">0</td>
+                </tr>
+                <tr>
+                  <th>Total Cost of Loan</th>
+                  <td id="totalLoanCostCell">0</td>
+                </tr>
+              </table>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="monthlyPlanTable">
+                <thead>
+                  <tr>
+                    <th>S.N.</th>
+                    <th>Payment Date</th>
+                    <th>Beginning Balance</th>
+                    <th>Payment</th>
+                    <th>Principal</th>
+                    <th>Interest</th>
+                    <th>Ending Balance</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <hr />
+            <div class="form-group">
+              <button type="button" id="createLoanBtn"
+                class="btn btn-success waves-effect waves-light text-uppercase">create loan</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
           </form>
-          <hr />
-          <div class="table-responsive">
-            <table class="table table-bordered">
-              <tr>
-                <th>Monthly Payment</th>
-                <td id="monthlyPaymentCell">0</td>
-              </tr>
-              <tr>
-                <th>Number of Payments</th>
-                <td id="totalInstallmentCell">0</td>
-              </tr>
-              <tr>
-                <th>Total Interest</th>
-                <td id="totalInterestCell">0</td>
-              </tr>
-              <tr>
-                <th>Total Cost of Loan</th>
-                <td id="totalLoanCostCell">0</td>
-              </tr>
-            </table>
-          </div>
-          <table class="table" id="monthlyPlanTable">
-            <thead>
-              <tr>
-                <th>S.N.</th>
-                <th>Payment Date</th>
-                <th>Beginning Balance</th>
-                <th>Payment</th>
-                <th>Principal</th>
-                <th>Interest</th>
-                <th>Ending Balance</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -670,6 +679,7 @@
 
     $('#generateBtn').click((e) => {
       e.preventDefault();
+      $('#monthlyPlanTable tbody').empty();
 
       const startingDate =  $('#startingDate').val();
       //console.log(dateFormat(startingDate));
@@ -682,13 +692,13 @@
       const adj = Math.pow((1 + monthlyInterest), totalInstallments);
 
       const monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterest, totalInstallments);
-      const totalLoanCost = (monthlyPayment * totalInstallments).toFixed(2);
-      const totalInterest = (totalLoanCost - loanAmount).toFixed(2);
+      const totalLoanCost = monthlyPayment * totalInstallments;
+      const totalInterest = totalLoanCost - loanAmount;
 
-      $('#monthlyPaymentCell').text(monthlyPayment);
+      $('#monthlyPaymentCell').text(currencyFormat(monthlyPayment));
       $('#totalInstallmentCell').text(totalInstallments);
-      $('#totalInterestCell').text(totalInterest);
-      $('#totalLoanCostCell').text(totalLoanCost);
+      $('#totalInterestCell').text(currencyFormat(totalInterest));
+      $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
 
       let beginningBalance = loanAmount;
       for(let i=1; i<=totalInstallments; i++){
@@ -696,20 +706,19 @@
         const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod/12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
-        const decimal = 2;
         const tableRow = '\
           <tr>\
             <td>' + i + '</td>\
             <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-            <td>' + currencyFormat(beginningBalance, decimal) + '</td>\
-            <td>' + currencyFormat(monthlyPayment, decimal) + '</td>\
-            <td>' + currencyFormat(monthlyPrincipalAmt, decimal) + '</td>\
-            <td>' + currencyFormat(monthlyInterestAmt, decimal) + '</td>\
-            <td>' + currencyFormat((endingBalance > 0 ? endingBalance : 0), decimal) + '</td>\
+            <td>' + currencyFormat(beginningBalance) + '</td>\
+            <td>' + currencyFormat(monthlyPayment) + '</td>\
+            <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
+            <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
+            <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
           </tr>\
         ';
         $('#monthlyPlanTable tbody').append(tableRow);
-        console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
+        //console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
         beginningBalance = endingBalance;
       }
     });

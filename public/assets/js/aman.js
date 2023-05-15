@@ -2,7 +2,7 @@
 
 const dateFormat = (date) => moment(date).format("DD-MMM-YY");
 
-const currencyFormat = (amount, decimal) => parseFloat(amount).toFixed(decimal);
+const currencyFormat = (amount, decimal = 2) => parseFloat(amount).toFixed(decimal);
 
 const calculateMonthlyPayment = (loanAmount, monthlyInterest, totalInstallments) => {
   const adj = Math.pow((1 + monthlyInterest), totalInstallments);

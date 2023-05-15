@@ -37,9 +37,16 @@
         </a>
       </li>
       <li class="">
-        <a href="navbar-light.html">
+        <a href="{{ route('application-list', ['status' => 'ALL']) }}">
           <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
           <span class="pcoded-mtext" data-i18n="nav.navigate.main">Application</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="{{ route('loan-list') }}">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>L</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Loan</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
@@ -83,7 +90,7 @@
     <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Super Admin</div>
     <ul class="pcoded-item pcoded-left-item">
       <li class="">
-        <a href="navbar-light.html">
+        <a href="{{ route('dashboard') }}">
           <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
           <span class="pcoded-mtext" data-i18n="nav.navigate.main">Dashboard</span>
           <span class="pcoded-mcaret"></span>
@@ -110,7 +117,35 @@
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
+          <li class=" ">
+            <a href="{{ route('application-list', ['status' => 'UNDER_VERIFICATION']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Under Verification</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li class=" ">
+            <a href="{{ route('application-list', ['status' => 'VERIFIED']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Verified</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li class=" ">
+            <a href="{{ route('application-list', ['status' => 'APPROVED']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Approved</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
         </ul>
+      </li>
+      <li class="">
+        <a href="{{ route('loan-list') }}">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>L</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Loans</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
       </li>
     </ul>
     <hr />
@@ -123,220 +158,78 @@
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
-    </ul>
-
-
-    <ul class="pcoded-item pcoded-left-item">
-      <li class="pcoded-hasmenu active pcoded-trigger">
-        <a href="javascript:void(0)">
-          <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span>
-          <span class="pcoded-mcaret"></span>
-        </a>
-        <ul class="pcoded-submenu">
-          <li class="active">
-            <a href="index.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.dash.default">Default</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class="">
-            <a href="dashboard-ecommerce.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.dash.ecommerce">Ecommerce</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class="">
-            <a href="dashboard-crm.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.dash.crm">CRM</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class=" ">
-            <a href="dashboard-analytics.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.dash.analytics">Analytics</span>
-              <span class="pcoded-badge label label-info ">NEW</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class=" ">
-            <a href="dashboard-project.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.dash.project">Project</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-        </ul>
-      </li>
       <li class="pcoded-hasmenu">
         <a href="javascript:void(0)">
-          <span class="pcoded-micon"><i class="ti-layout"></i><b>P</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.page_layout.main">Page
-            layouts</span>
-          <span class="pcoded-badge label label-warning">NEW</span>
-          <span class="pcoded-mcaret"></span>
-        </a>
-        <ul class="pcoded-submenu">
-
-          <li class=" pcoded-hasmenu">
-            <a href="javascript:void(0)">
-              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-              <span class="pcoded-mtext">Vertical</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-            <ul class="pcoded-submenu">
-              <li class=" ">
-                <a href="menu-static.html">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.vertical.static-layout">Static
-                    Layout</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-header-fixed.html">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.vertical.header-fixed">Header
-                    Fixed</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-compact.html">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.vertical.compact">Compact</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-sidebar.html">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.vertical.sidebar-fixed">Sidebar
-                    Fixed</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-
-            </ul>
-          </li>
-          <li class=" pcoded-hasmenu">
-            <a href="javascript:void(0)">
-              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.page_layout.horizontal.main">Horizontal</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-            <ul class="pcoded-submenu">
-              <li class=" ">
-                <a href="menu-horizontal-static.html" target="_blank">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.horizontal.static-layout">Static
-                    Layout</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-horizontal-fixed.html" target="_blank">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.horizontal.fixed-layout">Fixed
-                    layout</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-horizontal-icon.html" target="_blank">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.horizontal.static-with-icon">Static
-                    With Icon</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-              <li class=" ">
-                <a href="menu-horizontal-icon-fixed.html" target="_blank">
-                  <span class="pcoded-micon"><i class="icon-chart"></i></span>
-                  <span class="pcoded-mtext" data-i18n="nav.page_layout.horizontal.fixed-with-icon">Fixed
-                    With Icon</span>
-                  <span class="pcoded-mcaret"></span>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class=" ">
-            <a href="menu-bottom.html">
-              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">Bottom Menu</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class=" ">
-            <a href="box-layout.html" target="_blank">
-              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Box
-                Layout</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class=" ">
-            <a href="menu-rtl.html" target="_blank">
-              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.page_layout.rtl">RTL</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-
-        </ul>
-      </li>
-      <li class="">
-        <a href="navbar-light.html">
-          <span class="pcoded-micon"><i class="ti-layout-cta-right"></i><b>N</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Navigation</span>
-          <span class="pcoded-mcaret"></span>
-        </a>
-      </li>
-      <li class="pcoded-hasmenu">
-        <a href="javascript:void(0)">
-          <span class="pcoded-micon"><i class="ti-view-grid"></i><b>W</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.widget.main">Widget</span>
-          <span class="pcoded-badge label label-danger">100+</span>
+          <span class="pcoded-micon"><i class="ti-layout"></i><b>A</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.page_layout.main">Applications</span>
           <span class="pcoded-mcaret"></span>
         </a>
         <ul class="pcoded-submenu">
           <li class=" ">
-            <a href="widget-statistic.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.navigate.navbar">Statistic</span>
+            <a href="{{ route('application-list', ['status' => 'ALL']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
           <li class=" ">
-            <a href="widget-data.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.navigate.navbar-inverse">Data</span>
+            <a href="{{ route('application-list', ['status' => 'UNDER_VERIFICATION']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Under Verification</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
           <li class=" ">
-            <a href="widget-chart.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.navigate.navbar-with-elements">Chart Widget</span>
-              <span class="pcoded-mcaret"></span>
-            </a>
-          </li>
-          <li class=" ">
-            <a href="widget-chart-advance.html">
-              <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-              <span class="pcoded-mtext" data-i18n="nav.navigate.navbar-with-elements">Advance
-                Widgets</span>
-              <span class="pcoded-badge label label-info">25+</span>
+            <a href="{{ route('application-list', ['status' => 'APPROVED']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Approved</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
         </ul>
       </li>
     </ul>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <hr />
     <div class="pcoded-navigatio-lavel" data-i18n="nav.category.ui-element">UI Element</div>
     <ul class="pcoded-item pcoded-left-item">
       <li class="pcoded-hasmenu">
