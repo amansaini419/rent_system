@@ -43,6 +43,17 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
+        <h5>Reapply Application (for tenants)</h5>
+      </div>
+      <div class="card-block">
+        <p>
+          <button type="button" class="btn btn-sm btn-primary">NEW PLACE</button>
+          <button type="button" class="btn btn-sm btn-primary">EXISTING PLACE</button>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
         <h5>All Applications (for admins)</h5>
         <span></span>
       </div>
@@ -55,6 +66,7 @@
                 <th>Tenant Name</th>
                 <th>Application Type</th>
                 <th>Application Status</th>
+                <th>Initial Deposit</th>
                 <th>Staff Assigned</th>
                 <th>Action</th>
               </tr>
@@ -65,6 +77,7 @@
                 <td>Abc Xyz</td>
                 <td>RENEW</td>
                 <td>PENDING</td>
+                <td>100</td>
                 <td>None</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
@@ -76,6 +89,7 @@
                 <td>Abc Xyz</td>
                 <td>NEW</td>
                 <td>UNDER_REVIEW</td>
+                <td>0</td>
                 <td>Staff 1</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
@@ -87,6 +101,7 @@
                 <td>Abc Xyz</td>
                 <td>NEW</td>
                 <td>APPROVED</td>
+                <td>0</td>
                 <td>Staff 2</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
@@ -98,6 +113,7 @@
                 <td>Abc Xyz</td>
                 <td>NEW</td>
                 <td>PENDING</td>
+                <td>0</td>
                 <td>None</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
@@ -109,6 +125,7 @@
                 <td>Abc Xyz</td>
                 <td>NEW</td>
                 <td>INCOMPLETE</td>
+                <td>0</td>
                 <td>None</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
@@ -133,6 +150,7 @@
                 <th>Application ID</th>
                 <th>Application Type</th>
                 <th>Application Status</th>
+                <th>Initial Deposit</th>
                 <th>Staff Assigned</th>
                 <th>Action</th>
               </tr>
@@ -142,20 +160,23 @@
                 <td>GHYGDSHABDH</td>
                 <td>RENEW</td>
                 <td>PENDING</td>
+                <td>0</td>
                 <td>None</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                    class="btn btn-sm btn-primary">VIEW</a>
+                  <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
                 </td>
               </tr>
               <tr>
                 <td>GHYGDSHABDH</td>
                 <td>NEW</td>
-                <td>LOAN_FINISHED</td>
+                <td>LOAN_CLOSED</td>
+                <td>0</td>
                 <td>Staff 1</td>
                 <td>
                   <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
+                    class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
             </tbody>
@@ -164,6 +185,30 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="depositModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Initial Deposit</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="depositAmount">How much deposit you want to do?</label>
+              <input type="text" name="depositAmount" id="depositAmount" class="form-control">
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Deposit</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 @endsection
 
 @section('theme-script')

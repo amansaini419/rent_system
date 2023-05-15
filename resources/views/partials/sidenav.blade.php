@@ -39,21 +39,21 @@
       <li class="">
         <a href="{{ route('application-list', ['status' => 'ALL']) }}">
           <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Application</span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Applications</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
       <li class="">
-        <a href="{{ route('loan-list') }}">
+        <a href="{{ route('loan-list', ['status' => 'ALL']) }}">
           <span class="pcoded-micon"><i class="ti-home"></i><b>L</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Loan</span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Loans</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
       <li class="">
         <a href="navbar-light.html">
           <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Payment History</span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Payments</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
@@ -140,12 +140,28 @@
           </li>
         </ul>
       </li>
-      <li class="">
-        <a href="{{ route('loan-list') }}">
-          <span class="pcoded-micon"><i class="ti-home"></i><b>L</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Loans</span>
+      <li class="pcoded-hasmenu">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-layout"></i><b>L</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.page_layout.main">Loans</span>
           <span class="pcoded-mcaret"></span>
         </a>
+        <ul class="pcoded-submenu">
+          <li class=" ">
+            <a href="{{ route('loan-list', ['status' => 'ALL']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li class=" ">
+            <a href="{{ route('loan-list', ['status' => 'OPENED']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Opened</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
       </li>
     </ul>
     <hr />
@@ -183,6 +199,29 @@
             <a href="{{ route('application-list', ['status' => 'APPROVED']) }}">
               <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
               <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Approved</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="pcoded-hasmenu">
+        <a href="javascript:void(0)">
+          <span class="pcoded-micon"><i class="ti-layout"></i><b>L</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.page_layout.main">Loans</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+        <ul class="pcoded-submenu">
+          <li class=" ">
+            <a href="{{ route('loan-list', ['status' => 'ALL']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
+              <span class="pcoded-mcaret"></span>
+            </a>
+          </li>
+          <li class=" ">
+            <a href="{{ route('loan-list', ['status' => 'OPENED']) }}">
+              <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+              <span class="pcoded-mtext" data-i18n="nav.page_layout.box-layout">Opened</span>
               <span class="pcoded-mcaret"></span>
             </a>
           </li>
@@ -230,7 +269,7 @@
 
 
     <hr />
-    <div class="pcoded-navigatio-lavel" data-i18n="nav.category.ui-element">UI Element</div>
+    {{-- <div class="pcoded-navigatio-lavel" data-i18n="nav.category.ui-element">UI Element</div>
     <ul class="pcoded-item pcoded-left-item">
       <li class="pcoded-hasmenu">
         <a href="javascript:void(0)">
@@ -2031,6 +2070,6 @@
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
-    </ul>
+    </ul> --}}
   </div>
 </nav>

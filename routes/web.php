@@ -53,11 +53,11 @@ Route::get('/application/view/{status}/{id?}', function () {
     return view('application.view');
 })->name('application-view');
 
-Route::get('/loan/list', function () {
+Route::get('/loan/list/{status}', function () {
     return view('loan.list');
-})->name('loan-list');
+})->where('status', '[A-Z]+')->name('loan-list');
 
-Route::get('/loan/view/{id?}', function () {
+Route::get('/loan/view/{status}/{id?}', function () {
     return view('loan.view');
 })->name('loan-view');
 

@@ -74,6 +74,10 @@
                         <th>Application Type</th>
                         <td>RENEW</td>
                       </tr>
+                      <tr>
+                        <th>Initial Deposit</th>
+                        <td>100.00</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -616,6 +620,10 @@
                   <td id="totalInstallmentCell">0</td>
                 </tr>
                 <tr>
+                  <th>Initital Deposit</th>
+                  <td id="initialDepositCell">100.00</td>
+                </tr>
+                <tr>
                   <th>Total Interest</th>
                   <td id="totalInterestCell">0</td>
                 </tr>
@@ -686,21 +694,23 @@
       const loanAmount = $('#loanAmount').val();
       const interestRate = $('#interestRate').val();
       const loanPeriod = $('#loanPeriod').val();
+      const initialDeposit = $('#initialDepositCell').text();
+      const balanceAmount = loanAmount - initialDeposit;
 
       const monthlyInterest = interestRate / 12 / 100;
       const totalInstallments = loanPeriod * 12;
       const adj = Math.pow((1 + monthlyInterest), totalInstallments);
 
-      const monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterest, totalInstallments);
+      const monthlyPayment = calculateMonthlyPayment(balanceAmount, monthlyInterest, totalInstallments);
       const totalLoanCost = monthlyPayment * totalInstallments;
-      const totalInterest = totalLoanCost - loanAmount;
+      const totalInterest = totalLoanCost - balanceAmount;
 
       $('#monthlyPaymentCell').text(currencyFormat(monthlyPayment));
       $('#totalInstallmentCell').text(totalInstallments);
       $('#totalInterestCell').text(currencyFormat(totalInterest));
       $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
 
-      let beginningBalance = loanAmount;
+      let beginningBalance = balanceAmount;
       for(let i=1; i<=totalInstallments; i++){
         moment(startingDate).add(i, 'months');
         const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod/12);

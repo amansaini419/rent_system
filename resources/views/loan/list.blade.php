@@ -14,6 +14,8 @@
 @endsection
 
 @section('content')
+  @aware(['loanStatus' => request('status')])
+
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
@@ -69,7 +71,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
@@ -81,7 +83,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
@@ -93,7 +95,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
@@ -105,7 +107,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 4]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 4]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
@@ -117,7 +119,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 5]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 5]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
             </tbody>
@@ -154,7 +156,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
               <tr>
@@ -165,7 +167,7 @@
                 <td>640</td>
                 <td>12</td>
                 <td>
-                  <a href="{{ route('loan-view', ['id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
             </tbody>

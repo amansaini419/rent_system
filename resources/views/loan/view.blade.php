@@ -24,6 +24,8 @@
 @endsection
 
 @section('content')
+  @aware(['loanStatus' => request('status')])
+
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
@@ -42,7 +44,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('loan-list') }}">Loan</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('loan-list', ['status' => $loanStatus]) }}">Loan</a></li>
             <li class="breadcrumb-item"><a href="#!">View</a></li>
           </ul>
         </div>
@@ -388,16 +390,16 @@
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const tableRow = '\
-                <tr>\
-                  <td>' + i + '</td>\
-                  <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-                  <td>' + currencyFormat(beginningBalance) + '</td>\
-                  <td>' + currencyFormat(monthlyPayment) + '</td>\
-                  <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
-                  <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
-                  <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
-                </tr>\
-              ';
+                  <tr>\
+                    <td>' + i + '</td>\
+                    <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
+                    <td>' + currencyFormat(beginningBalance) + '</td>\
+                    <td>' + currencyFormat(monthlyPayment) + '</td>\
+                    <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
+                    <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
+                    <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
+                  </tr>\
+                ';
         $('#monthlyPlanTable tbody').append(tableRow);
         console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
         beginningBalance = endingBalance;
