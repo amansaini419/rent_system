@@ -60,7 +60,8 @@
                             <li><a class="page-scroll" href="#features">Benefits</a></li>
                             <li><a class="page-scroll" href="#reviews">Testimonials</a></li>
                             <li><a class="page-scroll" href="#pricing">Pricing</a></li>
-                            <li><a href="">Contact</a></li>
+                            <li><a href="{{ route('login') }}">Login</a></li>
+                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         </ul>
                     </div>
                 </div>

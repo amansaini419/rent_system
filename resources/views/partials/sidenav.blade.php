@@ -51,13 +51,13 @@
         </a>
       </li>
       <li class="">
-        <a href="navbar-light.html">
-          <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
-          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Payments</span>
+        <a href="{{ route('invoice-list') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Invoices</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
-      <li class="">
+      {{-- <li class="">
         <a href="{{ route('notifications') }}">
           <span class="pcoded-micon"><i class="ti-user"></i><b>P</b></span>
           <span class="pcoded-mtext" data-i18n="nav.navigate.main">Notifications</span>
@@ -84,8 +84,9 @@
           <span class="pcoded-mtext" data-i18n="nav.navigate.main">Log Out</span>
           <span class="pcoded-mcaret"></span>
         </a>
-      </li>
+      </li> --}}
     </ul>
+    {{-- Notifications, Chat, Change Password, Log Out --}}
     <hr />
     <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Super Admin</div>
     <ul class="pcoded-item pcoded-left-item">
@@ -163,7 +164,15 @@
           </li>
         </ul>
       </li>
+      <li class="">
+        <a href="{{ route('invoice-list') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Invoices</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
     </ul>
+    {{-- Sub Admin, Users, Notifications, Chat, Change Password, Log Out --}}
     <hr />
     <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Rent Admin</div>
     <ul class="pcoded-item pcoded-left-item">
@@ -227,8 +236,15 @@
           </li>
         </ul>
       </li>
+      <li class="">
+        <a href="{{ route('invoice-list') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Invoices</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
     </ul>
-    
+    {{-- Assigned Users, Notifications, Chat, Change Password, Log Out --}}
 
 
 

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  Applications
+  Invoices
 @endsection
 
 @section('theme-style')
@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-  @aware(['applicationStatus' => request('status')])
+  {{-- @aware(['applicationStatus' => request('status')]) --}}
 
   <div class="page-header card">
     <div class="row align-items-end">
@@ -22,7 +22,7 @@
         <div class="page-header-title">
           <i class="icofont icofont-file-alt bg-c-orenge"></i>
           <div class="d-inline">
-            <h4>Applications</h4>
+            <h4>Invoices</h4>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="#!">Applications</a></li>
+            <li class="breadcrumb-item"><a href="#!">Invoices</a></li>
           </ul>
         </div>
       </div>
@@ -43,18 +43,7 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
-        <h5>Reapply Application (for tenants)</h5>
-      </div>
-      <div class="card-block">
-        <p>
-          <button type="button" class="btn btn-sm btn-primary">NEW PLACE</button>
-          <button type="button" class="btn btn-sm btn-primary">EXISTING PLACE</button>
-        </p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h5>All Applications (for admins)</h5>
+        <h5>All Invoices (for admins)</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -62,12 +51,12 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Application ID</th>
+                <th>Invoice ID</th>
                 <th>Tenant Name</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Initial Deposit</th>
-                <th>Staff Assigned</th>
+                <th>Invoice Amount</th>
+                <th>Invoice Date</th>
+                <th>Invoice Type</th>
+                <th>Invoice Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -75,60 +64,48 @@
               <tr>
                 <td>1</td>
                 <td>Abc Xyz</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
                 <td>100</td>
-                <td>None</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
                 <td>2</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>UNDER_REVIEW</td>
-                <td>0</td>
-                <td>Staff 1</td>
+                <td>940</td>
+                <td>12-May-2023</td>
+                <td>MONTHLY_INSTALLMENT</td>
+                <td>Pending</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
                 <td>3</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>APPROVED</td>
-                <td>0</td>
-                <td>Staff 2</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>INITIAL_DEPOSIT</td>
+                <td>Paid</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
                 <td>4</td>
                 <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>PENDING</td>
-                <td>0</td>
-                <td>None</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>INCOMPLETE</td>
-                <td>0</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -139,7 +116,7 @@
     </div>
     <div class="card">
       <div class="card-header">
-        <h5>All Applications (for tenant)</h5>
+        <h5>All Invoices (for tenant)</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -147,36 +124,57 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Application ID</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Initial Deposit</th>
-                <th>Staff Assigned</th>
+                <th>Invoice ID</th>
+                <th>Invoice Amount</th>
+                <th>Invoice Date</th>
+                <th>Invoice Type</th>
+                <th>Invoice Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>GHYGDSHABDH</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>0</td>
-                <td>None</td>
+                <td>1</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
-                  <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
               <tr>
-                <td>GHYGDSHABDH</td>
-                <td>NEW</td>
-                <td>LOAN_CLOSED</td>
-                <td>0</td>
-                <td>Staff 1</td>
+                <td>2</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
+                <td>
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
+                </td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>100</td>
+                <td>12-May-2023</td>
+                <td>REGISTRATION_FEES</td>
+                <td>Paid</td>
+                <td>
+                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
             </tbody>

@@ -53,13 +53,21 @@ Route::get('/application/view/{status}/{id?}', function () {
     return view('application.view');
 })->name('application-view');
 
-Route::get('/loan/list/{status}', function () {
+Route::get('/loan/list', function () {
     return view('loan.list');
-})->where('status', '[A-Z]+')->name('loan-list');
+})->name('loan-list');
 
-Route::get('/loan/view/{status}/{id?}', function () {
+Route::get('/loan/view/{id?}', function () {
     return view('loan.view');
 })->name('loan-view');
+
+Route::get('/invoice/list', function () {
+    return view('invoice.list');
+})->name('invoice-list');
+
+Route::get('/invoice/view/{id?}', function () {
+    return view('invoice.view');
+})->name('invoice-view');
 
 
 Route::get('/payment/history', function () {

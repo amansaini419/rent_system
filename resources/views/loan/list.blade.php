@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  Loans List
+  Loans
 @endsection
 
 @section('theme-style')
