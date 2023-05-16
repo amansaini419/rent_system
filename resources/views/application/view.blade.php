@@ -106,16 +106,18 @@
             <hr>
             <div class="row">
               <div class="col-lg-12">
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
-                  data-target="#assignApplicationModal">ASSIGN STAFF</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
-                  data-target="#reviewApplicationModal">FINAL REVIEWED</button>
-                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger" data-toggle="modal"
-                  data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
-                  data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger" data-toggle="modal"
-                  data-target="#monthlyPlanModal">MONTHLY PLAN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
+                  data-toggle="modal" data-target="#assignApplicationModal">ASSIGN STAFF</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
+                  data-toggle="modal" data-target="#reviewApplicationModal">FINAL REVIEWED</button>
+                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger text-uppercase"
+                  data-toggle="modal" data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
+                  data-toggle="modal" data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
+                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
+                  data-toggle="modal" data-target="#monthlyPlanModal">MONTHLY PLAN</button>
+                <a href="{{ route('application-register', ['id' => 1]) }}" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase">Update
+                  application</a>
               </div>
             </div>
           </div>
@@ -674,7 +676,7 @@
       dropBorder: "1px solid #1abc9c"
     });
 
-    
+
     /* P = Principal Amount
     R = Interest per annum
     r = monthly interest rate ( R / 12 / 100 )
@@ -682,14 +684,14 @@
     adj = (1 + r) ^ n
 
     EMI = P * r * adj / (adj - 1) */
-          
-          
+
+
 
     $('#generateBtn').click((e) => {
       e.preventDefault();
       $('#monthlyPlanTable tbody').empty();
 
-      const startingDate =  $('#startingDate').val();
+      const startingDate = $('#startingDate').val();
       //console.log(dateFormat(startingDate));
       const loanAmount = $('#loanAmount').val();
       const interestRate = $('#interestRate').val();
@@ -711,22 +713,22 @@
       $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
 
       let beginningBalance = balanceAmount;
-      for(let i=1; i<=totalInstallments; i++){
+      for (let i = 1; i <= totalInstallments; i++) {
         moment(startingDate).add(i, 'months');
-        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod/12);
+        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod / 12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const tableRow = '\
-          <tr>\
-            <td>' + i + '</td>\
-            <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-            <td>' + currencyFormat(beginningBalance) + '</td>\
-            <td>' + currencyFormat(monthlyPayment) + '</td>\
-            <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
-            <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
-            <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
-          </tr>\
-        ';
+              <tr>\
+                <td>' + i + '</td>\
+                <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
+                <td>' + currencyFormat(beginningBalance) + '</td>\
+                <td>' + currencyFormat(monthlyPayment) + '</td>\
+                <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
+                <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
+                <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
+              </tr>\
+            ';
         $('#monthlyPlanTable tbody').append(tableRow);
         //console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
         beginningBalance = endingBalance;

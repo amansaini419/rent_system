@@ -97,6 +97,13 @@
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
+      <li class="">
+        <a href="{{ route('tenant-list') }}">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>T</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Tenants</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
       <li class="pcoded-hasmenu">
         <a href="javascript:void(0)">
           <span class="pcoded-micon"><i class="ti-layout"></i><b>A</b></span>
@@ -171,6 +178,20 @@
           <span class="pcoded-mcaret"></span>
         </a>
       </li>
+      <li class="">
+        <a href="{{ route('admin-list') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Admins</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="{{ route('settings') }}">
+          <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Settings</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
     </ul>
     {{-- Sub Admin, Users, Notifications, Chat, Change Password, Log Out --}}
     <hr />
@@ -180,6 +201,13 @@
         <a href="navbar-light.html">
           <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
           <span class="pcoded-mtext" data-i18n="nav.navigate.main">Dashboard</span>
+          <span class="pcoded-mcaret"></span>
+        </a>
+      </li>
+      <li class="">
+        <a href="{{ route('tenant-list') }}">
+          <span class="pcoded-micon"><i class="ti-home"></i><b>T</b></span>
+          <span class="pcoded-mtext" data-i18n="nav.navigate.main">Tenants</span>
           <span class="pcoded-mcaret"></span>
         </a>
       </li>

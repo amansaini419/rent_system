@@ -41,25 +41,25 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
+Route::get('/application/register/{id}', function () {
+    return view('application.register');
+})->name('application-register');
 
 Route::get('/application/list/{status}', function () {
     return view('application.list');
-})->where('status', '[A-Z]+')->name('application-list');
+})->where('status', '[A-Z_]+')->name('application-list');
 
-Route::get('/application/view/{status}/{id?}', function () {
+Route::get('/application/view/{status}/{id}', function () {
     return view('application.view');
-})->name('application-view');
+})->where('status', '[A-Z_]+')->name('application-view');
 
-Route::get('/loan/list', function () {
+Route::get('/loan/list/{status}', function () {
     return view('loan.list');
-})->name('loan-list');
+})->where('status', '[A-Z_]+')->name('loan-list');
 
-Route::get('/loan/view/{id?}', function () {
+Route::get('/loan/view/{status}/{id}', function () {
     return view('loan.view');
-})->name('loan-view');
+})->where('status', '[A-Z_]+')->name('loan-view');
 
 Route::get('/invoice/list', function () {
     return view('invoice.list');
@@ -68,6 +68,29 @@ Route::get('/invoice/list', function () {
 Route::get('/invoice/view/{id?}', function () {
     return view('invoice.view');
 })->name('invoice-view');
+
+Route::get('/tenant/list', function () {
+    return view('tenant.list');
+})->name('tenant-list');
+
+Route::get('/tenant/view/{id?}', function () {
+    return view('tenant.view');
+})->name('tenant-view');
+
+Route::get('/admin/list', function () {
+    return view('admin.list');
+})->name('admin-list');
+Route::get('/admin/new', function () {
+    return view('admin.new');
+})->name('admin-new');
+
+Route::get('/admin/view/{id?}', function () {
+    return view('admin.view');
+})->name('admin-view');
+
+Route::get('/settings', function () {
+    return view('settings');
+})->name('settings');
 
 
 Route::get('/payment/history', function () {

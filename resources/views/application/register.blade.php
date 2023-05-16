@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  Registration Form
+  Application Registration Form
 @endsection
 
 @section('theme-style')
@@ -38,7 +38,9 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="#!">Registration Form</a></li>
+            <li class="breadcrumb-item"><a
+              href="{{ route('application-list', ['status' => 'TEMP']) }}">Application</a></li>
+            <li class="breadcrumb-item"><a href="#!">Register</a></li>
           </ul>
         </div>
       </div>

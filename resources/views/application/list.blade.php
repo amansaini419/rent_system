@@ -80,7 +80,7 @@
                 <td>100</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -92,7 +92,7 @@
                 <td>0</td>
                 <td>Staff 1</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -104,7 +104,7 @@
                 <td>0</td>
                 <td>Staff 2</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -116,7 +116,7 @@
                 <td>0</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -128,7 +128,7 @@
                 <td>0</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</button>
                 </td>
               </tr>
@@ -163,7 +163,7 @@
                 <td>0</td>
                 <td>None</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</a>
                   <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
                 </td>
@@ -175,7 +175,7 @@
                 <td>0</td>
                 <td>Staff 1</td>
                 <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus]) }}"
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
                     class="btn btn-sm btn-primary">VIEW</a>
                 </td>
               </tr>
@@ -209,6 +209,7 @@
         </div>
       </div>
     </div>
+  </div>
 @endsection
 
 @section('theme-script')
