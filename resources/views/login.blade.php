@@ -6,7 +6,8 @@
 
 @section('content')
   <div class="login-card card-block auth-body mr-auto ml-auto">
-    <form class="md-float-material">
+    <form class="md-float-material" method="POST" action="{{ route('login.user') }}">
+      @csrf
       {{-- <div class="text-center">
           <img src="assets/images/auth/logo-dark.png" alt="logo.png">
       </div> --}}
@@ -18,11 +19,11 @@
         </div>
         <hr />
         <div class="input-group">
-          <input type="email" class="form-control" placeholder="Your Email Address">
+          <input type="email" class="form-control" placeholder="Your Email Address" name="email">
           <span class="md-line"></span>
         </div>
         <div class="input-group">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" placeholder="Password" name="password">
           <span class="md-line"></span>
         </div>
         <div class="row m-t-25 text-left">
@@ -41,7 +42,7 @@
         </div>
         <div class="row m-t-30">
           <div class="col-md-12">
-            <button type="button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Log
+            <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Log
               In</button>
           </div>
         </div>

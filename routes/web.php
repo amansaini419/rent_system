@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,9 +19,8 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.user');
 
 Route::get('/signup', function () {
     return view('signup');
@@ -37,9 +38,35 @@ Route::get('/blank', function () {
     return view('blank');
 })->name('blank');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+
+// Tenant Route
+Route::group(['middleware' => ['auth', 'user-role:tenant'], ['prefix', 'tenant']], function()
+{
+    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+});
+
+// Staff Route
+Route::group(['middleware' => ['auth', 'user-role:staff'], ['prefix', 'staff']], function()
+{
+    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+});
+
+// Agent Route
+Route::group(['middleware' => ['auth', 'user-role:agent'], ['prefix', 'agent']], function()
+{
+    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+});
+
+// Super Admin Route
+Route::group(['middleware' => ['auth', 'user-role:admin'], ['prefix', 'admin']], function()
+{
+    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+});
+
+
+
+
+
 
 Route::get('/application/register/{id}', function () {
     return view('application.register');
