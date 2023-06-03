@@ -18,6 +18,31 @@
           </div>
         </div>
         <hr />
+        @if (isset($errors) && count($errors) > 0)
+          <div class="alert alert-danger" role="alert">
+            <ul class="list-unstyled mb-0">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+        @if (Session::get('success', false))
+          <?php $data = Session::get('success'); ?>
+          @if (is_array($data))
+            @foreach ($data as $msg)
+              <div class="alert alert-warning" role="alert">
+                <i class="fa fa-check"></i>
+                {{ $msg }}
+              </div>
+            @endforeach
+          @else
+            <div class="alert alert-warning" role="alert">
+              <i class="fa fa-check"></i>
+              {{ $data }}
+            </div>
+          @endif
+        @endif
         <div class="input-group">
           <input type="email" class="form-control" placeholder="Your Email Address" name="email">
           <span class="md-line"></span>
@@ -29,8 +54,8 @@
         <div class="row m-t-25 text-left">
           <div class="col-12">
             <div class="checkbox-fade fade-in-primary d-">
-              <label>
-                <input type="checkbox" value="">
+              <label for="remember">
+                <input type="checkbox" value="1" name="remember" id="remember">
                 <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
                 <span class="text-inverse">Remember me</span>
               </label>

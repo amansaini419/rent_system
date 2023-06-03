@@ -61,8 +61,13 @@
                             <li><a class="page-scroll" href="#features">Benefits</a></li>
                             <li><a class="page-scroll" href="#reviews">Testimonials</a></li>
                             <li><a class="page-scroll" href="#pricing">Pricing</a></li>
-                            <li><a href="{{ route('login') }}">Login</a></li>
-                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            @auth
+                                <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            @endauth
+                            @guest
+                                <li><a href="{{ route('login') }}">Login</a></li>
+                                <li><a href="{{ route('signup') }}">Sign Up</a></li>
+                            @endguest
                         </ul>
                     </div>
                 </div>

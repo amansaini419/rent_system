@@ -3,32 +3,45 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\Login\RememberMeExpiration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
-    public function show()
-    {
+    use RememberMeExpiration;
+
+    protected function show(){
         return view('login');
     }
 
-    public function login(Request $request)
-    {
-        $input = $request->all();
-        $this->validate($request, [
+    protected function login(Request $request){
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
-        if(Auth::attempt(['email' => $input["email"], 'password' => $input["password"], 'is_active' => 1, 'is_deleted' => 0]))
-        {
-            return redirect()->route('dashboard');
-        }
-        else
-        {
+        $credentials['is_active'] = 1;
+        $credentials['is_deleted'] = 0;
+        
+        //dd($credentials); die();
+        
+        if(!Auth::validate($credentials)){
             return redirect()
                 ->route('login')
-                ->with('error', 'Incorrect email or password');
+                ->withErrors(trans('auth.failed'));
         }
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
+        Auth::login($user, $request->get('remember'));
+        if($request->get('remember')){
+            $this->setRememberMeExpiration($user);
+        }
+        return redirect()->intended('dashboard');
+    }
+
+    protected function logout(Request $request){
+        Session::flush();
+        Auth::logout();
+        return redirect('/');
     }
 }
