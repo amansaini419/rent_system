@@ -31,9 +31,19 @@ class TenantRegistrationMiddleware
 				if ($application) {
 					$applicationStatus = $application->currentStatus;
 					//var_dump($applicationStatus); die();
-					if ($applicationStatus->application_status != "INCOMPLETE") {
-						return $next($request);
-					} else {
+					if($applicationStatus){
+						if ($applicationStatus->application_status != "INCOMPLETE") {
+							return $next($request);
+						} else {
+							$applicationCode = $application->application_code;
+						}
+					}
+					else{
+						// create application status
+						ApplicationStatus::create([
+							'application_id' => $application->id,
+							'application_status' => 'INCOMPLETE',
+						]);
 						$applicationCode = $application->application_code;
 					}
 				} else {
@@ -49,8 +59,7 @@ class TenantRegistrationMiddleware
 					ApplicationStatus::create([
 						'application_id' => $application->id,
 						'application_status' => 'INCOMPLETE',
-					]);
-					
+					]);					
 				}
 			} else {
 				// create user data

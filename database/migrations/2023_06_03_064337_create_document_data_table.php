@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('document_data', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(UserData::class);
-            $table->string('passport_picture_path');
-            $table->string('ghana_card');
-            $table->string('ghana_card_path');
-            $table->string('statement_path');
-            $table->string('employment_letter_path');
+            $table->string('passport_picture_path')->nullable();
+            $table->string('ghana_card')->nullable();
+            $table->string('ghana_card_path')->nullable();
+            $table->string('statement_path')->nullable();
+            $table->string('employment_letter_path')->nullable();
             $table->timestamps();
         });
     }

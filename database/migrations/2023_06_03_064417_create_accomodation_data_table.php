@@ -15,13 +15,13 @@ return new class extends Migration
         Schema::create('accomodation_data', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(UserData::class);
-            $table->string('current_accommodation_status');
-            $table->string('property_location');
-            $table->string('property_type');
-            $table->double('monthly_rent');
-            $table->smallInteger('total_rent_years');
-            $table->date('expected_movein_date');
-            $table->smallInteger('total_payback_months');
+            $table->string('current_accommodation_status')->nullable();
+            $table->string('property_location')->nullable();
+            $table->string('property_type')->nullable();
+            $table->double('monthly_rent')->nullable();
+            $table->smallInteger('total_rent_years')->nullable();
+            $table->date('expected_movein_date')->nullable();
+            $table->smallInteger('total_payback_months')->nullable();
             $table->timestamps();
         });
     }

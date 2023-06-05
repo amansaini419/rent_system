@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccomodationDataController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApplicationDataController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentDataController;
+use App\Http\Controllers\LandlordDataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,6 +54,10 @@ Route::group(['middleware' => ['auth']], function(){
 
     Route::group(['middleware' => ['user-role:TENANT']], function(){
         Route::get('/application/register/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-register');
+        Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
+        Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
+        Route::put('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
+        Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
@@ -59,7 +67,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/application/list/{status}', function () {
             return view('application.list');
         })->where('status', '[A-Z_]+')->name('application-list');
-        
         Route::get('/application/view/{status}/{id}', function () {
             return view('application.view');
         })->where('status', '[A-Z_]+')->name('application-view');

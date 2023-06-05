@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('landlord_data', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(UserData::class);
-            $table->string('landlord_name');
-            $table->string('landlord_number');
-            $table->string('landlord_address');
-            $table->string('landlord_email');
+            $table->string('landlord_name')->nullable();
+            $table->string('landlord_number')->nullable();
+            $table->string('landlord_address')->nullable();
+            $table->string('landlord_email')->nullable();
             $table->timestamps();
         });
     }

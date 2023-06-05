@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Application extends Model
 {
@@ -28,4 +29,14 @@ class Application extends Model
 	{
 		return $this->HasOne(ApplicationStatus::class)->latestOfMany();
 	}
+
+	/* public function user(): HasOneThrough
+	{
+		return $this->hasOneThrough(
+			Users::class,
+			UserData::class,
+			'users_id', // Foreign key of 2nd Model
+			'id', // Foreign key of 1st model
+		);
+	} */
 }
