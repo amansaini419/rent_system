@@ -16,6 +16,21 @@
     .wizard>.content>.body {
       position: relative;
     }
+    .displaynone{
+      display: none;
+    }
+    .preview-container{
+      margin-top: 10px;
+      border: 3px solid black;
+      height: 200px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .preview-container img{
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
   </style>
 @endsection
 
@@ -383,10 +398,10 @@
                                 <div class="col-sm-12">
                                   <label for="totalPaybackMonths" class="block">&nbsp;</label>
                                 </div>
-                                <div class="col-sm-12">
+                                {{-- <div class="col-sm-12">
                                   <button class="btn btn-round btn-block btn-sm btn-inverse text-center">PAY REGISTRATION
                                     FEES</button>
-                                </div>
+                                </div> --}}
                               </div>
                             </div>
                           </div>
@@ -394,18 +409,47 @@
                       </section>
                       <h3>{{ __('application.tab3') }}</h3>
                       <section>
-                        <form action="" id="documentDataForm">
+                        @if(!$fees)
+                        <div class="alert alert-danger icons-alert">
+                          <strong>NOTE:</strong> Pay registration fees, before uploading documents.
+                        </div>
+                        <form id="paymentForm" action="{{ route('application-payment') }}" method="POST" accept-charset="UTF-8">
+                          @csrf
+                          <div class="form-group">
+                            <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
+                            <button class="btn btn-round d-block mx-auto btn-inverse text-center" type="submit">PAY REGISTRATION FEES</button>
+                          </div>
+                        </form>
+                        @else
+                        <form action="{{ route('documentData-update') }}" method="POST" id="documentDataForm" enctype="multipart/form-data">
+                          @csrf
                           <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
                           <div class="row">
                             <div class="col-md-6">
                               <div class="form-group row">
                                 <div class="col-sm-12">
-                                  <label for="passportPicture"
-                                    class="block">{{ __('application.upload_profile_picture') }}</label>
+                                  <label for="passportPictureFile" class="block">{{ __('application.upload_profile_picture') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="passportPicture" name="passportPicture" type="file"
-                                    class="form-control" />
+                                  <input id="passportPictureFile" name="passportPictureFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" />
+                                  <label for="passportPictureFile" id="passportPictureFilePreview" class="preview-container">
+                                    <img src="" class="displaynone img-fluid" alt=""><br>
+                                    <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                  </label>
+                                </div>
+                              
+                              </div>
+                              <div class="form-group row">
+                                <div class="col-sm-12">
+                                  <label for="ghanaCardFile"
+                                    class="block">{{ __('application.upload_ghana_card') }}</label>
+                                </div>
+                                <div class="col-sm-12">
+                                  <input id="ghanaCardFile" name="ghanaCardFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" />
+                                  <div id="ghanaCardFilePreview" class="preview-container">
+                                    <img src="" class="displaynone img-fluid" alt=""><br>
+                                    <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                  </div>
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -415,16 +459,6 @@
                                 <div class="col-sm-12">
                                   <input id="ghanaCard" name="ghanaCard" type="text" class="form-control"
                                     value="{{ $documentData->ghana_card }}" />
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-sm-12">
-                                  <label for="ghanaCardFile"
-                                    class="block">{{ __('application.upload_ghana_card') }}</label>
-                                </div>
-                                <div class="col-sm-12">
-                                  <input id="ghanaCardFile" name="ghanaCardFile" type="file"
-                                    class="form-control" />
                                 </div>
                               </div>
                             </div>
@@ -452,6 +486,7 @@
                             </div>
                           </div>
                         </form>
+                        @endif
                       </section>
                       <h3>{{ __('application.tab4') }}</h3>
                       <section>
@@ -530,71 +565,222 @@
 
 @section('own-script')
   <script>
-    const submitApplicationData = async () => {
-      console.log($('#applicationDataForm').serialize());
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+    $(document).ready(function() {
+      const setAlert = (response) => {
+        if(response.success !== undefined){
+          if(response.success){
+            //swal('', response.message, 'success');
+            return true;
+          }
+          else{
+            if(response.error !== undefined){
+              swal('', response.error, 'error');
+            }
+            else if(response.errors !== undefined){
+              const errors = response.errors;
+              const errorsKeys = Object.keys(errors);
+              console.log(errors);
+              errorsKeys.forEach( (key) => {
+                console.log(key, errors[key][0]);
+              });
+              swal('', errors, 'warning');
+            }
+          }
         }
-      });
-      var formData = $('#applicationDataForm').serializeArray();
-      var type = "PUT";
-      const response = await $.ajax({
-        type: type,
-        url: '{{ route('applicationData-update') }}',
-        data: formData,
-        dataType: 'json',
-        /* success: function(data) {
-          console.log('success', data);
-        },
-        error: function(data) {
-          
-        } */
-      });
-      console.log('RESPONSE', response);
-      if(response.success !== undefined){
-        if(response.success){
-          swal(response.message);
-          return true;
+        return false;
+      }
+
+      const submitApplicationData = async () => {
+        console.log($('#applicationDataForm').serialize());
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        let formData = $('#applicationDataForm').serializeArray();
+        let type = "PUT";
+        const response = await $.ajax({
+          type: type,
+          url: '{{ route('applicationData-update') }}',
+          data: formData,
+          dataType: 'json',
+        });
+        console.log('RESPONSE', response);
+        return setAlert(response);
+      }
+
+      const submiAccomodationData = async () => {
+        console.log($('#accomodationDataForm').serialize());
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        let formData = $('#accomodationDataForm').serializeArray();
+        let type = "PUT";
+        const response = await $.ajax({
+          type: type,
+          url: '{{ route('accomodationData-update') }}',
+          data: formData,
+          dataType: 'json',
+        });
+        console.log('RESPONSE', response);
+        return setAlert(response);
+      }
+
+      const displayFile = (event, fileId) => {
+        const files = event.target.files;//$(fileId)[0].files;
+        console.log('files', files);
+        if(files.length > 0){
+          const previewId = fileId + 'Preview';
+          $(previewId).children('.displaynone').hide();
+          $(fileId).removeClass('error');
+          $(previewId).children('img').attr('src', '');
+          $(previewId).children('a').attr('href', '');
+          const loader = $(previewId).prepend('<div class="preloader4" style="margin: 82px auto;"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+          reader = new FileReader();
+          reader.onload = (event) => {
+            $(previewId).children('div').remove();
+            $(previewId).children('img').attr('src', reader.result);
+            $(previewId).children('a').attr('href', reader.result);
+            $(previewId).children('.displaynone').show();
+          }
+          reader.readAsDataURL(files[0]);
         }
         else{
-          if(response.error !== undefined){
-            swal(response.error);
-          }
-          else if(response.errors !== undefined){
-            const errors = response.errors;
-            const errorsKeys = Object.keys(errors);
-            console.log(errors);
-            errorsKeys.forEach( (key) => {
-              console.log(key, errors[key][0]);
-            });
-          }
+          $(fileId).addClass('error');
+          swal('SELECT FILE', 'Please select the file', 'warning');
         }
       }
-      return false;
-    }
 
-    $(document).ready(function() {
+      $(document).on('change', '.display-file', function(e){
+        console.log(this);
+        displayFile(e, '#' + this.id);
+      });
+
+      //document.getElementById('passportPictureFile').addEventListener('change', displayFile('#passportPictureFile'), false);
+      //document.getElementById('passportPictureFile').myParam = '#passportPictureFile';
+
+      const submitDocumentData = async () => {
+        console.log($('#documentDataForm').serialize());
+
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        let formData = new FormData();
+        const _token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        const userDataId = $('#documentDataForm input[name="userDataId"]').val();
+        formData.append('_token', _token);
+        formData.append('userDataId', userDataId);
+        console.log('formData', formData);
+        return false;
+        let type = "PUT";
+        const response = await $.ajax({
+          type: type,
+          url: '{{ route('documentData-update') }}',
+          data: formData,
+          dataType: 'json',
+        });
+        console.log('RESPONSE', response);
+        return setAlert(response);
+      }
+
+      const submiLandlordData = async () => {
+        console.log($('#landlordDataForm').serialize());
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        let formData = $('#landlordDataForm').serializeArray();
+        let type = "PUT";
+        const response = await $.ajax({
+          type: type,
+          url: '{{ route('landlordData-update') }}',
+          data: formData,
+          dataType: 'json',
+        });
+        console.log('RESPONSE', response);
+        return setAlert(response);
+      }
+
+      let stepNext = false;
       const stepChanged = (event, currentIndex, newIndex = 0) => {
         event.preventDefault();
         console.log(currentIndex, newIndex);
-
+        console.log('stepNext', stepNext);
+        // ON APPLICATION DATA NEXT
         if (currentIndex == 0 && newIndex == 1) {
-          return submitApplicationData();
-        } else if (currentIndex == 1 && newIndex == 2) {
-
+          //console.log('submitApplicationData', submitApplicationData());
+          if(stepNext){
+            return true;
+          }
+          else{
+            submitApplicationData().then( (response) => {
+              console.log(response);
+              if(response){
+                stepNext = true;
+                wizard.steps("next");
+              }
+              //return response;
+            });
+            return false;
+          }
+        }
+        // ON ACCOMODATION DATA NEXT
+        else if (currentIndex == 1 && newIndex == 2) {
+          if(stepNext){
+            return true;
+          }
+          else{
+            submiAccomodationData().then( (response) => {
+              console.log(response);
+              if(response){
+                /* $('#paymentForm').submit(); */
+                stepNext = true;
+                wizard.steps("next");
+              }
+            });
+          }
+          return false;
         } else if (currentIndex == 2 && newIndex == 3) {
-
+          if(stepNext){
+            return true;
+          }
+          else{
+            submitDocumentData().then( (response) => {
+              console.log(response);
+              if(response){
+                stepNext = true;
+                wizard.steps("next");
+              }
+            });
+          }
+          return false;
         } else if (currentIndex == 3 && newIndex == 0) {
-
+          if(stepNext){
+            return true;
+          }
+          else{
+            submiLandlordData().then( (response) => {
+              console.log(response);
+              if(response){
+                stepNext = true;
+                wizard.steps("next");
+              }
+            });
+          }
+          return false;
         }
         return true;
       }
 
-      const startIndex = 0;
+      const startIndex = parseInt('{{ $startIndex }}');
 
       // For registration form wizard
-      $("#registrationForm").steps({
+      const wizard = $("#registrationForm").steps({
         headerTag: "h3",
         bodyTag: "section",
         transitionEffect: "slideLeft",
@@ -603,6 +789,9 @@
         //saveState: true,
         startIndex: startIndex,
         onStepChanging: stepChanged,
+        onStepChanged: function (event, currentIndex, priorIndex) {
+          stepNext = false;
+        },
         /* onStepChanged: function (event, currentIndex, priorIndex) {
           console.log
         }, */

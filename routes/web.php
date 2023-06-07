@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentDataController;
 use App\Http\Controllers\LandlordDataController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,6 +59,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
         Route::put('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
         Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
+        Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){

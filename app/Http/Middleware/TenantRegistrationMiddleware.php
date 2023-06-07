@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
@@ -48,8 +49,7 @@ class TenantRegistrationMiddleware
 					}
 				} else {
 					// create application
-					$functionObj = new FunctionController();
-					$applicationCode = $functionObj->createApplicationCode();
+					$applicationCode = ApplicationController::createApplicationCode();
 					$application = Application::create([
 						'user_data_id' => $userData->id,
 						'application_type' => 'NEW',
@@ -59,7 +59,7 @@ class TenantRegistrationMiddleware
 					ApplicationStatus::create([
 						'application_id' => $application->id,
 						'application_status' => 'INCOMPLETE',
-					]);					
+					]);
 				}
 			} else {
 				// create user data
@@ -68,13 +68,12 @@ class TenantRegistrationMiddleware
 				]);
 				// create application data, accomodation data, document data, landlord data
 				// create application
-				$functionObj = new FunctionController();
-					$applicationCode = $functionObj->createApplicationCode();
-					$application = Application::create([
-						'user_data_id' => $userData->id,
-						'application_type' => 'NEW',
-						'application_code' => $applicationCode,
-					]);
+				$applicationCode = ApplicationController::createApplicationCode();
+				$application = Application::create([
+					'user_data_id' => $userData->id,
+					'application_type' => 'NEW',
+					'application_code' => $applicationCode,
+				]);
 				// create application status
 				ApplicationStatus::create([
 					'application_id' => $application->id,

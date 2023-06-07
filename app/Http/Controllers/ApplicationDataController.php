@@ -58,6 +58,7 @@ class ApplicationDataController extends Controller
 				'emergency_contact_number' => $request->emergencyContactNumber,
 				'emergency_contact_relation' => $request->emergencyContactRelation,
 				'emergency_contact_location' => $request->emergencyContactLocation,
+				'is_filled' => 1,
 			]);
 
 		//dd(DB::getQueryLog());

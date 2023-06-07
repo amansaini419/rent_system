@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Common\FunctionController;
 use App\Models\AccomodationData;
 use App\Models\Application;
 use App\Models\ApplicationData;
@@ -21,43 +22,50 @@ class ApplicationController extends Controller
 	}
 
 	protected function verifyTenantApplication($id){
-		$application = $this->checkApplicationCode($id);
+		$application = ApplicationController::checkApplicationCode($id);
 		return ($application && $application->userData && $application->userData->user && $application->userData->user->id == Auth::id()) ? true : false;
 	}
 
 	protected function showRegistrationForm($id){
-		$application = $this->checkApplicationCode($id);
-		//var_dump($application->userData->user); die();
+		$application = ApplicationController::checkApplicationCode($id);
 		if($this->verifyTenantApplication($id)){
 			$userData = $application->userData;
 			$applicationData = $userData->applicationData;
 			if(!$applicationData){
-				$applicationData = ApplicationData::create([
-					'user_data_id' => $userData->id,
-				]);
+				$applicationData = ApplicationData::create([ 'user_data_id' => $userData->id ]);
 			}
 			$accomodationData = $userData->accomodationData;
 			if(!$accomodationData){
-				$accomodationData = AccomodationData::create([
-					'user_data_id' => $userData->id,
-				]);
+				$accomodationData = AccomodationData::create([ 'user_data_id' => $userData->id ]);
 			}
 			$documentData = $userData->documentData;
 			if(!$documentData){
-				$documentData = DocumentData::create([
-					'user_data_id' => $userData->id,
-				]);
+				$documentData = DocumentData::create([ 'user_data_id' => $userData->id ]);
 			}
 			$landlordData = $userData->landlordData;
 			if(!$landlordData){
-				$landlordData = LandlordData::create([
-					'user_data_id' => $userData->id,
-				]);
+				$landlordData = LandlordData::create([ 'user_data_id' => $userData->id ]);
+			}
+			$fees = $userData->fees;
+			$startIndex = 0;
+			if($applicationData->is_filled){
+				$startIndex = 1;
+			}
+			if($accomodationData->is_filled){
+				$startIndex = 2;
+			}
+			if($documentData->is_filled && $fees){
+				$startIndex = 3;
+			}
+			if($landlordData->is_filled){
+				$startIndex = 4;
 			}
 			//var_dump($applicationData); die();
 			return view('application.register', [
 				'userDataId' => $userData->id,
+				'startIndex' => $startIndex,
 				'aaplicationCode' => $id,
+				'fees' => $fees,
 				'applicationData' => $applicationData,
 				'accomodationData' => $accomodationData,
 				'documentData' => $documentData,
@@ -126,8 +134,16 @@ class ApplicationController extends Controller
 		//
 	}
 
-	public function checkApplicationCode($code)
+	public static function checkApplicationCode($code)
 	{
 		return Application::where('application_code', $code)->first();
+	}
+
+	public static function createApplicationCode($length = 10){
+		$code = FunctionController::generateCode($length);
+		if(!ApplicationController::checkApplicationCode($code)){
+			return $code;
+		}
+		return ApplicationController::createApplicationCode();
 	}
 }

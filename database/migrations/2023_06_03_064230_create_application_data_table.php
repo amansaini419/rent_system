@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('emergency_contact_number')->nullable();
             $table->string('emergency_contact_relation')->nullable();
             $table->string('emergency_contact_location')->nullable();
+            $table->tinyInteger('is_filled')->default(0);
             $table->timestamps();
         });
     }

@@ -41,6 +41,10 @@ class UserData extends Model
     return $this->HasOne(LandlordData::class);
   }
 
+	public function fees(): HasOne{
+		return $this->hasOne(RegistrationFee::class);
+	}
+
 	/* public function application(): HasMany{
 		return $this->hasMany(Application::class);
 	} */

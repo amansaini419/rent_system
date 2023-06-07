@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('landlord_number')->nullable();
             $table->string('landlord_address')->nullable();
             $table->string('landlord_email')->nullable();
+            $table->tinyInteger('is_filled')->default(0);
             $table->timestamps();
         });
     }

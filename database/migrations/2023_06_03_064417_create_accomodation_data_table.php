@@ -22,6 +22,7 @@ return new class extends Migration
             $table->smallInteger('total_rent_years')->nullable();
             $table->date('expected_movein_date')->nullable();
             $table->smallInteger('total_payback_months')->nullable();
+            $table->tinyInteger('is_filled')->default(0);
             $table->timestamps();
         });
     }
