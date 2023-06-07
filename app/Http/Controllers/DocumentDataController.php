@@ -21,6 +21,7 @@ class DocumentDataController extends Controller
 	public function update(Request $request)
 	{
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
+		dd($request->all());
 		if(!$userData){
 			return response()->json([
 				'success' => false,

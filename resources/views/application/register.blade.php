@@ -421,7 +421,7 @@
                           </div>
                         </form>
                         @else
-                        <form action="{{ route('documentData-update') }}" method="POST" id="documentDataForm" enctype="multipart/form-data">
+                        <form id="documentDataForm">
                           @csrf
                           <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
                           <div class="row">
@@ -431,8 +431,11 @@
                                   <label for="passportPictureFile" class="block">{{ __('application.upload_profile_picture') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="passportPictureFile" name="passportPictureFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" />
+                                  <input id="passportPictureFile" name="passportPictureFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
                                   <label for="passportPictureFile" id="passportPictureFilePreview" class="preview-container">
+                                    <div class="text-center upload-btn" style="padding: 70px 0;">
+                                      <span class="btn btn-inverse">UPLOAD</span>
+                                    </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
                                   </label>
@@ -445,11 +448,14 @@
                                     class="block">{{ __('application.upload_ghana_card') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="ghanaCardFile" name="ghanaCardFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" />
-                                  <div id="ghanaCardFilePreview" class="preview-container">
+                                  <input id="ghanaCardFile" name="ghanaCardFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
+                                  <label for="ghanaCardFile" id="ghanaCardFilePreview" class="preview-container">
+                                    <div class="text-center upload-btn" style="padding: 70px 0;">
+                                      <span class="btn btn-inverse">UPLOAD</span>
+                                    </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
-                                  </div>
+                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -465,12 +471,17 @@
                             <div class="col-md-6">
                               <div class="form-group row">
                                 <div class="col-sm-12">
-                                  <label for="bankStatementFile"
-                                    class="block">{{ __('application.upload_bank_statement') }}</label>
+                                  <label for="bankStatementFile" class="block">{{ __('application.upload_bank_statement') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="bankStatementFile" name="bankStatementFile" type="file"
-                                    class="form-control" />
+                                  <input id="bankStatementFile" name="bankStatementFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
+                                  <label for="bankStatementFile" id="bankStatementFilePreview" class="preview-container">
+                                    <div class="text-center upload-btn" style="padding: 70px 0;">
+                                      <span class="btn btn-inverse">UPLOAD</span>
+                                    </div>
+                                    <img src="" class="displaynone img-fluid" alt=""><br>
+                                    <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                  </label>
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -479,8 +490,14 @@
                                     class="block">{{ __('application.upload_employment_letter') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="employmentLetterFile" name="employmentLetterFile" type="file"
-                                    class="form-control" />
+                                  <input id="employmentLetterFile" name="employmentLetterFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
+                                  <label for="employmentLetterFile" id="employmentLetterFilePreview" class="preview-container">
+                                    <div class="text-center upload-btn" style="padding: 70px 0;">
+                                      <span class="btn btn-inverse">UPLOAD</span>
+                                    </div>
+                                    <img src="" class="displaynone img-fluid" alt=""><br>
+                                    <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                  </label>
                                 </div>
                               </div>
                             </div>
@@ -630,10 +647,11 @@
 
       const displayFile = (event, fileId) => {
         const files = event.target.files;//$(fileId)[0].files;
-        console.log('files', files);
+        //console.log('files', files);
         if(files.length > 0){
           const previewId = fileId + 'Preview';
           $(previewId).children('.displaynone').hide();
+          $(previewId).children('.upload-btn').remove();
           $(fileId).removeClass('error');
           $(previewId).children('img').attr('src', '');
           $(previewId).children('a').attr('href', '');
@@ -654,33 +672,33 @@
       }
 
       $(document).on('change', '.display-file', function(e){
-        console.log(this);
+        //console.log(this);
         displayFile(e, '#' + this.id);
       });
 
-      //document.getElementById('passportPictureFile').addEventListener('change', displayFile('#passportPictureFile'), false);
-      //document.getElementById('passportPictureFile').myParam = '#passportPictureFile';
-
       const submitDocumentData = async () => {
-        console.log($('#documentDataForm').serialize());
-
         $.ajaxSetup({
           headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
           }
         });
         let formData = new FormData();
-        const _token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        const userDataId = $('#documentDataForm input[name="userDataId"]').val();
-        formData.append('_token', _token);
-        formData.append('userDataId', userDataId);
+        formData.append('userDataId', $('#documentDataForm input[name="userDataId"]').val());
+        formData.append('ghanaCard', $('#ghanaCard').val());
+        formData.append('passportPictureFile', $('#passportPictureFile')[0].files);
+        formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files);
+        formData.append('bankStatementFile', $('#bankStatementFile')[0].files);
+        formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files);
         console.log('formData', formData);
-        return false;
-        let type = "PUT";
+        const type = "PUT";
         const response = await $.ajax({
           type: type,
+          method: type,
           url: '{{ route('documentData-update') }}',
           data: formData,
+          contentType: false,
+          processData: false,
+          cache: false,
           dataType: 'json',
         });
         console.log('RESPONSE', response);
