@@ -421,9 +421,8 @@
                           </div>
                         </form>
                         @else
-                        <form id="documentDataForm" action="{{ route('documentData-update') }}" method="POST" enctype="multipart/form-data">
+                        <form id="documentDataForm">
                           @csrf
-                          {{-- @method('PUT') --}}
                           <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
                           <div class="row">
                             <div class="col-md-6">
@@ -434,11 +433,16 @@
                                 <div class="col-sm-12">
                                   <input id="passportPictureFile" name="passportPictureFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
                                   <label for="passportPictureFile" id="passportPictureFilePreview" class="preview-container">
+                                    @if($documentData->passport_picture_path != NULL)
+                                    <img src="{{ url($documentData->passport_picture_path) }}" class="img-fluid" alt=""><br>
+                                    <a href="{{ url($documentData->passport_picture_path) }}" target="_blank">Click Here</a>
+                                    @else
                                     <div class="text-center upload-btn" style="padding: 70px 0;">
                                       <span class="btn btn-inverse">UPLOAD</span>
                                     </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                    @endif
                                   </label>
                                 </div>
                               
@@ -451,11 +455,16 @@
                                 <div class="col-sm-12">
                                   <input id="ghanaCardFile" name="ghanaCardFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
                                   <label for="ghanaCardFile" id="ghanaCardFilePreview" class="preview-container">
+                                    @if($documentData->ghana_card_path != NULL)
+                                    <img src="{{ url($documentData->ghana_card_path) }}" class="img-fluid" alt=""><br>
+                                    <a href="{{ url($documentData->ghana_card_path) }}" target="_blank">Click Here</a>
+                                    @else
                                     <div class="text-center upload-btn" style="padding: 70px 0;">
                                       <span class="btn btn-inverse">UPLOAD</span>
                                     </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                    @endif
                                   </label>
                                 </div>
                               </div>
@@ -477,11 +486,16 @@
                                 <div class="col-sm-12">
                                   <input id="bankStatementFile" name="bankStatementFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
                                   <label for="bankStatementFile" id="bankStatementFilePreview" class="preview-container">
+                                    @if($documentData->statement_path != NULL)
+                                    <img src="{{ url($documentData->statement_path) }}" class="img-fluid" alt=""><br>
+                                    <a href="{{ url($documentData->statement_path) }}" target="_blank">Click Here</a>
+                                    @else
                                     <div class="text-center upload-btn" style="padding: 70px 0;">
                                       <span class="btn btn-inverse">UPLOAD</span>
                                     </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                    @endif
                                   </label>
                                 </div>
                               </div>
@@ -493,11 +507,16 @@
                                 <div class="col-sm-12">
                                   <input id="employmentLetterFile" name="employmentLetterFile" type="file" class="form-control display-file" accept="image/jpg,image/jpeg,image/png,application/pdf" style="display: none" />
                                   <label for="employmentLetterFile" id="employmentLetterFilePreview" class="preview-container">
+                                    @if($documentData->employment_letter_path != NULL)
+                                    <img src="{{ url($documentData->employment_letter_path) }}" class="img-fluid" alt=""><br>
+                                    <a href="{{ url($documentData->employment_letter_path) }}" target="_blank">Click Here</a>
+                                    @else
                                     <div class="text-center upload-btn" style="padding: 70px 0;">
                                       <span class="btn btn-inverse">UPLOAD</span>
                                     </div>
                                     <img src="" class="displaynone img-fluid" alt=""><br>
                                     <a href="#" class="displaynone" target="_blank">Click Here</a>
+                                    @endif
                                   </label>
                                 </div>
                               </div>
@@ -674,15 +693,15 @@
       });
 
       const submitDocumentData = async () => {
-        let formData = new FormData($('#documentDataFor'));
-        /* formData.append('passportPictureFile', $('#passportPictureFile')[0].files);
-        formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files);
-        formData.append('bankStatementFile', $('#bankStatementFile')[0].files);
-        formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files);
+        let formData = new FormData();
+        formData.append('passportPictureFile', $('#passportPictureFile')[0].files[0]);
+        formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files[0]);
+        formData.append('bankStatementFile', $('#bankStatementFile')[0].files[0]);
+        formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files[0]);
         formData.append('ghanaCard', $('#ghanaCard').val());
-        formData.append('userDataId', $('#documentDataFor input[name="userDataId"]').val()); */
-        console.log('formData', formData);
-        const type = "PUT";
+        formData.append('userDataId', $('#documentDataForm input[name="userDataId"]').val());
+        //console.log('formData', formData);
+        const type = "POST";
         const response = await $.ajax({
           type: type,
           method: type,
@@ -696,24 +715,6 @@
         console.log('RESPONSE', response);
         return setAlert(response);
       }
-
-      $(document).on('submit', '#documentDataForm', async function(e){
-        e.preventDefault();
-        let formData = new FormData(this);
-        //console.log('formData', formData);
-        const type = "POST";
-        const response = await $.ajax({
-          type: type,
-          method: type,
-          url: '{{ route('documentData-update') }}',
-          data: formData,
-          contentType: false,
-          processData: false,
-          dataType: 'json',
-        });
-        console.log('RESPONSE', response);
-        return setAlert(response);
-      });
 
       const submiLandlordData = async () => {
         console.log($('#landlordDataForm').serialize());
@@ -773,16 +774,13 @@
             return true;
           }
           else{
-            //submitDocumentData().then( (response) => {
-            /* $('#documentDataForm').submit().then( (response) => {
+            submitDocumentData().then( (response) => {
               console.log(response);
               if(response){
                 stepNext = true;
                 wizard.steps("next");
               }
-            }); */
-            const docRes = $('#documentDataForm').submit();
-            console.log('docRes', docRes);
+            });
           }
           return false;
         } else if (currentIndex == 3 && newIndex == 0) {

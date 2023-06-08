@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Validator;
 class DocumentDataController extends Controller
 {
 	public static function upload($file, $inputName){
-		$fileName = $inputName . '_' . time();
 		$extension = $file->getClientOriginalExtension();
+		$fileName = $inputName . '_' . time() . '.' . $extension;
 		$location = 'documents';
 		$file->move($location, $fileName);
-		return $location . '/' . $fileName . '.' . $extension;
+		return $location . '/' . $fileName;
 	}
 
 	public function update(Request $request)
@@ -36,13 +36,14 @@ class DocumentDataController extends Controller
 			], 200);
 		}
 		//dd($request->file()); die();
+		$imgReq = 'required|mimes:png,jpg,jpeg,pdf';
 		$validator = Validator::make($request->all(), [
 			'userDataId' => 'required',
 			'ghanaCard' => 'required',
-			'passportPictureFile' => 'required|mimes:png,jpg,jpeg,pdf',
-			'ghanaCardFile' => 'required|mimes:png,jpg,jpeg,pdf',
-			'bankStatementFile' => 'required|mimes:png,jpg,jpeg,pdf',
-			'employmentLetterFile' => 'required|mimes:png,jpg,jpeg,pdf',
+			'passportPictureFile' => $imgReq,
+			'ghanaCardFile' => $imgReq,
+			'bankStatementFile' => $imgReq,
+			'employmentLetterFile' => $imgReq,
 		]);
 		if ($validator->fails()) {
 			return response()->json([
@@ -50,11 +51,6 @@ class DocumentDataController extends Controller
 				'errors' => $validator->messages()
 			], 200);
 		}
-		//DB::enableQueryLog();
-		/* $passportPicturePath = $request->file('passportPictureFile')->store('documents');
-		$ghanaCardPath = $request->file('ghanaCardFile')->store('documents');
-		$bankStatementFilePath = $request->file('bankStatementFile')->store('documents');
-		$employmentLetterPath = $request->file('employmentLetterFile')->store('documents'); */
 		$passportPicturePath = DocumentDataController::upload($request->file('passportPictureFile'), 'passportPictureFile');
 		$ghanaCardPath = DocumentDataController::upload($request->file('ghanaCardFile'), 'ghanaCardFile');
 		$bankStatementFilePath = DocumentDataController::upload($request->file('bankStatementFile'), 'bankStatementFile');
