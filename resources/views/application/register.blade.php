@@ -421,8 +421,9 @@
                           </div>
                         </form>
                         @else
-                        <form id="documentDataForm">
+                        <form id="documentDataForm" action="{{ route('documentData-update') }}" method="POST" enctype="multipart/form-data">
                           @csrf
+                          {{-- @method('PUT') --}}
                           <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
                           <div class="row">
                             <div class="col-md-6">
@@ -583,6 +584,12 @@
 @section('own-script')
   <script>
     $(document).ready(function() {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
       const setAlert = (response) => {
         if(response.success !== undefined){
           if(response.success){
@@ -609,11 +616,6 @@
 
       const submitApplicationData = async () => {
         console.log($('#applicationDataForm').serialize());
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-          }
-        });
         let formData = $('#applicationDataForm').serializeArray();
         let type = "PUT";
         const response = await $.ajax({
@@ -628,11 +630,6 @@
 
       const submiAccomodationData = async () => {
         console.log($('#accomodationDataForm').serialize());
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-          }
-        });
         let formData = $('#accomodationDataForm').serializeArray();
         let type = "PUT";
         const response = await $.ajax({
@@ -677,18 +674,13 @@
       });
 
       const submitDocumentData = async () => {
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-          }
-        });
-        let formData = new FormData();
-        formData.append('userDataId', $('#documentDataForm input[name="userDataId"]').val());
-        formData.append('ghanaCard', $('#ghanaCard').val());
-        formData.append('passportPictureFile', $('#passportPictureFile')[0].files);
+        let formData = new FormData($('#documentDataFor'));
+        /* formData.append('passportPictureFile', $('#passportPictureFile')[0].files);
         formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files);
         formData.append('bankStatementFile', $('#bankStatementFile')[0].files);
         formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files);
+        formData.append('ghanaCard', $('#ghanaCard').val());
+        formData.append('userDataId', $('#documentDataFor input[name="userDataId"]').val()); */
         console.log('formData', formData);
         const type = "PUT";
         const response = await $.ajax({
@@ -705,13 +697,26 @@
         return setAlert(response);
       }
 
+      $(document).on('submit', '#documentDataForm', async function(e){
+        e.preventDefault();
+        let formData = new FormData(this);
+        //console.log('formData', formData);
+        const type = "POST";
+        const response = await $.ajax({
+          type: type,
+          method: type,
+          url: '{{ route('documentData-update') }}',
+          data: formData,
+          contentType: false,
+          processData: false,
+          dataType: 'json',
+        });
+        console.log('RESPONSE', response);
+        return setAlert(response);
+      });
+
       const submiLandlordData = async () => {
         console.log($('#landlordDataForm').serialize());
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-          }
-        });
         let formData = $('#landlordDataForm').serializeArray();
         let type = "PUT";
         const response = await $.ajax({
@@ -768,13 +773,16 @@
             return true;
           }
           else{
-            submitDocumentData().then( (response) => {
+            //submitDocumentData().then( (response) => {
+            /* $('#documentDataForm').submit().then( (response) => {
               console.log(response);
               if(response){
                 stepNext = true;
                 wizard.steps("next");
               }
-            });
+            }); */
+            const docRes = $('#documentDataForm').submit();
+            console.log('docRes', docRes);
           }
           return false;
         } else if (currentIndex == 3 && newIndex == 0) {

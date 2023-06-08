@@ -57,7 +57,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/application/register/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-register');
         Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
         Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
-        Route::put('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
+        Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
         Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
         Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
     });

@@ -15,13 +15,13 @@ class DocumentDataController extends Controller
 		$extension = $file->getClientOriginalExtension();
 		$location = 'documents';
 		$file->move($location, $fileName);
-		return url($location . '/' . $fileName);
+		return $location . '/' . $fileName . '.' . $extension;
 	}
 
 	public function update(Request $request)
 	{
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
-		dd($request->all());
+		//dd($request->all());
 		if(!$userData){
 			return response()->json([
 				'success' => false,
@@ -35,7 +35,7 @@ class DocumentDataController extends Controller
 				'error' => 'Please pay the registration fees, before uploading documents.'
 			], 200);
 		}
-		dd($request->file()); die();
+		//dd($request->file()); die();
 		$validator = Validator::make($request->all(), [
 			'userDataId' => 'required',
 			'ghanaCard' => 'required',
