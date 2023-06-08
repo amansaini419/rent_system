@@ -31,8 +31,9 @@ class TenantRegistrationMiddleware
 				//var_dump($application); die();
 				if ($application) {
 					$applicationStatus = $application->currentStatus;
-					//var_dump($applicationStatus); die();
+					//dd($applicationStatus);
 					if($applicationStatus){
+						//dd($applicationStatus->application_status);
 						if ($applicationStatus->application_status != "INCOMPLETE") {
 							return $next($request);
 						} else {

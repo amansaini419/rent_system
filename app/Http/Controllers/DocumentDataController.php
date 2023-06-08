@@ -36,36 +36,55 @@ class DocumentDataController extends Controller
 			], 200);
 		}
 		//dd($request->file()); die();
-		$imgReq = 'required|mimes:png,jpg,jpeg,pdf';
-		$validator = Validator::make($request->all(), [
-			'userDataId' => 'required',
-			'ghanaCard' => 'required',
-			'passportPictureFile' => $imgReq,
-			'ghanaCardFile' => $imgReq,
-			'bankStatementFile' => $imgReq,
-			'employmentLetterFile' => $imgReq,
-		]);
-		if ($validator->fails()) {
-			return response()->json([
-				'success' => false,
-				'errors' => $validator->messages()
-			], 200);
-		}
-		$passportPicturePath = DocumentDataController::upload($request->file('passportPictureFile'), 'passportPictureFile');
-		$ghanaCardPath = DocumentDataController::upload($request->file('ghanaCardFile'), 'ghanaCardFile');
-		$bankStatementFilePath = DocumentDataController::upload($request->file('bankStatementFile'), 'bankStatementFile');
-		$employmentLetterPath = DocumentDataController::upload($request->file('employmentLetterFile'), 'employmentLetterFile');
-		$updated = DocumentData::where(DB::raw('md5(user_data_id)'), $request->userDataId)
-			->update([
-				'passport_picture_path' => $passportPicturePath,
-				'ghana_card' => $request->ghanaCard,
-				'ghana_card_path' => $ghanaCardPath,
-				'statement_path' => $bankStatementFilePath,
-				'employment_letter_path' => $employmentLetterPath,
-				'is_filled' => 1,
+		$documentData = $userData->documentData;
+		if($documentData && $documentData->passport_picture_path == null && $documentData->ghana_card_path == null && $documentData->statement_path == null && $documentData->employment_letter_path == null){
+			$imgReq = 'required|mimes:png,jpg,jpeg,pdf';
+			$validator = Validator::make($request->all(), [
+				'userDataId' => 'required',
+				'ghanaCard' => 'required',
+				'passportPictureFile' => $imgReq,
+				'ghanaCardFile' => $imgReq,
+				'bankStatementFile' => $imgReq,
+				'employmentLetterFile' => $imgReq,
 			]);
+			if ($validator->fails()) {
+				return response()->json([
+					'success' => false,
+					'errors' => $validator->messages()
+				], 200);
+			}
+			$passportPicturePath = DocumentDataController::upload($request->file('passportPictureFile'), 'passportPictureFile');
+			$ghanaCardPath = DocumentDataController::upload($request->file('ghanaCardFile'), 'ghanaCardFile');
+			$bankStatementFilePath = DocumentDataController::upload($request->file('bankStatementFile'), 'bankStatementFile');
+			$employmentLetterPath = DocumentDataController::upload($request->file('employmentLetterFile'), 'employmentLetterFile');
+			$updated = DocumentData::where(DB::raw('md5(user_data_id)'), $request->userDataId)
+				->update([
+					'passport_picture_path' => $passportPicturePath,
+					'ghana_card' => $request->ghanaCard,
+					'ghana_card_path' => $ghanaCardPath,
+					'statement_path' => $bankStatementFilePath,
+					'employment_letter_path' => $employmentLetterPath,
+					'is_filled' => 1,
+				]);
+		}
+		else{
+			$validator = Validator::make($request->all(), [
+				'userDataId' => 'required',
+				'ghanaCard' => 'required',
+			]);
+			if ($validator->fails()) {
+				return response()->json([
+					'success' => false,
+					'errors' => $validator->messages()
+				], 200);
+			}
+			$updated = DocumentData::where(DB::raw('md5(user_data_id)'), $request->userDataId)
+				->update([
+					'ghana_card' => $request->ghanaCard,
+					'is_filled' => 1,
+				]);
+		}
 
-		//dd(DB::getQueryLog());
 		if ($updated === 0) {
 			return response()->json([
 				'success' => false,

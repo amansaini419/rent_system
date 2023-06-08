@@ -718,8 +718,8 @@
 
       const submiLandlordData = async () => {
         console.log($('#landlordDataForm').serialize());
-        let formData = $('#landlordDataForm').serializeArray();
-        let type = "PUT";
+        const formData = $('#landlordDataForm').serializeArray();
+        const type = "PUT";
         const response = await $.ajax({
           type: type,
           url: '{{ route('landlordData-update') }}',
@@ -792,7 +792,9 @@
               console.log(response);
               if(response){
                 stepNext = true;
-                wizard.steps("next");
+                swal('APPLICATION COMPLETED', 'You have successfully submitted the application.', 'success');
+                const url = window.location;
+                window.location = url;
               }
             });
           }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Application::class);
             $table->enum('application_status', ['INCOMPLETE', 'PENDING', 'UNDER_VERIFICATION', 'VERIFIED', 'APPROVED', 'REJECTED', 'LOAN_STARTED', 'LOAN_CLOSED'])->default('INCOMPLETE');
             $table->timestamps();
+            $table->unique(['application_id', 'application_status']);
         });
     }
 

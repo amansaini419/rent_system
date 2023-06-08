@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\AccomodationData;
 use App\Models\Application;
 use App\Models\ApplicationData;
+use App\Models\ApplicationStatus;
 use App\Models\DocumentData;
 use App\Models\LandlordData;
 use Illuminate\Http\Request;
@@ -57,8 +58,17 @@ class ApplicationController extends Controller
 			if($documentData->is_filled && $fees){
 				$startIndex = 3;
 			}
-			if($landlordData->is_filled){
-				$startIndex = 4;
+			if($applicationData->is_filled && $accomodationData->is_filled && $documentData->is_filled && $fees && $landlordData->is_filled){
+				$applicationStatus = $application->currentStatus;
+				if ($applicationStatus->application_status == "INCOMPLETE") {
+					// create application status pending
+					$applicationStatus = ApplicationStatus::create([
+						'application_id' => $application->id,
+						'application_status' => 'PENDING',
+					]);
+					//dd($applicationStatus);
+				}
+				return redirect()->route('application-list');
 			}
 			//var_dump($applicationData); die();
 			return view('application.register', [

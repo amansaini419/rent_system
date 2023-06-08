@@ -14,6 +14,7 @@ class ApplicationStatus extends Model
 
 	protected $fillable = [
 		'application_id',
+		'application_status',
 	];
 
 	public function application(): BelongsTo

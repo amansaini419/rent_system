@@ -66,7 +66,7 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
 
-        Route::get('/application/list/{status}', function () {
+        Route::get('/application/list/{status?}', function () {
             return view('application.list');
         })->where('status', '[A-Z_]+')->name('application-list');
         Route::get('/application/view/{status}/{id}', function () {
