@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\ApplicationController;
-use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
 use App\Models\UserData;
@@ -35,6 +34,7 @@ class TenantRegistrationMiddleware
 					if($applicationStatus){
 						//dd($applicationStatus->application_status);
 						if ($applicationStatus->application_status != "INCOMPLETE") {
+							$request->merge(['userData' => $userData]);
 							return $next($request);
 						} else {
 							$applicationCode = $application->application_code;

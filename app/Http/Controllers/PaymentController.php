@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Models\InitialDeposit;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\RegistrationFee;
@@ -46,16 +47,39 @@ class PaymentController extends Controller
 			'invoice_code' => InvoiceController::createInvoiceCode(),
 		]);
 		$invoiceId = $invoice->id;
-		$registrationFee = RegistrationFee::create([
+		RegistrationFee::create([
 			'user_data_id' => $userDataId,
 			'invoice_id' => $invoiceId,
 		]);
-		$payment = Payment::create([
+		Payment::create([
 			'invoice_id' => $invoiceId,
 			'payment_amount' => SettingController::getValue('REGISTRATION_FEES'),
 			'payment_ref' => PaymentController::createPaymentRef(),
 			'payment_channel' => 'CARD',
 		]);
+		return Redirect::back();
+	}
+
+	public function payInitialDeposit(Request $request){
+		$application = ApplicationController::checkApplicationCode($request->applicationId);
+		if($application){
+			$invoice = Invoice::create([
+				'invoice_amount' => $request->depositAmount,
+				'invoice_type' => 'INITIAL_DEPOSIT',
+				'invoice_code' => InvoiceController::createInvoiceCode(),
+			]);
+			$invoiceId = $invoice->id;
+			InitialDeposit::create([
+				'application_id' => $application->id,
+				'invoice_id' => $invoiceId,
+			]);
+			Payment::create([
+				'invoice_id' => $invoiceId,
+				'payment_amount' => $request->depositAmount,
+				'payment_ref' => PaymentController::createPaymentRef(),
+				'payment_channel' => 'CARD',
+			]);
+		}
 		return Redirect::back();
 	}
 

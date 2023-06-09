@@ -9,25 +9,45 @@ use App\Models\ApplicationData;
 use App\Models\ApplicationStatus;
 use App\Models\DocumentData;
 use App\Models\LandlordData;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class ApplicationController extends Controller
 {
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
-	{
-		//
+	protected function index(Request $request, string $status = 'ALL'){
+		$applicationStr = array();
+		if(Auth::user()->user_type == "TENANT"){
+			$applications = Auth::user()->applications;
+			foreach($applications as $application){
+				$tempJSON = new stdClass();
+				$tempJSON->id = $application->id;
+				$tempJSON->application_type = $application->application_type;
+				$tempJSON->application_code = $application->application_code;
+				$tempJSON->application_status = $application->currentStatus->application_status;
+				$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
+				$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
+				$tempJSON->user_data_id = $application->user_data_id;
+
+				$applicationStr[] = $tempJSON;
+			}
+		}
+
+		return view('application.list', [
+			'applicationStr' => $applicationStr,
+		]);
 	}
 
-	protected function verifyTenantApplication($id){
+	protected function verifyTenantApplication(string $id){
 		$application = ApplicationController::checkApplicationCode($id);
 		return ($application && $application->userData && $application->userData->user && $application->userData->user->id == Auth::id()) ? true : false;
 	}
 
-	protected function showRegistrationForm($id){
+	protected function showRegistrationForm(string $id){
 		$application = ApplicationController::checkApplicationCode($id);
 		if($this->verifyTenantApplication($id)){
 			$userData = $application->userData;
@@ -98,9 +118,8 @@ class ApplicationController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request)
-	{
-		$validated = $request->validate([
+	public function store(Request $request){
+		$request->validate([
 			'user_data_id' => 'required|integer',
 			'application_code' => 'required|unique:applications',
 		]);
@@ -144,12 +163,11 @@ class ApplicationController extends Controller
 		//
 	}
 
-	public static function checkApplicationCode($code)
-	{
+	public static function checkApplicationCode(string $code){
 		return Application::where('application_code', $code)->first();
 	}
 
-	public static function createApplicationCode($length = 10){
+	public static function createApplicationCode(int $length = 10){
 		$code = FunctionController::generateCode($length);
 		if(!ApplicationController::checkApplicationCode($code)){
 			return $code;

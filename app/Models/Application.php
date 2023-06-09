@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
@@ -28,6 +31,21 @@ class Application extends Model
 	public function currentStatus(): HasOne
 	{
 		return $this->HasOne(ApplicationStatus::class)->latestOfMany();
+	}
+
+	/* public function initialDeposits(): HasMany{
+		return $this->hasMany(InitialDeposit::class);
+	} */
+
+	/* public function initialDeposits(): HasManyThrough{
+		return $this->hasManyThrough(
+			Invoice::class,
+			InitialDeposit::class
+		);
+	} */
+
+	public function initialDeposits(): BelongsToMany{
+		return $this->belongsToMany(Invoice::class, 'initial_deposits');
 	}
 
 	/* public function user(): HasOneThrough

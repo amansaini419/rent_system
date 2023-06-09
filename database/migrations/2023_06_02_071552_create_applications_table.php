@@ -18,8 +18,7 @@ return new class extends Migration
             $table->enum('application_type', ['NEW', 'RENEW'])->default('NEW');
             $table->string('application_remark')->nullable();
             $table->string('application_code', 10)->unique();
-            $table->double('initial_deposit')->default(0);
-            $table->foreignId('sudadmin_id')->default(0);
+            $table->foreignId('subadmin_id')->default(0);
             $table->timestamps();
         });
     }

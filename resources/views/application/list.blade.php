@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-  @aware(['applicationStatus' => request('status')])
+  @aware(['applicationStatus' => 'all'])
 
   <div class="page-header card">
     <div class="row align-items-end">
@@ -41,9 +41,10 @@
     </div>
   </div>
   <div class="page-body">
+    @if(Auth::user()->user_type == "TENANT")
     <div class="card">
       <div class="card-header">
-        <h5>Reapply Application (for tenants)</h5>
+        <h5>Reapply Application</h5>
       </div>
       <div class="card-block">
         <p>
@@ -52,6 +53,64 @@
         </p>
       </div>
     </div>
+    <div class="card">
+      <div class="card-header">
+        <h5>All Applications</h5>
+        <span></span>
+      </div>
+      <div class="card-block">
+        <div class="dt-responsive table-responsive">
+          <table id="dataTable" class="table table-striped table-bordered nowrap">
+            <thead>
+              <tr>
+                <th>Application ID</th>
+                <th>Application Type</th>
+                <th>Application Status</th>
+                <th>Initial Deposit</th>
+                <th>Staff Assigned</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($applicationStr as $application)
+                <tr>
+                  <td>{{ $application->application_code }}</td>
+                  <td>{{ $application->application_type }}</td>
+                  <td>{{ $application->application_code }}</td>
+                  <td>{{ $application->initial_deposit }}</td>
+                  <td>{{ $application->subadmin_id }}</td>
+                  <td><button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal" data-applicationId="{{ $application->application_code }}" data-toggle="modal" data-target="#depositModal">Initial Deposit</button></td>
+                </tr>
+              @endforeach
+              {{-- <tr>
+                <td>GHYGDSHABDH</td>
+                <td>RENEW</td>
+                <td>PENDING</td>
+                <td>0</td>
+                <td>None</td>
+                <td>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</a>
+                  <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
+                </td>
+              </tr>
+              <tr>
+                <td>GHYGDSHABDH</td>
+                <td>NEW</td>
+                <td>LOAN_CLOSED</td>
+                <td>0</td>
+                <td>Staff 1</td>
+                <td>
+                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                    class="btn btn-sm btn-primary">VIEW</a>
+                </td>
+              </tr> --}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    @elseif (Auth::user()->user_type == "ADMIN")
     <div class="card">
       <div class="card-header">
         <h5>All Applications (for admins)</h5>
@@ -137,53 +196,7 @@
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        <h5>All Applications (for tenant)</h5>
-        <span></span>
-      </div>
-      <div class="card-block">
-        <div class="dt-responsive table-responsive">
-          <table id="dataTable" class="table table-striped table-bordered nowrap">
-            <thead>
-              <tr>
-                <th>Application ID</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Initial Deposit</th>
-                <th>Staff Assigned</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>GHYGDSHABDH</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>0</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
-                  <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
-                </td>
-              </tr>
-              <tr>
-                <td>GHYGDSHABDH</td>
-                <td>NEW</td>
-                <td>LOAN_CLOSED</td>
-                <td>0</td>
-                <td>Staff 1</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    @endif
   </div>
 
   <div class="modal fade" id="depositModal" tabindex="-1" role="dialog">
@@ -196,13 +209,18 @@
           </button>
         </div>
         <div class="modal-body">
-          <form>
+          <form method="POST" action="{{ route('application-initialDeposit') }}">
+            @csrf
             <div class="form-group">
-              <label for="depositAmount">How much deposit you want to do?</label>
-              <input type="text" name="depositAmount" id="depositAmount" class="form-control">
+              <label for="depositAmount">Application ID</label>
+              <input type="text" name="applicationId" id="applicationId" class="form-control" readonly>
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Deposit</button>
+              <label for="depositAmount">How much initial deposit you want to do?</label>
+              <input type="text" name="depositAmount" id="depositAmount" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Deposit</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>
@@ -228,6 +246,11 @@
 
 @section('own-script')
   <script>
+    $(document).on('click', '.initial-deposit-modal', function(e){
+      e.preventDefault();
+      const applicationId = $(this).attr('data-applicationId');
+      $('#applicationId').val(applicationId);
+    });
     $('#dataTable').DataTable();
     /* $('#dt-server-processing').DataTable({
       "processing": true,

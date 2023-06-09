@@ -65,15 +65,14 @@ Route::group(['middleware' => ['auth']], function(){
     Route::group(['middleware' => ['tenant-register']], function(){
 
         Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+        Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
+        Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
 
-        Route::get('/application/list/{status?}', function () {
-            return view('application.list');
-        })->where('status', '[A-Z_]+')->name('application-list');
         Route::get('/application/view/{status}/{id}', function () {
             return view('application.view');
         })->where('status', '[A-Z_]+')->name('application-view');
         
-        Route::get('/loan/list/{status}', function () {
+        Route::get('/loan/list/{status?}', function () {
             return view('loan.list');
         })->where('status', '[A-Z_]+')->name('loan-list');
         

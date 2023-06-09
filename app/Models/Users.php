@@ -5,6 +5,7 @@ namespace App\Models;
 use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -34,19 +35,19 @@ class Users extends Authenticatable
   ];
 
   /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-      'password',
-      'remember_token',
+   * The attributes that should be hidden for serialization.
+   *
+   * @var array<int, string>
+   */
+  protected $hidden = [
+    'password',
+    'remember_token',
   ];
 
   protected function role(): Attribute
   {
     return new Attribute(
-      get: fn($value) => ["TENANT", "STAFF", "AGENT", "ADMIN"][$value],
+      get: fn ($value) => ["TENANT", "STAFF", "AGENT", "ADMIN"][$value],
     );
   }
 
@@ -61,11 +62,18 @@ class Users extends Authenticatable
     $this->attributes['password'] = bcrypt($value);
   }
 
-  public function allUserData(): HasMany{
+  public function applications(): HasManyThrough
+  {
+    return $this->hasManyThrough(Application::class, UserData::class);
+  }
+
+  public function allUserData(): HasMany
+  {
     return $this->hasMany(UserData::class);
   }
 
-  public function userData(): HasOne{
+  public function userData(): HasOne
+  {
     return $this->HasOne(UserData::class)->latestOfMany();
   }
 }
