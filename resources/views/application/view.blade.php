@@ -43,8 +43,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a
-                href="{{ route('application-list', ['status' => $applicationStatus]) }}">Application</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('application-list') }}">Application</a></li>
             <li class="breadcrumb-item"><a href="#!">View</a></li>
           </ul>
         </div>

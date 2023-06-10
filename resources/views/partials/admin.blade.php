@@ -13,7 +13,7 @@
   </a>
   <ul class="pcoded-submenu">
     <li class=" ">
-      <a href="{{ route('application-list', ['status' => 'ALL']) }}">
+      <a href="{{ route('application-list') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext" data-i18n="nav.page_layout.bottom-menu">All</span>
         <span class="pcoded-mcaret"></span>

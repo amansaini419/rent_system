@@ -42,160 +42,171 @@
   </div>
   <div class="page-body">
     @if(Auth::user()->user_type == "TENANT")
-    <div class="card">
-      <div class="card-header">
-        <h5>Reapply Application</h5>
+      <div class="card">
+        <div class="card-header">
+          <h5>Reapply Application</h5>
+        </div>
+        <div class="card-block">
+          <p>
+            <button type="button" class="btn btn-sm btn-primary">NEW PLACE</button>
+            <button type="button" class="btn btn-sm btn-primary">EXISTING PLACE</button>
+          </p>
+        </div>
       </div>
-      <div class="card-block">
-        <p>
-          <button type="button" class="btn btn-sm btn-primary">NEW PLACE</button>
-          <button type="button" class="btn btn-sm btn-primary">EXISTING PLACE</button>
-        </p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h5>All Applications</h5>
-        <span></span>
-      </div>
-      <div class="card-block">
-        <div class="dt-responsive table-responsive">
-          <table id="dataTable" class="table table-striped table-bordered nowrap">
-            <thead>
-              <tr>
-                <th>Application ID</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Initial Deposit</th>
-                <th>Staff Assigned</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($applicationStr as $application)
+      <div class="card">
+        <div class="card-header">
+          <h5>All Applications</h5>
+          <span></span>
+        </div>
+        <div class="card-block">
+          <div class="dt-responsive table-responsive">
+            <table id="dataTable" class="table table-striped table-bordered nowrap">
+              <thead>
                 <tr>
-                  <td>{{ $application->application_code }}</td>
-                  <td>{{ $application->application_type }}</td>
-                  <td>{{ $application->application_code }}</td>
-                  <td>{{ $application->initial_deposit }}</td>
-                  <td>{{ $application->subadmin_id }}</td>
-                  <td><button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal" data-applicationId="{{ $application->application_code }}" data-toggle="modal" data-target="#depositModal">Initial Deposit</button></td>
+                  <th>Application ID</th>
+                  <th>Application Type</th>
+                  <th>Application Status</th>
+                  <th>Initial Deposit</th>
+                  <th>Staff Assigned</th>
+                  <th>Action</th>
                 </tr>
-              @endforeach
-              {{-- <tr>
-                <td>GHYGDSHABDH</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>0</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
-                  <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
-                </td>
-              </tr>
-              <tr>
-                <td>GHYGDSHABDH</td>
-                <td>NEW</td>
-                <td>LOAN_CLOSED</td>
-                <td>0</td>
-                <td>Staff 1</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</a>
-                </td>
-              </tr> --}}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                @foreach ($applicationStr as $application)
+                  <tr>
+                    <td>{{ $application->application_code }}</td>
+                    <td>{{ $application->application_type }}</td>
+                    <td>{{ $application->application_status }}</td>
+                    <td>{{ $application->initial_deposit }}</td>
+                    <td>{{ $application->subadmin_id }}</td>
+                    <td><button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal" data-applicationId="{{ $application->application_code }}" data-toggle="modal" data-target="#depositModal">Initial Deposit</button></td>
+                  </tr>
+                @endforeach
+                {{-- <tr>
+                  <td>GHYGDSHABDH</td>
+                  <td>RENEW</td>
+                  <td>PENDING</td>
+                  <td>0</td>
+                  <td>None</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</a>
+                    <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>GHYGDSHABDH</td>
+                  <td>NEW</td>
+                  <td>LOAN_CLOSED</td>
+                  <td>0</td>
+                  <td>Staff 1</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</a>
+                  </td>
+                </tr> --}}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-    @elseif (Auth::user()->user_type == "ADMIN")
-    <div class="card">
-      <div class="card-header">
-        <h5>All Applications (for admins)</h5>
-        <span></span>
-      </div>
-      <div class="card-block">
-        <div class="dt-responsive table-responsive">
-          <table id="dataTable" class="table table-striped table-bordered nowrap">
-            <thead>
-              <tr>
-                <th>Application ID</th>
-                <th>Tenant Name</th>
-                <th>Application Type</th>
-                <th>Application Status</th>
-                <th>Initial Deposit</th>
-                <th>Staff Assigned</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Abc Xyz</td>
-                <td>RENEW</td>
-                <td>PENDING</td>
-                <td>100</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>UNDER_REVIEW</td>
-                <td>0</td>
-                <td>Staff 1</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>APPROVED</td>
-                <td>0</td>
-                <td>Staff 2</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>PENDING</td>
-                <td>0</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Abc Xyz</td>
-                <td>NEW</td>
-                <td>INCOMPLETE</td>
-                <td>0</td>
-                <td>None</td>
-                <td>
-                  <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    @elseif (in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']))
+      <div class="card">
+        <div class="card-header">
+          <h5>All Applications</h5>
+          <span></span>
+        </div>
+        <div class="card-block">
+          <div class="dt-responsive table-responsive">
+            <table id="dataTable" class="table table-striped table-bordered nowrap">
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Tenant Name</th>
+                  <th>Application Type</th>
+                  <th>Application Status</th>
+                  <th>Initial Deposit</th>
+                  <th>Staff Assigned</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach ($applicationStr as $application)
+                  <tr>
+                    <td>{{ $application->application_code }}</td>
+                    <td>{{ $application->tenant_name }}</td>
+                    <td>{{ $application->application_type }}</td>
+                    <td>{{ $application->application_status }}</td>
+                    <td>{{ $application->initial_deposit }}</td>
+                    <td>{{ $application->subadmin_id }}</td>
+                    <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
+                  </tr>
+                @endforeach
+                {{-- <tr>
+                  <td>1</td>
+                  <td>Abc Xyz</td>
+                  <td>RENEW</td>
+                  <td>PENDING</td>
+                  <td>100</td>
+                  <td>None</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Abc Xyz</td>
+                  <td>NEW</td>
+                  <td>UNDER_REVIEW</td>
+                  <td>0</td>
+                  <td>Staff 1</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Abc Xyz</td>
+                  <td>NEW</td>
+                  <td>APPROVED</td>
+                  <td>0</td>
+                  <td>Staff 2</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Abc Xyz</td>
+                  <td>NEW</td>
+                  <td>PENDING</td>
+                  <td>0</td>
+                  <td>None</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>Abc Xyz</td>
+                  <td>NEW</td>
+                  <td>INCOMPLETE</td>
+                  <td>0</td>
+                  <td>None</td>
+                  <td>
+                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
+                      class="btn btn-sm btn-primary">VIEW</button>
+                  </td>
+                </tr> --}}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
     @endif
   </div>
 
@@ -251,7 +262,9 @@
       const applicationId = $(this).attr('data-applicationId');
       $('#applicationId').val(applicationId);
     });
-    $('#dataTable').DataTable();
+    $('#dataTable').DataTable({
+      "ordering": false
+    });
     /* $('#dt-server-processing').DataTable({
       "processing": true,
       "serverSide": true,

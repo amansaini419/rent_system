@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
-use App\Models\AccomodationData;
 use App\Models\Application;
-use App\Models\ApplicationData;
 use App\Models\ApplicationStatus;
+use App\Models\ApplicationData;
+use App\Models\AccomodationData;
 use App\Models\DocumentData;
 use App\Models\LandlordData;
 use Illuminate\Foundation\Auth\User;
@@ -16,9 +16,26 @@ use stdClass;
 
 class ApplicationController extends Controller
 {
-	/**
-	 * Display a listing of the resource.
-	 */
+	protected static function getApplications($applications, String $status){
+		$applicationStr = array();
+		foreach($applications as $application){
+			$tempJSON = new stdClass();
+			$tempJSON->id = $application->id;
+			$applicationData = $application->userData->applicationData;
+			$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+			$tempJSON->application_type = $application->application_type;
+			$tempJSON->application_code = $application->application_code;
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			$tempJSON->application_status = $currentApplicationStatus;
+			$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
+			$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
+			if($currentApplicationStatus == $status || $status == 'ALL'){
+				$applicationStr[] = $tempJSON;
+			}
+		}
+		return $applicationStr;
+	}
+	
 	protected function index(Request $request, string $status = 'ALL'){
 		$applicationStr = array();
 		if(Auth::user()->user_type == "TENANT"){
@@ -36,10 +53,28 @@ class ApplicationController extends Controller
 				$applicationStr[] = $tempJSON;
 			}
 		}
+		elseif(Auth::user()->user_type == "ADMIN"){
+			$applications = Application::orderBy('id', 'desc')->get();
+			$applicationStr = ApplicationController::getApplications($applications, $status);
+		}
+		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
+			$applications = Application::where('subadmin_id', Auth::id())->orderBy('id', 'desc')->get();
+			$applicationStr = ApplicationController::getApplications($applications, $status);
+		}
 
 		return view('application.list', [
 			'applicationStr' => $applicationStr,
 		]);
+	}
+
+	protected function viewApplication(string $id){
+		$application = ApplicationController::checkApplicationCode($id);
+		if(Auth::user()->user_type == "ADMIN" || $application->subadmin_id == Auth::id()){
+			return view('application.view',[
+				'application' => $application,
+			]);
+		}
+		return redirect()->route('dashboard');
 	}
 
 	protected function verifyTenantApplication(string $id){

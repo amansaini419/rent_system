@@ -64,7 +64,7 @@ class Users extends Authenticatable
 
   public function applications(): HasManyThrough
   {
-    return $this->hasManyThrough(Application::class, UserData::class);
+    return $this->hasManyThrough(Application::class, UserData::class)->latest();
   }
 
   public function allUserData(): HasMany
