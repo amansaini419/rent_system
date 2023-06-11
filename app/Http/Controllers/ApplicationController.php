@@ -37,7 +37,7 @@ class ApplicationController extends Controller
 		return $applicationStr;
 	}
 
-	protected static function getTotalDeposit($application){
+	public static function getTotalDeposit($application){
 		return $application->initialDeposits->sum('invoice_amount');
 	}
 
@@ -302,13 +302,6 @@ class ApplicationController extends Controller
 				'alert' => 'success'
 			]);
 		}
-	}
-
-	protected function monthlyPlan(Request $request){
-		// check loan is created on this application or not
-		// create loan
-		// create monthly plan
-		// create LOAN_STARTED status
 	}
 
 	protected function verifyTenantApplication(string $id){

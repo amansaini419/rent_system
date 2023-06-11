@@ -30,6 +30,9 @@
       height: 100%;
       object-fit: contain;
     }
+    .after-generate{
+      display: none;
+    }
   </style>
 @endsection
 
@@ -129,7 +132,7 @@
                 @endif
                 
                 @if ($applicationStatus == "APPROVED")
-                  <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
+                  <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase monthly-plan-modal-btn" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
                 @endif
                 <a href="{{ route('application-register', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">update application</a>
               </div>
@@ -644,57 +647,60 @@
             </button>
           </div>
           <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="startingDate">Starting Date</label>
-                <input type="text" name="startingDate" id="startingDate" class="form-control date-dropper">
+            <form method="POST" action={{ route('application-loan') }}>
+              @csrf
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="startingDate">Starting Date</label>
+                    <input type="text" name="startingDate" id="startingDate" class="form-control date-dropper">
+                  </div>
+                  <div class="form-group">
+                    <label for="loanAmount">Loan Amount</label>
+                    <input type="text" name="loanAmount" id="loanAmount" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="interestRate">Annual Interest Rate</label>
+                    <input type="text" name="interestRate" id="interestRate" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="loanPeriod">Loan Period in years</label>
+                    <select name="loanPeriod" id="loanPeriod" class="form-control">
+                      <option value="0.5">6 Months</option>
+                      <option value="1">1 year</option>
+                      <option value="2">2 years</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" id="generateBtn" class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
+                    <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="monthlyPayment">Monthly Payment</label>
+                    <input type="text" name="monthlyPayment" id="monthlyPayment" class="form-control" readonly value="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="totalInstallment">Number of Payments</label>
+                    <input type="text" name="totalInstallment" id="totalInstallment" class="form-control" readonly value="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="initialDeposit">Initital Deposit</label>
+                    <input type="text" name="initialDeposit" id="initialDeposit" class="form-control" readonly value="{{ $initialDeposit }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="totalInterest">Total Interest</label>
+                    <input type="text" name="totalInterest" id="totalInterest" class="form-control" readonly value="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="totalLoanCost">Total Cost of Loan</label>
+                    <input type="text" name="totalLoanCost" id="totalLoanCost" class="form-control" readonly value="0">
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="loanAmount">Loan Amount</label>
-                <input type="text" name="loanAmount" id="loanAmount" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="interestRate">Annual Interest Rate</label>
-                <input type="text" name="interestRate" id="interestRate" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="loanPeriod">Loan Period in years</label>
-                <select name="loanPeriod" id="loanPeriod" class="form-control">
-                  <option value="1">1 year</option>
-                  <option value="2">2 years</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <button type="button" id="generateBtn"
-                  class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
-                <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-              </div>
-              <hr />
-              <div class="table-responsive" style="max-width: 300px;">
-                <table class="table table-bordered">
-                  <tr>
-                    <th>Monthly Payment</th>
-                    <td id="monthlyPaymentCell">0</td>
-                  </tr>
-                  <tr>
-                    <th>Number of Payments</th>
-                    <td id="totalInstallmentCell">0</td>
-                  </tr>
-                  <tr>
-                    <th>Initital Deposit</th>
-                    <td id="initialDepositCell">100.00</td>
-                  </tr>
-                  <tr>
-                    <th>Total Interest</th>
-                    <td id="totalInterestCell">0</td>
-                  </tr>
-                  <tr>
-                    <th>Total Cost of Loan</th>
-                    <td id="totalLoanCostCell">0</td>
-                  </tr>
-                </table>
-              </div>
-              <div class="table-responsive">
+              <hr class="after-generate" />
+              <div class="table-responsive after-generate">
                 <table class="table" id="monthlyPlanTable">
                   <thead>
                     <tr>
@@ -711,9 +717,9 @@
                 </table>
               </div>
               <hr />
-              <div class="form-group">
-                <button type="button" id="createLoanBtn"
-                  class="btn btn-success waves-effect waves-light text-uppercase">create loan</button>
+              <div class="form-group after-generate">
+                <input type="hidden" name="applicationId" value="{{ $application->id }}">
+                <button type="submit" id="createLoanBtn" class="btn btn-success waves-effect waves-light text-uppercase">create loan</button>
                 <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
               </div>
             </form>
@@ -746,8 +752,13 @@
     $(".date-dropper").dateDropper({
       dropWidth: 200,
       dropPrimaryColor: "#1abc9c",
-      dropBorder: "1px solid #1abc9c"
+      dropBorder: "1px solid #1abc9c",
+      format: "Y/m/d"
     });
+
+    $('.monthly-plan-modal-btn').click(function(){
+      $('.after-generate').hide();
+    })
 
 
     /* P = Principal Amount
@@ -769,23 +780,24 @@
       const loanAmount = $('#loanAmount').val();
       const interestRate = $('#interestRate').val();
       const loanPeriod = $('#loanPeriod').val();
-      const initialDeposit = $('#initialDepositCell').text();
+      const initialDeposit = $('#initialDeposit').val();
       const balanceAmount = loanAmount - initialDeposit;
 
       const monthlyInterest = interestRate / 12 / 100;
       const totalInstallments = loanPeriod * 12;
-      const adj = Math.pow((1 + monthlyInterest), totalInstallments);
+      //const adj = Math.pow((1 + monthlyInterest), totalInstallments);
 
       const monthlyPayment = calculateMonthlyPayment(balanceAmount, monthlyInterest, totalInstallments);
       const totalLoanCost = monthlyPayment * totalInstallments;
       const totalInterest = totalLoanCost - balanceAmount;
 
-      $('#monthlyPaymentCell').text(currencyFormat(monthlyPayment));
-      $('#totalInstallmentCell').text(totalInstallments);
-      $('#totalInterestCell').text(currencyFormat(totalInterest));
-      $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
+      $('#monthlyPayment').val(currencyFormat(monthlyPayment));
+      $('#totalInstallment').val(totalInstallments);
+      $('#totalInterest').val(currencyFormat(totalInterest));
+      $('#totalLoanCost').val(currencyFormat(totalLoanCost));
 
       let beginningBalance = balanceAmount;
+      $('.after-generate').show();
       for (let i = 1; i <= totalInstallments; i++) {
         moment(startingDate).add(i, 'months');
         const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod / 12);

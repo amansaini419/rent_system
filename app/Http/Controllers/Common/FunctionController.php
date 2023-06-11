@@ -23,4 +23,12 @@ class FunctionController extends Controller
 	public static function formatDate($date){
 		return Carbon::parse($date)->format('d-M-Y');
 	}
+
+	public static function formatCurrency($amount, $decimal = 2){
+		return round($amount, $decimal);
+	}
+
+	public static function formatCurrencyView($amount, $decimal = 2){
+		return number_format($amount, $decimal);
+	}
 }
