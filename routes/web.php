@@ -70,6 +70,10 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::get('/application/view/{id}', [ApplicationController::class, 'viewApplication'])->name('application-view');
         Route::post('/application/assignStaff', [ApplicationController::class, 'assignStaff'])->name('application-assignStaff');
+        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
+        Route::post('/application/reject', [ApplicationController::class, 'reject'])->name('application-reject');
+        Route::post('/application/approve', [ApplicationController::class, 'approve'])->name('application-approve');
+        Route::post('/application/monthlyPlan', [ApplicationController::class, 'monthlyPlan'])->name('application-monthlyPlan');
         
         Route::get('/loan/list/{status?}', function () {
             return view('loan.list');

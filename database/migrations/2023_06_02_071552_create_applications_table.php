@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(UserData::class);
             $table->enum('application_type', ['NEW', 'RENEW'])->default('NEW');
             $table->string('application_remark')->nullable();
+            $table->string('admin_remark')->nullable();
             $table->string('application_code', 10)->unique();
             $table->foreignId('subadmin_id')->default(0);
             $table->timestamps();

@@ -12,6 +12,7 @@ use App\Models\LandlordData;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use stdClass;
 
 class ApplicationController extends Controller
@@ -97,7 +98,217 @@ class ApplicationController extends Controller
 	}
 
 	protected function assignStaff(Request $request){
-		
+		if(Auth::user()->user_type == "ADMIN"){
+			//dd($request->all());
+			$validator = Validator::make($request->all(), [
+				'applicationId' => 'required|integer',
+				'staffId' => 'required|integer',
+			]);
+
+			if ($validator->fails()) {
+				return back()->with([
+					'success' => false,
+					'title' => 'Input Error',
+					'errors' => $validator->messages(),
+					'alert' => 'warning'
+				]);
+			}
+			$application = Application::find($request->applicationId);
+			if(!$application){
+				return back()->with([
+					'success' => false,
+					'title' => 'Error',
+					'error' => 'Wrong application.',
+					'alert' => 'error'
+				]);
+			}
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			if($currentApplicationStatus === 'PENDING'){
+				if($application->subadmin_id == 0){
+					$updated = $application->update(['subadmin_id' => $request->staffId]);
+					if($updated === 0){
+						return back()->with([
+							'success' => false,
+							'title' => 'Error',
+							'error' => 'Unable to assign staff.',
+							'alert' => 'error'
+						]);
+					}
+				}
+				// create application status
+				ApplicationStatus::create([
+					'application_id' => $application->id,
+					'application_status' => 'UNDER_VERIFICATION',
+				]);
+			}
+
+			return redirect()->back()->with([
+				'success' => true,
+				'title' => 'Staff Assigned',
+				'message' => 'You have successfully assigned the staff.',
+				'alert' => 'success'
+			]);
+		}
+	}
+
+	protected function sendForApproval(Request $request){
+		if(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
+			$validator = Validator::make($request->all(), [
+				'applicationId' => 'required|integer',
+				'applicationRemark' => 'required',
+			]);
+
+			if ($validator->fails()) {
+				return back()->with([
+					'success' => false,
+					'title' => 'Input Error',
+					'errors' => $validator->messages(),
+					'alert' => 'warning'
+				]);
+			}
+			$application = Application::find($request->applicationId);
+			if(!$application){
+				return back()->with([
+					'success' => false,
+					'title' => 'Error',
+					'error' => 'Wrong application.',
+					'alert' => 'error'
+				]);
+			}
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			if($currentApplicationStatus === 'UNDER_VERIFICATION'){
+				$updated = $application->update(['application_remark' => $request->applicationRemark]);
+				if($updated === 0){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Unable to update remark.',
+						'alert' => 'error'
+					]);
+				}
+				// create application status
+				ApplicationStatus::create([
+					'application_id' => $application->id,
+					'application_status' => 'VERIFIED',
+				]);
+			}
+
+			return redirect()->back()->with([
+				'success' => true,
+				'title' => 'Application Verified',
+				'message' => 'You have successfully send the application to ADMIN for approval.',
+				'alert' => 'success'
+			]);
+		}
+	}
+
+	protected function reject(Request $request){
+		if(Auth::user()->user_type == "ADMIN"){
+			$validator = Validator::make($request->all(), [
+				'applicationId' => 'required|integer',
+				'adminRemark' => 'required',
+			]);
+
+			if ($validator->fails()) {
+				return back()->with([
+					'success' => false,
+					'title' => 'Input Error',
+					'errors' => $validator->messages(),
+					'alert' => 'warning'
+				]);
+			}
+			$application = Application::find($request->applicationId);
+			if(!$application){
+				return back()->with([
+					'success' => false,
+					'title' => 'Error',
+					'error' => 'Wrong application.',
+					'alert' => 'error'
+				]);
+			}
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			if($currentApplicationStatus === 'VERIFIED'){
+				$updated = $application->update(['admin_remark' => $request->adminRemark]);
+				if($updated === 0){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Unable to reject application.',
+						'alert' => 'error'
+					]);
+				}
+				// create application status
+				ApplicationStatus::create([
+					'application_id' => $application->id,
+					'application_status' => 'REJECTED',
+				]);
+			}
+
+			return redirect()->back()->with([
+				'success' => true,
+				'title' => 'Application Rejected',
+				'message' => 'You have successfully rejected the application.',
+				'alert' => 'success'
+			]);
+		}
+	}
+
+	protected function approve(Request $request){
+		if(Auth::user()->user_type == "ADMIN"){
+			$validator = Validator::make($request->all(), [
+				'applicationId' => 'required|integer',
+				'adminRemark' => 'required',
+			]);
+
+			if ($validator->fails()) {
+				return back()->with([
+					'success' => false,
+					'title' => 'Input Error',
+					'errors' => $validator->messages(),
+					'alert' => 'warning'
+				]);
+			}
+			$application = Application::find($request->applicationId);
+			if(!$application){
+				return back()->with([
+					'success' => false,
+					'title' => 'Error',
+					'error' => 'Wrong application.',
+					'alert' => 'error'
+				]);
+			}
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			if($currentApplicationStatus === 'VERIFIED'){
+				$updated = $application->update(['admin_remark' => $request->adminRemark]);
+				if($updated === 0){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Unable to approve application.',
+						'alert' => 'error'
+					]);
+				}
+				// create application status
+				ApplicationStatus::create([
+					'application_id' => $application->id,
+					'application_status' => 'APPROVED',
+				]);
+			}
+
+			return redirect()->back()->with([
+				'success' => true,
+				'title' => 'Application Approved',
+				'message' => 'You have successfully approved the application.',
+				'alert' => 'success'
+			]);
+		}
+	}
+
+	protected function monthlyPlan(Request $request){
+		// check loan is created on this application or not
+		// create loan
+		// create monthly plan
+		// create LOAN_STARTED status
 	}
 
 	protected function verifyTenantApplication(string $id){
@@ -163,62 +374,6 @@ class ApplicationController extends Controller
 		else{
 			return redirect()->route('dashboard');
 		}
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 */
-	public function store(Request $request){
-		$request->validate([
-			'user_data_id' => 'required|integer',
-			'application_code' => 'required|unique:applications',
-		]);
-		$application = new Application;
-		$application->user_data_id = $request->user_data_id;
-		$application->application_type = $request->application_type;
-		$application->application_code = $request->application_code;
-		$application->save();
-		return $application;
-	}
-
-	/**
-	 * Display the specified resource.
-	 */
-	public function show(Application $application)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 */
-	public function edit(Application $application)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 */
-	public function update(Request $request, Application $application)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 */
-	public function destroy(Application $application)
-	{
-		//
 	}
 
 	public static function checkApplicationCode(string $code){

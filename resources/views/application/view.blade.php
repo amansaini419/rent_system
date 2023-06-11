@@ -85,6 +85,14 @@
                         <th>Initial Deposit</th>
                         <td>{{ $initialDeposit }}</td>
                       </tr>
+                      <tr>
+                        <th>Application Status</th>
+                        <td>{{ $applicationStatus }}</td>
+                      </tr>
+                      <tr>
+                        <th>Staff Assigned</th>
+                        <td>{{ $staffAssigned }}</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -94,16 +102,12 @@
                   <table class="table table-bordered application-table m-0">
                     <tbody>
                       <tr>
-                        <th>Application Status</th>
-                        <td>{{ $applicationStatus }}</td>
+                        <th>Staff Remark</th>
+                        <td style="white-space: break-spaces;">{{ $application->application_remark }}</td>
                       </tr>
                       <tr>
-                        <th>Staff Assigned</th>
-                        <td>{{ $staffAssigned }}</td>
-                      </tr>
-                      <tr>
-                        <th>Remark</th>
-                        <td>{{ $application->application_remark }}</td>
+                        <th>Admin Remark</th>
+                        <td style="white-space: break-spaces;">{{ $application->admin_remark }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -120,7 +124,7 @@
                     <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#rejectApplicationModal">reject application</button>
                     <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#approveApplicationModal">approve application</button>
                   @endif
-                @elseif (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT")
+                @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $applicationStatus == "UNDER_VERIFICATION" )
                   <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#reviewApplicationModal">send for approval</button>
                 @endif
                 
@@ -513,193 +517,211 @@
       </div>
     </div>
   </div>
-
-  <div class="modal fade" id="assignApplicationModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Assign Application</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  @if (Auth::user()->user_type == "ADMIN")
+    @if ($applicationStatus == "PENDING")
+      <div class="modal fade" id="assignApplicationModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Assign Application</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" action="{{ route('application-assignStaff') }}">
+                @csrf
+                <div class="form-group">
+                  <label>Select Staff</label>
+                  <select class="form-control" name="staffId">
+                    @foreach ($allStaff as $staff)
+                      <option value="{{ $staff->id }}">{{ $staff->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input type="hidden" name="applicationId" value="{{ $application->id }}">
+                  <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Assign</button>
+                  <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <form method="POST" action="{{ route('application-assignStaff') }}">
-            @csrf
-            <div class="form-group">
-              <label>Select Staff</label>
-              <select class="form-control" name="subadmin_id">
-                @foreach ($allStaff as $staff)
-                  <option value="{{ $staff->id }}">{{ $staff->name }}</option>
-                @endforeach
-              </select>
+      </div>
+    @elseif ($applicationStatus == "VERIFIED")
+      <div class="modal fade" id="rejectApplicationModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Reject Application</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-            <div class="form-group">
-              <input type="hidden" name="application_id" value="{{ $application->id }}">
-              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Assign</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            <div class="modal-body">
+              <form method="POST" action="{{ route('application-reject') }}">
+                @csrf
+                <div class="form-group">
+                  <label>Admin Remark</label>
+                  <textarea class="form-control" rows="6" name="adminRemark"></textarea>
+                  <input type="hidden" value="{{ $application->id }}" name="applicationId">
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger waves-effect waves-light text-uppercase">Reject</button>
+                  <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="approveApplicationModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Approve Application</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" action="{{ route('application-approve') }}">
+                @csrf
+                <div class="form-group">
+                  <label>Admin Remark</label>
+                  <textarea class="form-control" rows="6" name="adminRemark"></textarea>
+                  <input type="hidden" value="{{ $application->id }}" name="applicationId">
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Approved</button>
+                  <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endif
+  @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $applicationStatus == "UNDER_VERIFICATION" )
+    <div class="modal fade" id="reviewApplicationModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Review Application</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{{ route('application-sendForApproval') }}">
+              @csrf
+              <div class="form-group">
+                <label>Remark</label>
+                <textarea class="form-control" rows="6" name="applicationRemark" required></textarea>
+                <input type="hidden" value="{{ $application->id }}" name="applicationId">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Send for
+                  approval</button>
+                <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  @endif
 
-  <div class="modal fade" id="reviewApplicationModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Review Application</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Send for
-                approval</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="rejectApplicationModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Reject Application</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label>Remark</label>
-              <textarea class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-danger waves-effect waves-light text-uppercase">Reject</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="approveApplicationModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Approve Application</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Approved</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="monthlyPlanModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" style="max-width: 90%;" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Monthly Plan</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label for="startingDate">Starting Date</label>
-              <input type="text" name="startingDate" id="startingDate" class="form-control date-dropper">
-            </div>
-            <div class="form-group">
-              <label for="loanAmount">Loan Amount</label>
-              <input type="text" name="loanAmount" id="loanAmount" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="interestRate">Annual Interest Rate</label>
-              <input type="text" name="interestRate" id="interestRate" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="loanPeriod">Loan Period in years</label>
-              <select name="loanPeriod" id="loanPeriod" class="form-control">
-                <option value="1">1 year</option>
-                <option value="2">2 years</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <button type="button" id="generateBtn"
-                class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-            <hr />
-            <div class="table-responsive" style="max-width: 300px;">
-              <table class="table table-bordered">
-                <tr>
-                  <th>Monthly Payment</th>
-                  <td id="monthlyPaymentCell">0</td>
-                </tr>
-                <tr>
-                  <th>Number of Payments</th>
-                  <td id="totalInstallmentCell">0</td>
-                </tr>
-                <tr>
-                  <th>Initital Deposit</th>
-                  <td id="initialDepositCell">100.00</td>
-                </tr>
-                <tr>
-                  <th>Total Interest</th>
-                  <td id="totalInterestCell">0</td>
-                </tr>
-                <tr>
-                  <th>Total Cost of Loan</th>
-                  <td id="totalLoanCostCell">0</td>
-                </tr>
-              </table>
-            </div>
-            <div class="table-responsive">
-              <table class="table" id="monthlyPlanTable">
-                <thead>
+  @if ($applicationStatus == "APPROVED")
+    <div class="modal fade" id="monthlyPlanModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" style="max-width: 90%;" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Monthly Plan</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="startingDate">Starting Date</label>
+                <input type="text" name="startingDate" id="startingDate" class="form-control date-dropper">
+              </div>
+              <div class="form-group">
+                <label for="loanAmount">Loan Amount</label>
+                <input type="text" name="loanAmount" id="loanAmount" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="interestRate">Annual Interest Rate</label>
+                <input type="text" name="interestRate" id="interestRate" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="loanPeriod">Loan Period in years</label>
+                <select name="loanPeriod" id="loanPeriod" class="form-control">
+                  <option value="1">1 year</option>
+                  <option value="2">2 years</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="button" id="generateBtn"
+                  class="btn btn-success waves-effect waves-light text-uppercase">generate</button>
+                <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+              </div>
+              <hr />
+              <div class="table-responsive" style="max-width: 300px;">
+                <table class="table table-bordered">
                   <tr>
-                    <th>S.N.</th>
-                    <th>Payment Date</th>
-                    <th>Beginning Balance</th>
-                    <th>Payment</th>
-                    <th>Principal</th>
-                    <th>Interest</th>
-                    <th>Ending Balance</th>
+                    <th>Monthly Payment</th>
+                    <td id="monthlyPaymentCell">0</td>
                   </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <hr />
-            <div class="form-group">
-              <button type="button" id="createLoanBtn"
-                class="btn btn-success waves-effect waves-light text-uppercase">create loan</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-          </form>
+                  <tr>
+                    <th>Number of Payments</th>
+                    <td id="totalInstallmentCell">0</td>
+                  </tr>
+                  <tr>
+                    <th>Initital Deposit</th>
+                    <td id="initialDepositCell">100.00</td>
+                  </tr>
+                  <tr>
+                    <th>Total Interest</th>
+                    <td id="totalInterestCell">0</td>
+                  </tr>
+                  <tr>
+                    <th>Total Cost of Loan</th>
+                    <td id="totalLoanCostCell">0</td>
+                  </tr>
+                </table>
+              </div>
+              <div class="table-responsive">
+                <table class="table" id="monthlyPlanTable">
+                  <thead>
+                    <tr>
+                      <th>S.N.</th>
+                      <th>Payment Date</th>
+                      <th>Beginning Balance</th>
+                      <th>Payment</th>
+                      <th>Principal</th>
+                      <th>Interest</th>
+                      <th>Ending Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <hr />
+              <div class="form-group">
+                <button type="button" id="createLoanBtn"
+                  class="btn btn-success waves-effect waves-light text-uppercase">create loan</button>
+                <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  @endif
 @endsection
 
 @section('theme-script')
@@ -708,6 +730,19 @@
 
 @section('own-script')
   <script>
+    @if(session('success') === true)
+      @if(session('message'))
+        swal('{{ session('title') }}', '{{ session('message') }}', '{{ session('alert') }}');
+      @endif
+    @elseif (session('success') === false)
+      @if(session('error'))
+        swal('{{ session('title') }}', '{{ session('error') }}', '{{ session('alert') }}');
+      @elseif (session('errors'))
+        swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
+      @endif
+    @endif
+
+
     $(".date-dropper").dateDropper({
       dropWidth: 200,
       dropPrimaryColor: "#1abc9c",

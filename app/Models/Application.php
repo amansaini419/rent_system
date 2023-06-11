@@ -20,7 +20,10 @@ class Application extends Model
 	protected $fillable = [
 		'user_data_id',
 		'application_type',
-		'application_code'
+		'application_code',
+		'subadmin_id',
+		'application_remark',
+		'admin_remark'
 	];
 
 	public function userData(): BelongsTo
