@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
 
         Route::get('/application/view/{id}', [ApplicationController::class, 'viewApplication'])->name('application-view');
+        Route::post('/application/assignStaff', [ApplicationController::class, 'assignStaff'])->name('application-assignStaff');
         
         Route::get('/loan/list/{status?}', function () {
             return view('loan.list');

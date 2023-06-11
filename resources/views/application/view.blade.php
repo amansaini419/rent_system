@@ -20,11 +20,20 @@
     .sp-container {
       z-index: 100000000010 !important;
     }
+
+    .document-img-block{
+      display: block;
+      width: 100%;
+      height: 200px;
+    }
+    .document-img-block img{
+      height: 100%;
+      object-fit: contain;
+    }
   </style>
 @endsection
 
 @section('content')
-  @aware(['applicationStatus' => request('status')])
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
@@ -55,27 +64,26 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-block">
-            <p>(ONLY FOR ADMINS)</p>
             <div class="row">
               <div class="col-lg-6">
                 <div class="table-responsive">
-                  <table class="table application-table m-0">
+                  <table class="table table-bordered application-table m-0">
                     <tbody>
                       <tr>
                         <th>Application ID</th>
-                        <td>1</td>
+                        <td>{{ $application->application_code }}</td>
                       </tr>
                       <tr>
-                        <th>Tenant Name</th>
-                        <td>Abc Xyz</td>
+                        <th>Tenant Email</th>
+                        <td>{{ $tenant->email }}</td>
                       </tr>
                       <tr>
                         <th>Application Type</th>
-                        <td>RENEW</td>
+                        <td>{{ $application->application_type }}</td>
                       </tr>
                       <tr>
                         <th>Initial Deposit</th>
-                        <td>100.00</td>
+                        <td>{{ $initialDeposit }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -83,19 +91,19 @@
               </div>
               <div class="col-lg-6">
                 <div class="table-responsive">
-                  <table class="table application-table m-0">
+                  <table class="table table-bordered application-table m-0">
                     <tbody>
                       <tr>
                         <th>Application Status</th>
-                        <td>PENDING</td>
+                        <td>{{ $applicationStatus }}</td>
                       </tr>
                       <tr>
                         <th>Staff Assigned</th>
-                        <td>None</td>
+                        <td>{{ $staffAssigned }}</td>
                       </tr>
                       <tr>
                         <th>Remark</th>
-                        <td></td>
+                        <td>{{ $application->application_remark }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -105,18 +113,21 @@
             <hr>
             <div class="row">
               <div class="col-lg-12">
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
-                  data-toggle="modal" data-target="#assignApplicationModal">ASSIGN STAFF</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
-                  data-toggle="modal" data-target="#reviewApplicationModal">FINAL REVIEWED</button>
-                <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger text-uppercase"
-                  data-toggle="modal" data-target="#rejectApplicationModal">REJECT BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
-                  data-toggle="modal" data-target="#approveApplicationModal">APPROVE BY SUPERADMIN</button>
-                <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase"
-                  data-toggle="modal" data-target="#monthlyPlanModal">MONTHLY PLAN</button>
-                <a href="{{ route('application-register', ['id' => 1]) }}" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase">Update
-                  application</a>
+                @if (Auth::user()->user_type == "ADMIN")
+                  @if ($applicationStatus == "PENDING")
+                    <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#assignApplicationModal">assign staff</button>
+                  @elseif ($applicationStatus == "VERIFIED")
+                    <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#rejectApplicationModal">reject application</button>
+                    <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#approveApplicationModal">approve application</button>
+                  @endif
+                @elseif (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT")
+                  <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#reviewApplicationModal">send for approval</button>
+                @endif
+                
+                @if ($applicationStatus == "APPROVED")
+                  <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
+                @endif
+                <a href="{{ route('application-register', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">update application</a>
               </div>
             </div>
           </div>
@@ -155,27 +166,27 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.first_name') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->first_name }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.other_names') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->others_name }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.surname') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->surname }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.gender') }}</th>
-                                    <td>Female</td>
+                                    <td>{{ $applicationData->gender }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.dob') }}</th>
-                                    <td>October 25th, 1990</td>
+                                    <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatDate($applicationData->date_of_birth) !!}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -183,23 +194,23 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.marital_status') }}</th>
-                                    <td>Single</td>
+                                    <td>{{ $applicationData->marital_status }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.current_location') }}</th>
-                                    <td>Ghana</td>
+                                    <td>{{ $applicationData->current_location }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.whatsapp_number') }}</th>
-                                    <td><a href="#!">4567891</a></td>
+                                    <td>{{ $applicationData->whatsapp_number }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.social_media_handles') }}</th>
-                                    <td>@xyz</td>
+                                    <td>{{ $applicationData->social_media_handles }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -224,15 +235,15 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.employment_status') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->employment_status }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.company_name') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->company_name }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -240,15 +251,15 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.monthly_net_income') }}</th>
-                                    <td>Single</td>
+                                    <td>{{ $applicationData->monthly_net_income }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.outstanding_loan') }}</th>
-                                    <td>Ghana</td>
+                                    <td>{{ $applicationData->outstanding_loan }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -273,15 +284,15 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_fullname') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->emergency_contact_name }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_relation') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $applicationData->emergency_contact_relation }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -289,15 +300,15 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_number') }}</th>
-                                    <td>Single</td>
+                                    <td>{{ $applicationData->emergency_contact_number }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.emergency_location') }}</th>
-                                    <td>Ghana</td>
+                                    <td>{{ $applicationData->emergency_contact_location }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -324,23 +335,23 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.currenct_accommodation_status') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $accomodationData->current_accommodation_status }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.property_location') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $accomodationData->property_location }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.property_type') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $accomodationData->property_type }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.monthly_rent') }}</th>
-                                    <td>Female</td>
+                                    <td>{{ $accomodationData->monthly_rent }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -348,19 +359,19 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.rent_years') }}</th>
-                                    <td>Single</td>
+                                    <td>{{ $accomodationData->total_rent_years }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.expected_movein_date') }}</th>
-                                    <td>Ghana</td>
+                                    <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatDate($accomodationData->expected_movein_date) !!}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.payback_months') }}</th>
-                                    <td><a href="#!">4567891</a></td>
+                                    <td>{{ $accomodationData->total_payback_months }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -387,19 +398,33 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered document-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_profile_picture') }}</th>
-                                    <td><a href="!#">FILE</a></td>
                                   </tr>
                                   <tr>
-                                    <th scope="row">{{ __('application.ghana_card') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td class="border-0">
+                                      <a href="{{ url($documentData->passport_picture_path) }}" target="_blank" class="document-img-block">
+                                        <img src="{{ url($documentData->passport_picture_path) }}" alt="">
+                                      </a>
+                                    </td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_ghana_card') }}</th>
-                                    <td><a href="!#">FILE</a></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="border-0">
+                                      <a href="{{ url($documentData->ghana_card_path) }}" target="_blank" class="document-img-block">
+                                        <img src="{{ url($documentData->ghana_card_path) }}" alt="">
+                                      </a>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">{{ __('application.ghana_card') }}</th>
+                                  </tr>
+                                  <tr>
+                                    <td>{{ $documentData->ghana_card }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -407,15 +432,27 @@
                           </div>
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered document-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_bank_statement') }}</th>
-                                    <td><a href="!#">FILE</a></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="border-0">
+                                      <a href="{{ url($documentData->statement_path) }}" target="_blank" class="document-img-block">
+                                        <img src="{{ url($documentData->statement_path) }}" alt="">
+                                      </a>
+                                    </td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.upload_employment_letter') }}</th>
-                                    <td><a href="!#">FILE</a></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="border-0">
+                                      <a href="{{ url($documentData->employment_letter_path) }}" target="_blank" class="document-img-block">
+                                        <img src="{{ url($documentData->employment_letter_path) }}" alt="">
+                                      </a>
+                                    </td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -442,23 +479,23 @@
                         <div class="row">
                           <div class="col-lg-12 col-xl-6">
                             <div class="table-responsive">
-                              <table class="table application-table m-0">
+                              <table class="table table-bordered application-table m-0">
                                 <tbody>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_name') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $landlordData->landlord_name }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_number') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $landlordData->landlord_number }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_address') }}</th>
-                                    <td>Josephine Villa</td>
+                                    <td>{{ $landlordData->landlord_address }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_email') }}</th>
-                                    <td>Female</td>
+                                    <td>{{ $landlordData->landlord_email }}</td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -487,17 +524,19 @@
           </button>
         </div>
         <div class="modal-body">
-          <form>
+          <form method="POST" action="{{ route('application-assignStaff') }}">
+            @csrf
             <div class="form-group">
               <label>Select Staff</label>
-              <select class="form-control">
-                <option>Staff 1</option>
-                <option>Staff 2</option>
-                <option>Staff 3</option>
+              <select class="form-control" name="subadmin_id">
+                @foreach ($allStaff as $staff)
+                  <option value="{{ $staff->id }}">{{ $staff->name }}</option>
+                @endforeach
               </select>
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Assign</button>
+              <input type="hidden" name="application_id" value="{{ $application->id }}">
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Assign</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>

@@ -6,6 +6,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PaymentController;
 use App\Models\Application;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FunctionController extends Controller
@@ -17,5 +18,9 @@ class FunctionController extends Controller
 			$randomCode .= $permittedChars[mt_rand(0, $length - 1)];
 		}
 		return $randomCode;
+	}
+
+	public static function formatDate($date){
+		return Carbon::parse($date)->format('d-M-Y');
 	}
 }

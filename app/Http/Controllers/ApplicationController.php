@@ -35,6 +35,14 @@ class ApplicationController extends Controller
 		}
 		return $applicationStr;
 	}
+
+	protected static function getTotalDeposit($application){
+		return $application->initialDeposits->sum('invoice_amount');
+	}
+
+	protected static function getStaffAssigned($application){
+		return ($application->subadmin_id == 0) ? 'NONE' : User::find($application->subadmin_id)->name;
+	}
 	
 	protected function index(Request $request, string $status = 'ALL'){
 		$applicationStr = array();
@@ -46,8 +54,8 @@ class ApplicationController extends Controller
 				$tempJSON->application_type = $application->application_type;
 				$tempJSON->application_code = $application->application_code;
 				$tempJSON->application_status = $application->currentStatus->application_status;
-				$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
-				$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
+				$tempJSON->initial_deposit = ApplicationController::getTotalDeposit($application);
+				$tempJSON->subadmin_id = ApplicationController::getStaffAssigned($application);
 				$tempJSON->user_data_id = $application->user_data_id;
 
 				$applicationStr[] = $tempJSON;
@@ -70,11 +78,26 @@ class ApplicationController extends Controller
 	protected function viewApplication(string $id){
 		$application = ApplicationController::checkApplicationCode($id);
 		if(Auth::user()->user_type == "ADMIN" || $application->subadmin_id == Auth::id()){
+			$userData = $application->userData;
+			//echo($application->currentStatus->application_status);
 			return view('application.view',[
 				'application' => $application,
+				'allStaff' => UsersController::getStaff(),
+				'applicationStatus' => $application->currentStatus->application_status,
+				'tenant' => $userData->user,
+				'initialDeposit' => ApplicationController::getTotalDeposit($application),
+				'staffAssigned' => ApplicationController::getStaffAssigned($application),
+				'applicationData' => $userData->applicationData,
+				'accomodationData' => $userData->accomodationData,
+				'documentData' => $userData->documentData,
+				'landlordData' => $userData->landlordData,
 			]);
 		}
 		return redirect()->route('dashboard');
+	}
+
+	protected function assignStaff(Request $request){
+		
 	}
 
 	protected function verifyTenantApplication(string $id){
