@@ -21,4 +21,12 @@ class InvoiceController extends Controller
 		}
 		return InvoiceController::createInvoiceCode();
 	}
+
+	public static function new($invoiceAmount, $invoiceType){
+		return Invoice::create([
+			'invoice_amount' => $invoiceAmount,
+			'invoice_type' => $invoiceType,
+			'invoice_code' => InvoiceController::createInvoiceCode(),
+		]);
+	}
 }

@@ -64,7 +64,7 @@
   </a>
   <ul class="pcoded-submenu">
     <li class=" ">
-      <a href="{{ route('loan-list', ['status' => 'ALL']) }}">
+      <a href="{{ route('loan-list') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">All</span>
         <span class="pcoded-mcaret"></span>

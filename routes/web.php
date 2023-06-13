@@ -61,28 +61,35 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
         Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
         Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
+        Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
+
+        Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
+    });
+
+    Route::group(['middleware' => ['user-role:STAFF']], function(){
+        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
+    });
+
+    Route::group(['middleware' => ['user-role:AGENT']], function(){
+        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
+    });
+
+    Route::group(['middleware' => ['user-role:ADMIN']], function(){
+        Route::post('/application/assignStaff', [ApplicationController::class, 'assignStaff'])->name('application-assignStaff');
+        Route::post('/application/reject', [ApplicationController::class, 'reject'])->name('application-reject');
+        Route::post('/application/approve', [ApplicationController::class, 'approve'])->name('application-approve');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
-
         Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
-        Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
-        Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
 
-        Route::get('/application/view/{id}', [ApplicationController::class, 'viewApplication'])->name('application-view');
-        Route::post('/application/assignStaff', [ApplicationController::class, 'assignStaff'])->name('application-assignStaff');
-        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
-        Route::post('/application/reject', [ApplicationController::class, 'reject'])->name('application-reject');
-        Route::post('/application/approve', [ApplicationController::class, 'approve'])->name('application-approve');
+        Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
+        Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');
         Route::post('/application/loan', [LoanController::class, 'new'])->name('application-loan');
         
-        Route::get('/loan/list/{status?}', function () {
-            return view('loan.list');
-        })->where('status', '[A-Z_]+')->name('loan-list');
-        
-        Route::get('/loan/view/{status}/{id}', function () {
-            return view('loan.view');
-        })->where('status', '[A-Z_]+')->name('loan-view');
+        Route::get('/loan/list/{status?}', [LoanController::class, 'index'])->name('loan-list');
+        Route::get('/loan/view/{id}', [LoanController::class, 'view'])->name('loan-view');
+        Route::post('/loan/offlinePayment', [PaymentController::class, 'payRentOffline'])->name('loan-offlinePayment');
         
         Route::get('/invoice/list', function () {
             return view('invoice.list');

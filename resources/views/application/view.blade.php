@@ -800,20 +800,20 @@
       $('.after-generate').show();
       for (let i = 1; i <= totalInstallments; i++) {
         moment(startingDate).add(i, 'months');
-        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod / 12);
+        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, 1 / 12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const tableRow = '\
-              <tr>\
-                <td>' + i + '</td>\
-                <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-                <td>' + currencyFormat(beginningBalance) + '</td>\
-                <td>' + currencyFormat(monthlyPayment) + '</td>\
-                <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
-                <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
-                <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
-              </tr>\
-            ';
+          <tr>\
+            <td>' + i + '</td>\
+            <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
+            <td>' + currencyFormat(beginningBalance) + '</td>\
+            <td>' + currencyFormat(monthlyPayment) + '</td>\
+            <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
+            <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
+            <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
+          </tr>\
+        ';
         $('#monthlyPlanTable tbody').append(tableRow);
         //console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
         beginningBalance = endingBalance;

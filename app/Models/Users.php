@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -44,12 +45,12 @@ class Users extends Authenticatable
     'remember_token',
   ];
 
-  protected function role(): Attribute
+  /* protected function role(): Attribute
   {
     return new Attribute(
       get: fn ($value) => ["TENANT", "STAFF", "AGENT", "ADMIN"][$value],
     );
-  }
+  } */
 
   /**
    * Always encrypt the password when it is updated.
@@ -65,6 +66,11 @@ class Users extends Authenticatable
   public function applications(): HasManyThrough
   {
     return $this->hasManyThrough(Application::class, UserData::class)->latest();
+  }
+
+  public function loans(): HasOneThrough
+  {
+    return $this->hasOneThrough(Loan::class, Application::class)->latest();
   }
 
   public function allUserData(): HasMany

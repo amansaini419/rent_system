@@ -16,13 +16,20 @@ use Unicodeveloper\Paystack\Facades\Paystack;
 
 class PaymentController extends Controller
 {
-	public static function checkPaymentRef($code)
-	{
+	public static function checkPaymentRef($code){
 		return Payment::where('payment_ref', $code)->first();
 	}
 
-	public function payRegistrationFees(Request $request)
-	{
+	public static function new($invoiceId, $paymentAmount, $paymentChannel){
+		return Payment::create([
+			'invoice_id' => $invoiceId,
+			'payment_amount' => $paymentAmount,
+			'payment_ref' => PaymentController::createPaymentRef(),
+			'payment_channel' => $paymentChannel,
+		]);
+	}
+
+	public function payRegistrationFees(Request $request){
 		/* try {
 			$data = array(
 				"amount" => SettingController::getValue('REGISTRATION_FEES'),
@@ -41,44 +48,20 @@ class PaymentController extends Controller
 		} */
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		$userDataId = $userData->id;
-		$invoice = Invoice::create([
-			'invoice_amount' => SettingController::getValue('REGISTRATION_FEES'),
-			'invoice_type' => 'REGISTRATION',
-			'invoice_code' => InvoiceController::createInvoiceCode(),
-		]);
+		$invoice = InvoiceController::new(SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
 		$invoiceId = $invoice->id;
-		RegistrationFee::create([
-			'user_data_id' => $userDataId,
-			'invoice_id' => $invoiceId,
-		]);
-		Payment::create([
-			'invoice_id' => $invoiceId,
-			'payment_amount' => SettingController::getValue('REGISTRATION_FEES'),
-			'payment_ref' => PaymentController::createPaymentRef(),
-			'payment_channel' => 'CARD',
-		]);
+		RegistrationFeeController::new($userDataId, $invoiceId);
+		PaymentController::new($invoiceId, SettingController::getValue('REGISTRATION_FEES'), 'CARD');
 		return Redirect::back();
 	}
 
 	public function payInitialDeposit(Request $request){
 		$application = ApplicationController::checkApplicationCode($request->applicationId);
 		if($application){
-			$invoice = Invoice::create([
-				'invoice_amount' => $request->depositAmount,
-				'invoice_type' => 'INITIAL_DEPOSIT',
-				'invoice_code' => InvoiceController::createInvoiceCode(),
-			]);
+			$invoice = InvoiceController::new($request->depositAmount, 'INITIAL_DEPOSIT');
 			$invoiceId = $invoice->id;
-			InitialDeposit::create([
-				'application_id' => $application->id,
-				'invoice_id' => $invoiceId,
-			]);
-			Payment::create([
-				'invoice_id' => $invoiceId,
-				'payment_amount' => $request->depositAmount,
-				'payment_ref' => PaymentController::createPaymentRef(),
-				'payment_channel' => 'CARD',
-			]);
+			InitialDepositController::new($application->id, $invoiceId);
+			PaymentController::new($invoiceId, $request->depositAmount, 'CARD');
 		}
 		return Redirect::back();
 	}
@@ -89,5 +72,13 @@ class PaymentController extends Controller
 			return $code;
 		}
 		return PaymentController::createPaymentRef();
+	}
+
+	protected function payRent(Request $request){
+		//
+	}
+
+	protected function payRentOffline(Request $request){
+		//
 	}
 }

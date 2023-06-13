@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Loan::class);
             $table->foreignIdFor(Invoice::class)->default(0);
-            $table->date('payment_date');
-            $table->date('paid_date')->nullable();
+            $table->date('due_date');
+            $table->date('payment_date')->nullable();
             $table->timestamps();
         });
     }

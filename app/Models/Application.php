@@ -51,6 +51,10 @@ class Application extends Model
 		return $this->belongsToMany(Invoice::class, 'initial_deposits');
 	}
 
+	public function loan(): HasOne{
+		return $this->hasOne(Loan::class);
+	}
+
 	/* public function user(): HasOneThrough
 	{
 		return $this->hasOneThrough(

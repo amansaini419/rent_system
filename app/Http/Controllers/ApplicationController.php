@@ -44,39 +44,31 @@ class ApplicationController extends Controller
 	protected static function getStaffAssigned($application){
 		return ($application->subadmin_id == 0) ? 'NONE' : User::find($application->subadmin_id)->name;
 	}
-	
-	protected function index(Request $request, string $status = 'ALL'){
-		$applicationStr = array();
-		if(Auth::user()->user_type == "TENANT"){
-			$applications = Auth::user()->applications;
-			foreach($applications as $application){
-				$tempJSON = new stdClass();
-				$tempJSON->id = $application->id;
-				$tempJSON->application_type = $application->application_type;
-				$tempJSON->application_code = $application->application_code;
-				$tempJSON->application_status = $application->currentStatus->application_status;
-				$tempJSON->initial_deposit = ApplicationController::getTotalDeposit($application);
-				$tempJSON->subadmin_id = ApplicationController::getStaffAssigned($application);
-				$tempJSON->user_data_id = $application->user_data_id;
 
-				$applicationStr[] = $tempJSON;
-			}
+	public static function getUserApplications($user_type){
+		if($user_type == "TENANT"){
+			$applications = Auth::user()->applications;
 		}
 		elseif(Auth::user()->user_type == "ADMIN"){
 			$applications = Application::orderBy('id', 'desc')->get();
-			$applicationStr = ApplicationController::getApplications($applications, $status);
 		}
 		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
 			$applications = Application::where('subadmin_id', Auth::id())->orderBy('id', 'desc')->get();
-			$applicationStr = ApplicationController::getApplications($applications, $status);
 		}
-
+		return $applications;
+	}
+	
+	protected function index(string $status = 'ALL'){
+		$applicationStr = array();
+		$applications = ApplicationController::getUserApplications(Auth::user()->user_type);
+		$applicationStr = ApplicationController::getApplications($applications, $status);
+		
 		return view('application.list', [
 			'applicationStr' => $applicationStr,
 		]);
 	}
 
-	protected function viewApplication(string $id){
+	protected function view(string $id){
 		$application = ApplicationController::checkApplicationCode($id);
 		if(Auth::user()->user_type == "ADMIN" || $application->subadmin_id == Auth::id()){
 			$userData = $application->userData;
@@ -98,210 +90,202 @@ class ApplicationController extends Controller
 	}
 
 	protected function assignStaff(Request $request){
-		if(Auth::user()->user_type == "ADMIN"){
-			//dd($request->all());
-			$validator = Validator::make($request->all(), [
-				'applicationId' => 'required|integer',
-				'staffId' => 'required|integer',
-			]);
+		//dd($request->all());
+		$validator = Validator::make($request->all(), [
+			'applicationId' => 'required|integer',
+			'staffId' => 'required|integer',
+		]);
 
-			if ($validator->fails()) {
-				return back()->with([
-					'success' => false,
-					'title' => 'Input Error',
-					'errors' => $validator->messages(),
-					'alert' => 'warning'
-				]);
-			}
-			$application = Application::find($request->applicationId);
-			if(!$application){
-				return back()->with([
-					'success' => false,
-					'title' => 'Error',
-					'error' => 'Wrong application.',
-					'alert' => 'error'
-				]);
-			}
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus === 'PENDING'){
-				if($application->subadmin_id == 0){
-					$updated = $application->update(['subadmin_id' => $request->staffId]);
-					if($updated === 0){
-						return back()->with([
-							'success' => false,
-							'title' => 'Error',
-							'error' => 'Unable to assign staff.',
-							'alert' => 'error'
-						]);
-					}
-				}
-				// create application status
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'UNDER_VERIFICATION',
-				]);
-			}
-
-			return redirect()->back()->with([
-				'success' => true,
-				'title' => 'Staff Assigned',
-				'message' => 'You have successfully assigned the staff.',
-				'alert' => 'success'
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
 			]);
 		}
+		$application = Application::find($request->applicationId);
+		if(!$application){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Wrong application.',
+				'alert' => 'error'
+			]);
+		}
+		$currentApplicationStatus = $application->currentStatus->application_status;
+		if($currentApplicationStatus === 'PENDING'){
+			if($application->subadmin_id == 0){
+				$updated = $application->update(['subadmin_id' => $request->staffId]);
+				if($updated === 0){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Unable to assign staff.',
+						'alert' => 'error'
+					]);
+				}
+			}
+			// create application status
+			ApplicationStatus::create([
+				'application_id' => $application->id,
+				'application_status' => 'UNDER_VERIFICATION',
+			]);
+		}
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Staff Assigned',
+			'message' => 'You have successfully assigned the staff.',
+			'alert' => 'success'
+		]);
 	}
 
 	protected function sendForApproval(Request $request){
-		if(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
-			$validator = Validator::make($request->all(), [
-				'applicationId' => 'required|integer',
-				'applicationRemark' => 'required',
-			]);
+		$validator = Validator::make($request->all(), [
+			'applicationId' => 'required|integer',
+			'applicationRemark' => 'required',
+		]);
 
-			if ($validator->fails()) {
-				return back()->with([
-					'success' => false,
-					'title' => 'Input Error',
-					'errors' => $validator->messages(),
-					'alert' => 'warning'
-				]);
-			}
-			$application = Application::find($request->applicationId);
-			if(!$application){
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+		$application = Application::find($request->applicationId);
+		if(!$application){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Wrong application.',
+				'alert' => 'error'
+			]);
+		}
+		$currentApplicationStatus = $application->currentStatus->application_status;
+		if($currentApplicationStatus === 'UNDER_VERIFICATION'){
+			$updated = $application->update(['application_remark' => $request->applicationRemark]);
+			if($updated === 0){
 				return back()->with([
 					'success' => false,
 					'title' => 'Error',
-					'error' => 'Wrong application.',
+					'error' => 'Unable to update remark.',
 					'alert' => 'error'
 				]);
 			}
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus === 'UNDER_VERIFICATION'){
-				$updated = $application->update(['application_remark' => $request->applicationRemark]);
-				if($updated === 0){
-					return back()->with([
-						'success' => false,
-						'title' => 'Error',
-						'error' => 'Unable to update remark.',
-						'alert' => 'error'
-					]);
-				}
-				// create application status
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'VERIFIED',
-				]);
-			}
-
-			return redirect()->back()->with([
-				'success' => true,
-				'title' => 'Application Verified',
-				'message' => 'You have successfully send the application to ADMIN for approval.',
-				'alert' => 'success'
+			// create application status
+			ApplicationStatus::create([
+				'application_id' => $application->id,
+				'application_status' => 'VERIFIED',
 			]);
 		}
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Application Verified',
+			'message' => 'You have successfully send the application to ADMIN for approval.',
+			'alert' => 'success'
+		]);
 	}
 
 	protected function reject(Request $request){
-		if(Auth::user()->user_type == "ADMIN"){
-			$validator = Validator::make($request->all(), [
-				'applicationId' => 'required|integer',
-				'adminRemark' => 'required',
-			]);
+		$validator = Validator::make($request->all(), [
+			'applicationId' => 'required|integer',
+			'adminRemark' => 'required',
+		]);
 
-			if ($validator->fails()) {
-				return back()->with([
-					'success' => false,
-					'title' => 'Input Error',
-					'errors' => $validator->messages(),
-					'alert' => 'warning'
-				]);
-			}
-			$application = Application::find($request->applicationId);
-			if(!$application){
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+		$application = Application::find($request->applicationId);
+		if(!$application){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Wrong application.',
+				'alert' => 'error'
+			]);
+		}
+		$currentApplicationStatus = $application->currentStatus->application_status;
+		if($currentApplicationStatus === 'VERIFIED'){
+			$updated = $application->update(['admin_remark' => $request->adminRemark]);
+			if($updated === 0){
 				return back()->with([
 					'success' => false,
 					'title' => 'Error',
-					'error' => 'Wrong application.',
+					'error' => 'Unable to reject application.',
 					'alert' => 'error'
 				]);
 			}
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus === 'VERIFIED'){
-				$updated = $application->update(['admin_remark' => $request->adminRemark]);
-				if($updated === 0){
-					return back()->with([
-						'success' => false,
-						'title' => 'Error',
-						'error' => 'Unable to reject application.',
-						'alert' => 'error'
-					]);
-				}
-				// create application status
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'REJECTED',
-				]);
-			}
-
-			return redirect()->back()->with([
-				'success' => true,
-				'title' => 'Application Rejected',
-				'message' => 'You have successfully rejected the application.',
-				'alert' => 'success'
+			// create application status
+			ApplicationStatus::create([
+				'application_id' => $application->id,
+				'application_status' => 'REJECTED',
 			]);
 		}
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Application Rejected',
+			'message' => 'You have successfully rejected the application.',
+			'alert' => 'success'
+		]);
 	}
 
 	protected function approve(Request $request){
-		if(Auth::user()->user_type == "ADMIN"){
-			$validator = Validator::make($request->all(), [
-				'applicationId' => 'required|integer',
-				'adminRemark' => 'required',
-			]);
+		$validator = Validator::make($request->all(), [
+			'applicationId' => 'required|integer',
+			'adminRemark' => 'required',
+		]);
 
-			if ($validator->fails()) {
-				return back()->with([
-					'success' => false,
-					'title' => 'Input Error',
-					'errors' => $validator->messages(),
-					'alert' => 'warning'
-				]);
-			}
-			$application = Application::find($request->applicationId);
-			if(!$application){
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+		$application = Application::find($request->applicationId);
+		if(!$application){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Wrong application.',
+				'alert' => 'error'
+			]);
+		}
+		$currentApplicationStatus = $application->currentStatus->application_status;
+		if($currentApplicationStatus === 'VERIFIED'){
+			$updated = $application->update(['admin_remark' => $request->adminRemark]);
+			if($updated === 0){
 				return back()->with([
 					'success' => false,
 					'title' => 'Error',
-					'error' => 'Wrong application.',
+					'error' => 'Unable to approve application.',
 					'alert' => 'error'
 				]);
 			}
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus === 'VERIFIED'){
-				$updated = $application->update(['admin_remark' => $request->adminRemark]);
-				if($updated === 0){
-					return back()->with([
-						'success' => false,
-						'title' => 'Error',
-						'error' => 'Unable to approve application.',
-						'alert' => 'error'
-					]);
-				}
-				// create application status
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'APPROVED',
-				]);
-			}
-
-			return redirect()->back()->with([
-				'success' => true,
-				'title' => 'Application Approved',
-				'message' => 'You have successfully approved the application.',
-				'alert' => 'success'
+			// create application status
+			ApplicationStatus::create([
+				'application_id' => $application->id,
+				'application_status' => 'APPROVED',
 			]);
 		}
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Application Approved',
+			'message' => 'You have successfully approved the application.',
+			'alert' => 'success'
+		]);
 	}
 
 	protected function verifyTenantApplication(string $id){
