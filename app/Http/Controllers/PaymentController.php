@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
-use App\Models\InitialDeposit;
-use App\Models\Invoice;
 use App\Models\Payment;
-use App\Models\RegistrationFee;
 use App\Models\UserData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
 class PaymentController extends Controller
@@ -75,10 +73,69 @@ class PaymentController extends Controller
 	}
 
 	protected function payRent(Request $request){
-		//
+		$validator = Validator::make($request->all(), [
+			'monthlyId' => 'required',
+		]);
+
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+
+		$monthlyPlan = MonthlyPlanController::getByHashId($request->monthlyId);
+		if(!$monthlyPlan){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Invalid payment request.',
+				'alert' => 'error'
+			]);
+		}
+		$loan = $monthlyPlan->loan;
+		if(!$loan){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Invalid loan request.',
+				'alert' => 'error'
+			]);
+		}
+
+		$paymentAmount = $loan->monthly_payment;
+		$penaltyAmount = MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment);
+		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
+
+		// create invoice
+		$invoice = InvoiceController::new($totalpayment, 'RENT');
+		// create payment
+		PaymentController::new($invoice->id, $totalpayment, 'CARD');
+		// update monthly plan
+		$monthlyPlan->invoice_id = $invoice->id;
+		$monthlyPlan->payment_date = Carbon::now();
+		$monthlyPlan->penalty = $penaltyAmount;
+		$monthlyPlan->save();
+
+		$totalDue = MonthlyPlanController::getTotalDues($loan->id);
+		
+		if($totalDue == 0){
+			LoanController::close($loan);
+		}
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Payment',
+			'message' => 'You have successfully done the payment.',
+			'alert' => 'success'
+		]);
 	}
 
 	protected function payRentOffline(Request $request){
-		//
+		// create invoice
+		// create payment
+		// update monthly plan
 	}
 }

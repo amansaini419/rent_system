@@ -208,4 +208,17 @@ class LoanController extends Controller
 			}
 		}
 	}
+
+	public static function close($loan){
+		$loan->loan_status = 'CLOSED';
+		$loan->save();
+
+		$application = $loan->application;
+		if($application){
+			$currentApplicationStatus = $application->currentStatus->application_status;
+			if($currentApplicationStatus == 'LOAN_STARTED'){
+				ApplicationStatusController::new($application->id, 'LOAN_CLOSED');
+			}
+		}
+	}
 }

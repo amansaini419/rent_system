@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MonthlyPlan extends Model
 {
@@ -18,4 +19,8 @@ class MonthlyPlan extends Model
 		'payment_date',
 		'penalty',
 	];
+
+	public function loan(): BelongsTo{
+		return $this->belongsTo(Loan::class);
+	}
 }

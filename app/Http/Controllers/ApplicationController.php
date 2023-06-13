@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
-use App\Models\ApplicationStatus;
 use App\Models\ApplicationData;
 use App\Models\AccomodationData;
 use App\Models\DocumentData;
@@ -127,10 +126,7 @@ class ApplicationController extends Controller
 				}
 			}
 			// create application status
-			ApplicationStatus::create([
-				'application_id' => $application->id,
-				'application_status' => 'UNDER_VERIFICATION',
-			]);
+			ApplicationStatusController::new($application->id, 'UNDER_VERIFICATION');
 		}
 
 		return redirect()->back()->with([
@@ -176,10 +172,7 @@ class ApplicationController extends Controller
 				]);
 			}
 			// create application status
-			ApplicationStatus::create([
-				'application_id' => $application->id,
-				'application_status' => 'VERIFIED',
-			]);
+			ApplicationStatusController::new($application->id, 'VERIFIED');
 		}
 
 		return redirect()->back()->with([
@@ -225,10 +218,7 @@ class ApplicationController extends Controller
 				]);
 			}
 			// create application status
-			ApplicationStatus::create([
-				'application_id' => $application->id,
-				'application_status' => 'REJECTED',
-			]);
+			ApplicationStatusController::new($application->id, 'REJECTED');
 		}
 
 		return redirect()->back()->with([
@@ -274,10 +264,7 @@ class ApplicationController extends Controller
 				]);
 			}
 			// create application status
-			ApplicationStatus::create([
-				'application_id' => $application->id,
-				'application_status' => 'APPROVED',
-			]);
+			ApplicationStatusController::new($application->id, 'APPROVED');
 		}
 
 		return redirect()->back()->with([
@@ -328,10 +315,7 @@ class ApplicationController extends Controller
 				$applicationStatus = $application->currentStatus;
 				if ($applicationStatus->application_status == "INCOMPLETE") {
 					// create application status pending
-					$applicationStatus = ApplicationStatus::create([
-						'application_id' => $application->id,
-						'application_status' => 'PENDING',
-					]);
+					ApplicationStatusController::new($application->id, 'PENDING');
 					//dd($applicationStatus);
 				}
 				return redirect()->route('application-list');

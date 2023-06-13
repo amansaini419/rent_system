@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApplicationStatusController;
 use App\Models\Application;
-use App\Models\ApplicationStatus;
 use App\Models\UserData;
 use Closure;
 use Illuminate\Http\Request;
@@ -42,10 +42,7 @@ class TenantRegistrationMiddleware
 					}
 					else{
 						// create application status
-						ApplicationStatus::create([
-							'application_id' => $application->id,
-							'application_status' => 'INCOMPLETE',
-						]);
+						ApplicationStatusController::new($application->id, 'INCOMPLETE');
 						$applicationCode = $application->application_code;
 					}
 				} else {
@@ -57,10 +54,7 @@ class TenantRegistrationMiddleware
 						'application_code' => $applicationCode,
 					]);
 					// create application status
-					ApplicationStatus::create([
-						'application_id' => $application->id,
-						'application_status' => 'INCOMPLETE',
-					]);
+					ApplicationStatusController::new($application->id, 'INCOMPLETE');
 				}
 			} else {
 				// create user data
@@ -76,10 +70,7 @@ class TenantRegistrationMiddleware
 					'application_code' => $applicationCode,
 				]);
 				// create application status
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'INCOMPLETE',
-				]);
+				ApplicationStatusController::new($application->id, 'INCOMPLETE');
 			}
 		}
 		return redirect()->route('application-register', ['id' => $applicationCode]);

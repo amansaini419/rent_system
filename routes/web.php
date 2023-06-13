@@ -62,7 +62,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
         Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
         Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
-
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
     });
 

@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
-    public static function getValue($setting){
-        return Setting::where('setting', $setting)->first()->value;
-    }
+	public static function getValue($setting)
+	{
+		return Setting::where('setting', $setting)->first()->value;
+	}
 }

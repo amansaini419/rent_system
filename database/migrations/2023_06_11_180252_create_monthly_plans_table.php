@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Invoice::class)->default(0);
             $table->date('due_date');
             $table->date('payment_date')->nullable();
+            $table->double('penalty')->default(0);
             $table->timestamps();
         });
     }
