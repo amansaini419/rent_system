@@ -105,8 +105,8 @@ class PaymentController extends Controller
 			]);
 		}
 
-		$paymentAmount = $loan->monthly_payment;
-		$penaltyAmount = MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment);
+		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
+		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		// create invoice
@@ -119,11 +119,7 @@ class PaymentController extends Controller
 		$monthlyPlan->penalty = $penaltyAmount;
 		$monthlyPlan->save();
 
-		$totalDue = MonthlyPlanController::getTotalDues($loan->id);
-		
-		if($totalDue == 0){
-			LoanController::close($loan);
-		}
+		LoanController::checkLoanClosed($loan);
 
 		return redirect()->back()->with([
 			'success' => true,

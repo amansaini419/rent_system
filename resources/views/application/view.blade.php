@@ -734,10 +734,20 @@
   <script type="text/javascript" src="{{ asset('bower_components/datedropper/js/datedropper.min.js') }}"></script>
 @endsection
 
-@include('partials.swal-response')
-
 @section('own-script')
   <script>
+    @if(session('success') === true)
+      @if(session('message'))
+        swal('{{ session('title') }}', '{{ session('message') }}', '{{ session('alert') }}');
+      @endif
+    @elseif (session('success') === false)
+      @if(session('error'))
+        swal('{{ session('title') }}', '{{ session('error') }}', '{{ session('alert') }}');
+      @elseif (session('errors'))
+        swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
+      @endif
+    @endif
+
     $(".date-dropper").dateDropper({
       dropWidth: 200,
       dropPrimaryColor: "#1abc9c",

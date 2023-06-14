@@ -8,6 +8,7 @@ use App\Models\ApplicationStatus;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -79,75 +80,81 @@ class LoanController extends Controller
 
 	protected function new(Request $request)
 	{
-		$validator = Validator::make($request->all(), [
-			'applicationId' => 'required|integer',
-			'startingDate' => 'required|date',
-			'loanAmount' => 'required|decimal:0',
-			'interestRate' => 'required',
-			'loanPeriod' => 'required',
-		]);
-
-		if ($validator->fails()) {
-			return back()->with([
-				'success' => false,
-				'title' => 'Input Error',
-				'errors' => $validator->messages(),
-				'alert' => 'warning'
+		try{
+			$validator = Validator::make($request->all(), [
+				'applicationId' => 'required|integer',
+				'startingDate' => 'required|date',
+				'loanAmount' => 'required|decimal:0',
+				'interestRate' => 'required',
+				'loanPeriod' => 'required',
 			]);
-		}
-		$application = Application::find($request->applicationId);
-		if(Auth::user()->user_type == "ADMIN" || $application->subadmin_id == Auth::id()){
-			if(!$application){
+
+			if ($validator->fails()) {
 				return back()->with([
 					'success' => false,
-					'title' => 'Error',
-					'error' => 'Wrong application.',
-					'alert' => 'error'
-				]);
-			}
-			// check loan is created on this application or not
-			$loan = Loan::where('application_id', $application->id)->first();
-			if($loan){
-				return back()->with([
-					'success' => false,
-					'title' => 'Error',
-					'error' => 'Loan is already created for this application.',
+					'title' => 'Input Error',
+					'errors' => $validator->messages(),
 					'alert' => 'warning'
 				]);
 			}
-			
-			// create loan
-			$initialDeposit = ApplicationController::getTotalDeposit($application);
-			$loanCalculation = LoanController::getLoanCalculation($request->loanAmount, $request->interestRate, $request->loanPeriod, $initialDeposit);
-			
-			$loan = Loan::create([
-				'application_id' => $request->applicationId,
-				'starting_date' => $request->startingDate,
-				'loan_amount' => $request->loanAmount,
-				'interest_rate' => $request->interestRate,
-				'loan_period' => $request->loanPeriod,
-				'monthly_payment' => FunctionController::formatCurrency($loanCalculation->monthlyPayment),
-				'loan_code' => LoanController::createLoanCode(),
-			]);
-			
-			// create monthly plan
-			MonthlyPlanController::generate($loan, $loanCalculation->totalInstallments);
+			$application = Application::find($request->applicationId);
+			if(Auth::user()->user_type == "ADMIN" || $application->subadmin_id == Auth::id()){
+				if(!$application){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Wrong application.',
+						'alert' => 'error'
+					]);
+				}
+				// check loan is created on this application or not
+				$loan = Loan::where('application_id', $application->id)->first();
+				if($loan){
+					return back()->with([
+						'success' => false,
+						'title' => 'Error',
+						'error' => 'Loan is already created for this application.',
+						'alert' => 'warning'
+					]);
+				}
+				
+				DB::beginTransaction();
+				// create loan
+				$initialDeposit = ApplicationController::getTotalDeposit($application);
+				$loanCalculation = LoanController::getLoanCalculation($request->loanAmount, $request->interestRate, $request->loanPeriod, $initialDeposit);
+				
+				$loan = Loan::create([
+					'application_id' => $request->applicationId,
+					'starting_date' => $request->startingDate,
+					'loan_amount' => $request->loanAmount,
+					'interest_rate' => $request->interestRate,
+					'loan_period' => $request->loanPeriod,
+					'monthly_payment' => FunctionController::formatCurrency($loanCalculation->monthlyPayment),
+					'loan_code' => LoanController::createLoanCode(),
+				]);
+				
+				// create monthly plan
+				MonthlyPlanController::generate($loan, $loanCalculation->totalInstallments);
 
-			// create LOAN_STARTED status
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus === 'APPROVED'){
-				ApplicationStatus::create([
-					'application_id' => $application->id,
-					'application_status' => 'LOAN_STARTED',
+				// create LOAN_STARTED status
+				$currentApplicationStatus = $application->currentStatus->application_status;
+				if($currentApplicationStatus === 'APPROVED'){
+					ApplicationStatus::create([
+						'application_id' => $application->id,
+						'application_status' => 'LOAN_STARTED',
+					]);
+				}
+				DB::commit();
+				return redirect()->back()->with([
+					'success' => true,
+					'title' => 'Loan Created',
+					'message' => 'You have successfully created the loan for the application.',
+					'alert' => 'success'
 				]);
 			}
-
-			return redirect()->back()->with([
-				'success' => true,
-				'title' => 'Loan Created',
-				'message' => 'You have successfully created the loan for the application.',
-				'alert' => 'success'
-			]);
+		} catch (\PDOException $e) {
+			// Woopsy
+			DB::rollBack();
 		}
 	}
 
@@ -206,6 +213,15 @@ class LoanController extends Controller
 					'monthlyPlanStr' => $monthlyPlanStr,
 				]);
 			}
+			return redirect()->route('dashboard');
+		}
+	}
+
+	public static function checkLoanClosed($loan){
+		$totalDue = MonthlyPlanController::getTotalDues($loan->id);
+		
+		if($totalDue == 0){
+			LoanController::close($loan);
 		}
 	}
 

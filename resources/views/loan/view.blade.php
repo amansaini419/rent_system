@@ -213,6 +213,97 @@
         @elseif (in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']))
           <div class="card">
             <div class="card-header">
+              <h5 class="sub-title d-block border-0">Payment</h5>
+            </div>
+            <div class="card-block">
+              <div class="view-info">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="general-info">
+                      <div class="table-responsive">
+                        <table class="table" id="monthlyPlanTable">
+                          <thead>
+                            <tr>
+                              <th>S.N.</th>
+                              <th>Payment Status</th>
+                              <th>Payment</th>
+                              <th>Penalty</th>
+                              <th>Due Date</th>
+                              <th>Payment Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach ($monthlyPlanStr as $monthlyPlan)
+                              <tr>
+                                <td>{{ $monthlyPlan->sn }}</td>
+                                <td>{{ $monthlyPlan->payment_status }}</td>
+                                <td>{{ $monthlyPlan->payment }}</td>
+                                <td>{{ $monthlyPlan->penalty }}</td>
+                                <td>{{ $monthlyPlan->due_date }}</td>
+                                <td>
+                                  @if($monthlyPlan->payment_date == null)
+                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase" data-toggle="modal" data-target="#offlinePaymentModal">Offline Payment</button>
+                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Pay</button>
+                                  @else
+                                  {{ $monthlyPlan->payment_date }}
+                                  @endif
+                                </td>
+                              </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h5 class="sub-title d-block border-0">Monthly Plan</h5>
+            </div>
+            <div class="card-block">
+              <div class="view-info">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="general-info">
+                      <div class="table-responsive">
+                        <table class="table" id="monthlyPlanTable">
+                          <thead>
+                            <tr>
+                              <th>S.N.</th>
+                              <th>Due Date</th>
+                              <th>Beginning Balance</th>
+                              <th>Payment</th>
+                              <th>Principal</th>
+                              <th>Interest</th>
+                              <th>Ending Balance</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach ($monthlyPlanStr as $monthlyPlan)
+                              <tr>
+                                <td>{{ $monthlyPlan->sn }}</td>
+                                <td>{{ $monthlyPlan->due_date }}</td>
+                                <td>{{ $monthlyPlan->beginning_balance }}</td>
+                                <td>{{ $monthlyPlan->payment }}</td>
+                                <td>{{ $monthlyPlan->principal }}</td>
+                                <td>{{ $monthlyPlan->interest }}</td>
+                                <td>{{ $monthlyPlan->ending_balance }}</td>
+                              </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{-- <div class="card">
+            <div class="card-header">
               <h5 class="sub-title d-block border-0">Monthly Plan</h5>
             </div>
             <div class="card-block">
@@ -247,44 +338,6 @@
                                 <td>{{ $monthlyPlan->ending_balance }}</td>
                               </tr>
                             @endforeach
-                            {{-- <tr>
-                              <td>1</td>
-                              <td>Paid</td>
-                              <td>15-Jun-23</td>
-                              <td>10000.00</td>
-                              <td>945.60</td>
-                              <td>745.60</td>
-                              <td>200.00</td>
-                              <td>9254.40</td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>
-                                Amount Due<br>
-                                <button type="button" class="btn btn-sm btn-link px-0 text-uppercase" data-toggle="modal"
-                                  data-target="#offlinePaymentModal">Offline Payment</button>
-                              </td>
-                              <td>15-Jul-23</td>
-                              <td>9254.40</td>
-                              <td>945.60</td>
-                              <td>760.51</td>
-                              <td>185.09</td>
-                              <td>8493.90</td>
-                            </tr>
-                            <tr>
-                              <td>3</td>
-                              <td>
-                                Pending<br>
-                                <button type="button" class="btn btn-sm btn-link px-0 text-uppercase" data-toggle="modal"
-                                  data-target="#offlinePaymentModal">Offline Payment</button>
-                              </td>
-                              <td>15-Aug-23</td>
-                              <td>8493.90</td>
-                              <td>945.60</td>
-                              <td>775.72</td>
-                              <td>169.88</td>
-                              <td>7718.18</td>
-                            </tr> --}}
                           </tbody>
                         </table>
                       </div>
@@ -293,7 +346,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --}}
         @endif
         {{-- </div>
         </div> --}}
@@ -368,15 +421,19 @@
   <script type="text/javascript" src="{{ asset('bower_components/datedropper/js/datedropper.min.js') }}"></script>
 @endsection
 
-@include('partials.swal-response')
-
 @section('own-script')
   <script>
-    $(".date-dropper").dateDropper({
-      dropWidth: 200,
-      dropPrimaryColor: "#1abc9c",
-      dropBorder: "1px solid #1abc9c"
-    });
+    @if(session('success') === true)
+      @if(session('message'))
+        swal('{{ session('title') }}', '{{ session('message') }}', '{{ session('alert') }}');
+      @endif
+    @elseif (session('success') === false)
+      @if(session('error'))
+        swal('{{ session('title') }}', '{{ session('error') }}', '{{ session('alert') }}');
+      @elseif (session('errors'))
+        swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
+      @endif
+    @endif
 
     /* P = Principal Amount
     R = Interest per annum

@@ -17,7 +17,6 @@ class MonthlyPlanController extends Controller
 		$penalty = 0;
 		$now = Carbon::now();
 		$diff = $dueDate->diffInDays($now, false);
-		//dd($diff);
 		if($diff >= SettingController::getValue('FIRST_PENALTY_DAY')){
 			$penaltyPer = SettingController::getValue('FIRST_PENALTY_PER') / 100;
 			if($diff >= SettingController::getValue('SECOND_PENALTY_DAY')){
@@ -25,8 +24,7 @@ class MonthlyPlanController extends Controller
 			}
 			$penalty = $payment * $penaltyPer;
 		}
-		//dd($penalty);
-		return FunctionController::formatCurrency($penalty);
+		return $penalty;
 	}
 
 	public static function getMonthlyPlan($loan, $initialDeposit){
@@ -55,8 +53,8 @@ class MonthlyPlanController extends Controller
 			$tempJSON->payment_date = ($temp->payment_date == null) ? $temp->payment_date : FunctionController::formatDate($temp->payment_date);
 			$tempJSON->beginning_balance = FunctionController::formatCurrencyView($beginningBalance);
 			$tempJSON->payment = FunctionController::formatCurrencyView($loan->monthly_payment);
-			$tempJSON->paymentAmount = $loan->monthly_payment;
-			$tempJSON->penaltyAmount = $penalty;
+			$tempJSON->paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
+			$tempJSON->penaltyAmount = FunctionController::formatCurrency($penalty);
 			$tempJSON->penalty = FunctionController::formatCurrencyView($penalty);
 			$tempJSON->principal = FunctionController::formatCurrencyView($monthlyPrincipalAmt);
 			$tempJSON->interest = FunctionController::formatCurrencyView($monthlyInterestAmt);
@@ -69,15 +67,12 @@ class MonthlyPlanController extends Controller
 	}
 
 	public static function generate(Loan $loan, $totalInstallments){
-		$monthlyPlanStr = array();
 		for ($i = 1; $i <= $totalInstallments; $i++) {
-			$tempStr = array(
+			MonthlyPlan::create([
 				'loan_id' => $loan->id,
 				'due_date' => date("Y-m-d", strtotime("+$i month", strtotime($loan->starting_date))),
-			);
-			$monthlyPlanStr[] = $tempStr;
+			]);
 		}
-		MonthlyPlan::create($monthlyPlanStr);
 	}
 
 	public static function getByHashId($id){
