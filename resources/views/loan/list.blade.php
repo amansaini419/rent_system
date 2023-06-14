@@ -52,6 +52,7 @@
             <table id="dataTable" class="table table-striped table-bordered nowrap">
               <thead>
                 <tr>
+                  <th>Status</th>
                   <th>Loan ID</th>
                   <th>Starting Date</th>
                   <th>Loan Amount</th>
@@ -64,6 +65,7 @@
               <tbody>
                 @foreach ($loanStr as $loan)
                   <tr>
+                    <td>{{ $loan->loan_status }}</td>
                     <td>{{ $loan->loan_code }}</td>
                     <td>{{ $loan->starting_date }}</td>
                     <td>{{ $loan->loan_amount }}</td>
@@ -111,6 +113,7 @@
             <table id="dataTable" class="table table-striped table-bordered nowrap">
               <thead>
                 <tr>
+                  <th>Status</th>
                   <th>Loan ID</th>
                   <th>Tenant Name</th>
                   <th>Starting Date</th>
@@ -124,6 +127,7 @@
               <tbody>
                 @foreach ($loanStr as $loan)
                   <tr>
+                    <td>{{ $loan->loan_status }}</td>
                     <td>{{ $loan->loan_code }}</td>
                     <td>{{ $loan->tenant_name }}</td>
                     <td>{{ $loan->starting_date }}</td>

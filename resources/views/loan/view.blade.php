@@ -242,8 +242,7 @@
                                 <td>{{ $monthlyPlan->due_date }}</td>
                                 <td>
                                   @if($monthlyPlan->payment_date == null)
-                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase" data-toggle="modal" data-target="#offlinePaymentModal">Offline Payment</button>
-                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Pay</button>
+                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#offlinePaymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Offline Payment</button>
                                   @else
                                   {{ $monthlyPlan->payment_date }}
                                   @endif
@@ -364,14 +363,31 @@
           </button>
         </div>
         <div class="modal-body">
-          <form>
+          <form method="POST" action="{{ route('loan-offlinePayment') }}">
+            @csrf
             <div class="form-group">
-              <label for="offlineAmount">Payment Amount</label>
-              <input type="text" name="offlineAmount" id="offlineAmount" class="form-control">
+              <label for="paymentAmount">Payment Amount</label>
+              <input type="text" name="paymentAmount" id="paymentAmount" class="form-control" readonly>
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Accept
-                Payment</button>
+              <label for="penaltyAmount">Penalty Amount</label>
+              <input type="text" name="penaltyAmount" id="penaltyAmount" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label for="totalAmount">Total Amount</label>
+              <input type="text" name="totalAmount" id="totalAmount" class="form-control" readonly>
+              <input type="hidden" name="monthlyId" id="monthlyId">
+            </div>
+            <div class="form-group">
+              <label for="paymentChannel">Payment Channel</label>
+              <select name="paymentChannel" id="paymentChannel" class="form-control">
+                <option value="MOMO">MOMO</option>
+                <option value="CASH">CASH</option>
+                <option value="CARD">CARD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Accept Payment</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>

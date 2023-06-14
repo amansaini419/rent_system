@@ -130,8 +130,60 @@ class PaymentController extends Controller
 	}
 
 	protected function payRentOffline(Request $request){
+		$validator = Validator::make($request->all(), [
+			'monthlyId' => 'required',
+			'paymentChannel' => 'required',
+		]);
+
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+
+		$monthlyPlan = MonthlyPlanController::getByHashId($request->monthlyId);
+		if(!$monthlyPlan){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Invalid payment request.',
+				'alert' => 'error'
+			]);
+		}
+		$loan = $monthlyPlan->loan;
+		if(!$loan){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Invalid loan request.',
+				'alert' => 'error'
+			]);
+		}
+
+		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
+		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
+		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
+
 		// create invoice
+		$invoice = InvoiceController::new($totalpayment, 'RENT');
 		// create payment
+		PaymentController::new($invoice->id, $totalpayment, $request->paymentChannel);
 		// update monthly plan
+		$monthlyPlan->invoice_id = $invoice->id;
+		$monthlyPlan->payment_date = Carbon::now();
+		$monthlyPlan->penalty = $penaltyAmount;
+		$monthlyPlan->save();
+
+		LoanController::checkLoanClosed($loan);
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Payment',
+			'message' => 'You have successfully received the payment through ' . $request->paymentChannel . '.',
+			'alert' => 'success'
+		]);
 	}
 }

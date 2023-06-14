@@ -42,6 +42,6 @@ class Loan extends Model
 	}
 
 	public function monthlyPlan(): HasMany{
-		return $this->hasMany(MonthlyPlan::class);
+		return $this->hasMany(MonthlyPlan::class)->orderBy('id', 'asc');
 	}
 }
