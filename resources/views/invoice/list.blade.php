@@ -41,9 +41,10 @@
     </div>
   </div>
   <div class="page-body">
+    @if( in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']) )
     <div class="card">
       <div class="card-header">
-        <h5>All Invoices (for admins)</h5>
+        <h5>All Invoices</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -51,72 +52,36 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
+                <th>Invoice Date</th>
                 <th>Invoice ID</th>
                 <th>Tenant Name</th>
                 <th>Invoice Amount</th>
-                <th>Invoice Date</th>
                 <th>Invoice Type</th>
                 <th>Invoice Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Abc Xyz</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Abc Xyz</td>
-                <td>940</td>
-                <td>12-May-2023</td>
-                <td>MONTHLY_INSTALLMENT</td>
-                <td>Pending</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Abc Xyz</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>INITIAL_DEPOSIT</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Abc Xyz</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
+              @foreach ($invoiceStr as $invoice)
+                <tr>
+                  <td>{{ $invoice->invoice_date }}</td>
+                  <td>{{ $invoice->invoice_code }}</td>
+                  <td>{{ $invoice->tenant_name }}</td>
+                  <td>{{ $invoice->invoice_amount }}</td>
+                  <td>{{ $invoice->invoice_type }}</td>
+                  <td>{{ $invoice->invoice_status }}</td>
+                  <td><a href="{{ route('invoice-view', ['id' => $invoice->invoice_code]) }}" class="btn btn-sm btn-primary">VIEW</a></td>
+                </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
       </div>
     </div>
+    @else
     <div class="card">
       <div class="card-header">
-        <h5>All Invoices (for tenant)</h5>
+        <h5>All Invoices</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -124,89 +89,32 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
+                <th>Invoice Date</th>
                 <th>Invoice ID</th>
                 <th>Invoice Amount</th>
-                <th>Invoice Date</th>
                 <th>Invoice Type</th>
                 <th>Invoice Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>100</td>
-                <td>12-May-2023</td>
-                <td>REGISTRATION_FEES</td>
-                <td>Paid</td>
-                <td>
-                  <a href="{{ route('invoice-view', ['id' => 1]) }}"
-                    class="btn btn-sm btn-primary">VIEW</button>
-                </td>
-              </tr>
+              @foreach ($invoiceStr as $invoice)
+                <tr>
+                  <td>{{ $invoice->invoice_date }}</td>
+                  <td>{{ $invoice->invoice_code }}</td>
+                  <td>{{ $invoice->invoice_amount }}</td>
+                  <td>{{ $invoice->invoice_type }}</td>
+                  <td>{{ $invoice->invoice_status }}</td>
+                  <td><a href="{{ route('invoice-view', ['id' => $invoice->invoice_code]) }}" class="btn btn-sm btn-primary">VIEW</a></td>
+                </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
       </div>
     </div>
+    @endif
   </div>
-
-  <div class="modal fade" id="depositModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Initial Deposit</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label for="depositAmount">How much deposit you want to do?</label>
-              <input type="text" name="depositAmount" id="depositAmount" class="form-control">
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-success waves-effect waves-light text-uppercase">Deposit</button>
-              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
 @endsection
 
 @section('theme-script')
@@ -225,7 +133,9 @@
 
 @section('own-script')
   <script>
-    $('#dataTable').DataTable();
+    $('#dataTable').DataTable({
+        order: [[0, 'desc']],
+    });
     /* $('#dt-server-processing').DataTable({
       "processing": true,
       "serverSide": true,

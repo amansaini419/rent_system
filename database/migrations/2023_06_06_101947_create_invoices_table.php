@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Users;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Users::class);
             $table->double('invoice_amount');
             $table->string('invoice_code', 10)->unique();
             $table->enum('invoice_type', ['REGISTRATION', 'RENT', 'INITIAL_DEPOSIT']);

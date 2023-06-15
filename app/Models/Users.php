@@ -91,4 +91,8 @@ class Users extends Authenticatable
   public function applicationData(): HasOneThrough{
     return $this->hasOneThrough(ApplicationData::class, UserData::class)->latest();
   }
+
+  public function invoices(): HasMany{
+    return $this->hasMany(Invoice::class);
+  }
 }

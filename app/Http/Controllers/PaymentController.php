@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\UserData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +47,7 @@ class PaymentController extends Controller
 		} */
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		$userDataId = $userData->id;
-		$invoice = InvoiceController::new(SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
+		$invoice = InvoiceController::new(Auth::id(), SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
 		$invoiceId = $invoice->id;
 		RegistrationFeeController::new($userDataId, $invoiceId);
 		PaymentController::new($invoiceId, SettingController::getValue('REGISTRATION_FEES'), 'CARD');
@@ -56,7 +57,7 @@ class PaymentController extends Controller
 	public function payInitialDeposit(Request $request){
 		$application = ApplicationController::checkApplicationCode($request->applicationId);
 		if($application){
-			$invoice = InvoiceController::new($request->depositAmount, 'INITIAL_DEPOSIT');
+			$invoice = InvoiceController::new(Auth::id(), $request->depositAmount, 'INITIAL_DEPOSIT');
 			$invoiceId = $invoice->id;
 			InitialDepositController::new($application->id, $invoiceId);
 			PaymentController::new($invoiceId, $request->depositAmount, 'CARD');
@@ -110,7 +111,7 @@ class PaymentController extends Controller
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		// create invoice
-		$invoice = InvoiceController::new($totalpayment, 'RENT');
+		$invoice = InvoiceController::new(Auth::id(), $totalpayment, 'RENT');
 		// create payment
 		PaymentController::new($invoice->id, $totalpayment, 'CARD');
 		// update monthly plan
@@ -163,12 +164,22 @@ class PaymentController extends Controller
 			]);
 		}
 
+		$userData = $loan->userData;
+		if(!$userData){
+			return back()->with([
+				'success' => false,
+				'title' => 'Error',
+				'error' => 'Invalid user.',
+				'alert' => 'error'
+			]);
+		}
+
 		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
 		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		// create invoice
-		$invoice = InvoiceController::new($totalpayment, 'RENT');
+		$invoice = InvoiceController::new($userData->users_id, $totalpayment, 'RENT');
 		// create payment
 		PaymentController::new($invoice->id, $totalpayment, $request->paymentChannel);
 		// update monthly plan
@@ -185,5 +196,9 @@ class PaymentController extends Controller
 			'message' => 'You have successfully received the payment through ' . $request->paymentChannel . '.',
 			'alert' => 'success'
 		]);
+	}
+
+	public static function getTotalPaymentByInvoice($invoiceId){
+		return Payment::where('invoice_id', $invoiceId)->sum('payment_amount');
 	}
 }

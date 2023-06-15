@@ -44,26 +44,24 @@ class ApplicationController extends Controller
 		return ($application->subadmin_id == 0) ? 'NONE' : User::find($application->subadmin_id)->name;
 	}
 
-	public static function getUserApplications($user_type){
-		if($user_type == "TENANT"){
+	public static function getUserApplications(){
+		if(Auth::user()->user_type == "TENANT"){
 			$applications = Auth::user()->applications;
 		}
 		elseif(Auth::user()->user_type == "ADMIN"){
 			$applications = Application::orderBy('id', 'desc')->get();
 		}
-		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
+		elseif(Auth::user()->userType == "STAFF" || Auth::user()->user_type == "AGENT"){
 			$applications = Application::where('subadmin_id', Auth::id())->orderBy('id', 'desc')->get();
 		}
 		return $applications;
 	}
 	
 	protected function index(string $status = 'ALL'){
-		$applicationStr = array();
-		$applications = ApplicationController::getUserApplications(Auth::user()->user_type);
-		$applicationStr = ApplicationController::getApplications($applications, $status);
+		$applications = ApplicationController::getUserApplications();
 		
 		return view('application.list', [
-			'applicationStr' => $applicationStr,
+			'applicationStr' => ApplicationController::getApplications($applications, $status),
 		]);
 	}
 

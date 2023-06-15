@@ -6,6 +6,7 @@ use App\Http\Controllers\ApplicationDataController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentDataController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandlordDataController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PaymentController;
@@ -95,15 +96,8 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/loan/offlinePayment', [PaymentController::class, 'payRentOffline'])->name('loan-offlinePayment');
         
         
-        Route::get('/invoice/list', function () {
-            return view('invoice.list');
-        })->name('invoice-list');
-        
-        Route::get('/invoice/view/{id?}', function () {
-            return view('invoice.view');
-        })->name('invoice-view');
-        
-        
+        Route::get('/invoice/list', [InvoiceController::class, 'index'])->name('invoice-list');
+        Route::get('/invoice/view/{id?}', [InvoiceController::class, 'view'])->name('invoice-view');
         
         Route::get('/payment/history', function () {
             return view('payment-history');
