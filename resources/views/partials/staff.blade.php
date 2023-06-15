@@ -1,10 +1,10 @@
-<li class="">
+{{-- <li class="">
   <a href="{{ route('tenant-list') }}">
     <span class="pcoded-micon"><i class="ti-home"></i><b>T</b></span>
     <span class="pcoded-mtext" data-i18n="nav.navigate.main">Tenants</span>
     <span class="pcoded-mcaret"></span>
   </a>
-</li>
+</li> --}}
 <li class="pcoded-hasmenu">
   <a href="javascript:void(0)">
     <span class="pcoded-micon"><i class="ti-layout"></i><b>A</b></span>

@@ -68,6 +68,11 @@ class Users extends Authenticatable
     return $this->hasManyThrough(Application::class, UserData::class)->latest();
   }
 
+  public function allApplications(): HasManyThrough
+  {
+    return $this->hasManyThrough(Application::class, UserData::class);
+  }
+
   public function loans(): HasOneThrough
   {
     return $this->hasOneThrough(Loan::class, Application::class)->latest();
@@ -80,6 +85,10 @@ class Users extends Authenticatable
 
   public function userData(): HasOne
   {
-    return $this->HasOne(UserData::class)->latestOfMany();
+    return $this->hasOne(UserData::class)->latestOfMany();
+  }
+
+  public function applicationData(): HasOneThrough{
+    return $this->hasOneThrough(ApplicationData::class, UserData::class)->latest();
   }
 }

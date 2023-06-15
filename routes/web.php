@@ -9,6 +9,7 @@ use App\Http\Controllers\DocumentDataController;
 use App\Http\Controllers\LandlordDataController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,6 +78,9 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/application/assignStaff', [ApplicationController::class, 'assignStaff'])->name('application-assignStaff');
         Route::post('/application/reject', [ApplicationController::class, 'reject'])->name('application-reject');
         Route::post('/application/approve', [ApplicationController::class, 'approve'])->name('application-approve');
+
+        Route::get('/tenant/list', [UsersController::class, 'tenantIndex'])->name('tenant-list');
+        Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
@@ -90,6 +94,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/loan/view/{id}', [LoanController::class, 'view'])->name('loan-view');
         Route::post('/loan/offlinePayment', [PaymentController::class, 'payRentOffline'])->name('loan-offlinePayment');
         
+        
         Route::get('/invoice/list', function () {
             return view('invoice.list');
         })->name('invoice-list');
@@ -98,13 +103,7 @@ Route::group(['middleware' => ['auth']], function(){
             return view('invoice.view');
         })->name('invoice-view');
         
-        Route::get('/tenant/list', function () {
-            return view('tenant.list');
-        })->name('tenant-list');
         
-        Route::get('/tenant/view/{id?}', function () {
-            return view('tenant.view');
-        })->name('tenant-view');
         
         Route::get('/payment/history', function () {
             return view('payment-history');

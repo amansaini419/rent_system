@@ -16,7 +16,7 @@ use stdClass;
 
 class ApplicationController extends Controller
 {
-	protected static function getApplications($applications, String $status){
+	public static function getApplications($applications, String $status = 'ALL'){
 		$applicationStr = array();
 		foreach($applications as $application){
 			$tempJSON = new stdClass();

@@ -18,27 +18,27 @@ class UserData extends Model
 	];
 
 	public function user(): BelongsTo{
-		return $this->BelongsTo(Users::class, 'users_id');
+		return $this->belongsTo(Users::class, 'users_id');
 	}
 
 	public function application(): HasOne{
-    return $this->HasOne(Application::class)->latestOfMany();
+    return $this->hasOne(Application::class)->latestOfMany();
   }
 
 	public function applicationData(): HasOne{
-    return $this->HasOne(ApplicationData::class);
+    return $this->hasOne(ApplicationData::class);
   }
 
 	public function accomodationData(): HasOne{
-    return $this->HasOne(AccomodationData::class);
+    return $this->hasOne(AccomodationData::class);
   }
 
 	public function documentData(): HasOne{
-    return $this->HasOne(DocumentData::class);
+    return $this->hasOne(DocumentData::class);
   }
 
 	public function landlordData(): HasOne{
-    return $this->HasOne(LandlordData::class);
+    return $this->hasOne(LandlordData::class);
   }
 
 	public function fees(): HasOne{

@@ -55,9 +55,8 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-block">
-            <p>(ONLY FOR ADMINS)</p>
             <div class="row">
-              <div class="col-lg-6">
+              {{-- <div class="col-lg-6">
                 <div class="table-responsive">
                   <table class="table user-table m-0">
                     <tbody>
@@ -65,25 +64,26 @@
                         <th>Tenant ID</th>
                         <td>1</td>
                       </tr>
-                      <tr>
-                        <th>Tenant Name</th>
-                        <td>Abc Xyz</td>
-                      </tr>
+                      
                     </tbody>
                   </table>
                 </div>
-              </div>
+              </div> --}}
               <div class="col-lg-6">
                 <div class="table-responsive">
                   <table class="table user-table m-0">
                     <tbody>
                       <tr>
+                        <th>Tenant Name</th>
+                        <td>{{ $tenantName }}</td>
+                      </tr>
+                      <tr>
                         <th>Tenant Email</th>
-                        <td>abc@xyz</td>
+                        <td>{{ $tenant->email }}</td>
                       </tr>
                       <tr>
                         <th>Tenant Phone No.</th>
-                        <td>5435435</td>
+                        <td>{{ $tenant->phone_number }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -110,28 +110,16 @@
                   </tr>
                 </thead>
                 <tbody>
+                  @foreach ($applications as $application)
                   <tr>
-                    <td>GHYGDSHABDH</td>
-                    <td>RENEW</td>
-                    <td>PENDING</td>
-                    <td>0</td>
-                    <td>None</td>
-                    <td>
-                      <a href="{{ route('application-view', ['status' => 'PENDING', 'id' => 1]) }}"
-                        class="btn btn-sm btn-primary">VIEW</a>
-                    </td>
+                    <td>{{ $application->application_code }}</td>
+                    <td>{{ $application->application_type }}</td>
+                    <td>{{ $application->application_status }}</td>
+                    <td>{{ $application->initial_deposit }}</td>
+                    <td>{{ $application->subadmin_id }}</td>
+                    <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
                   </tr>
-                  <tr>
-                    <td>GHYGDSHABDH</td>
-                    <td>NEW</td>
-                    <td>LOAN_CLOSED</td>
-                    <td>0</td>
-                    <td>Staff 1</td>
-                    <td>
-                      <a href="{{ route('application-view', ['status' => 'LOAN_CLOSED', 'id' => 1]) }}"
-                        class="btn btn-sm btn-primary">VIEW</a>
-                    </td>
-                  </tr>
+                  @endforeach
                 </tbody>
               </table>
             </div>
@@ -146,6 +134,7 @@
               <table id="dataTable" class="table table-striped table-bordered nowrap">
                 <thead>
                   <tr>
+                    <th>Status</th>
                     <th>Loan ID</th>
                     <th>Starting Date</th>
                     <th>Loan Amount</th>
@@ -156,30 +145,18 @@
                   </tr>
                 </thead>
                 <tbody>
+                  @foreach ($loans as $loan)
                   <tr>
-                    <td>ABCDGIH</td>
-                    <td>16-Jun-2023</td>
-                    <td>10,000</td>
-                    <td>24%</td>
-                    <td>640</td>
-                    <td>12</td>
-                    <td>
-                      <a href="{{ route('loan-view', ['status' => '$loanStatus', 'id' => 1]) }}"
-                        class="btn btn-sm btn-primary">VIEW</a>
-                    </td>
+                    <td>{{ $loan->loan_status }}</td>
+                    <td>{{ $loan->loan_code }}</td>
+                    <td>{{ $loan->starting_date }}</td>
+                    <td>{{ $loan->loan_amount }}</td>
+                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->monthly_payment }}</td>
+                    <td>{{ $loan->loan_period * 12 }}</td>
+                    <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
                   </tr>
-                  <tr>
-                    <td>DSHDVBH</td>
-                    <td>16-Jun-2023</td>
-                    <td>10,000</td>
-                    <td>24%</td>
-                    <td>640</td>
-                    <td>12</td>
-                    <td>
-                      <a href="{{ route('loan-view', ['status' => '$loanStatus', 'id' => 2]) }}"
-                        class="btn btn-sm btn-primary">VIEW</a>
-                    </td>
-                  </tr>
+                  @endforeach
                 </tbody>
               </table>
             </div>

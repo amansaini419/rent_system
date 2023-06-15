@@ -43,7 +43,7 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
-        <h5>All Tenants (for admins)</h5>
+        <h5>All Tenants</h5>
         <span></span>
       </div>
       <div class="card-block">
@@ -51,7 +51,7 @@
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Tenant ID</th>
+                <th>S.N.</th>
                 <th>Tenant Email</th>
                 <th>Tenant Name</th>
                 <th>Tenant Phone No.</th>
@@ -59,7 +59,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              @foreach ($tenantStr as $tenant)
+                <tr>
+                  <td>{{ $tenant->sn }}</td>
+                  <td>{{ $tenant->email }}</td>
+                  <td>{{ $tenant->tenant_name }}</td>
+                  <td>{{ $tenant->phone_number }}</td>
+                  <td><a href="{{ route('tenant-view', ['id' => $tenant->id]) }}" class="btn btn-sm btn-primary">VIEW</a></td>
+                </tr>
+              @endforeach
+              {{-- <tr>
                 <td>1</td>
                 <td>Abc Xyz</td>
                 <td>dsd</td>
@@ -85,7 +94,7 @@
                 <td>
                   <a href="{{ route('tenant-view', ['id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
                 </td>
-              </tr>
+              </tr> --}}
             </tbody>
           </table>
         </div>
