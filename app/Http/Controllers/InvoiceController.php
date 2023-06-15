@@ -37,31 +37,23 @@ class InvoiceController extends Controller
 		return (PaymentController::getTotalPaymentByInvoice($invoice->id) >= $invoice->invoice_amount) ? "PAID" : "PENDING";
 	}
 
+	public static function getInvoiceDetails($invoice){
+		$applicationData = $invoice->user->applicationData;
+		$tempJSON = new stdClass();
+		$tempJSON->id = $invoice->id;
+		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->invoice_amount = FunctionController::formatCurrencyView($invoice->invoice_amount);
+		$tempJSON->invoice_code = $invoice->invoice_code;
+		$tempJSON->invoice_type = $invoice->invoice_type;
+		$tempJSON->invoice_date = FunctionController::formatDate($invoice->created_at);
+		$tempJSON->invoice_status = InvoiceController::checkInvoiceStatus($invoice);
+		return $tempJSON;
+	}
+
 	public static function getInvoices($invoices){
 		$invoiceStr = array();
 		foreach($invoices as $invoice){
-			$applicationData = $invoice->user->applicationData;
-			$tempJSON = new stdClass();
-			$tempJSON->id = $invoice->id;
-			$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
-			$tempJSON->invoice_amount = FunctionController::formatCurrencyView($invoice->invoice_amount);
-			$tempJSON->invoice_code = $invoice->invoice_code;
-			$tempJSON->invoice_type = $invoice->invoice_type;
-			$tempJSON->invoice_date = FunctionController::formatDate($invoice->created_at);
-			$tempJSON->invoice_status = InvoiceController::checkInvoiceStatus($invoice);
-			$invoiceStr[] = $tempJSON;
-
-			/* $applicationData = $application->userData->applicationData;
-			$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
-			$tempJSON->application_type = $application->application_type;
-			$tempJSON->application_code = $application->application_code;
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			$tempJSON->application_status = $currentApplicationStatus;
-			$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
-			$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
-			if($currentApplicationStatus == $status || $status == 'ALL'){
-				$applicationStr[] = $tempJSON;
-			} */
+			$invoiceStr[] = InvoiceController::getInvoiceDetails($invoice);
 		}
 		return $invoiceStr;
 	}
@@ -96,6 +88,10 @@ class InvoiceController extends Controller
 	}
 
 	protected function view(string $id){
-		return view('invoice.view');
+		$invoice = InvoiceController::checkInvoiceCode($id);
+		return view('invoice.view', [
+			'invoice' => InvoiceController::getInvoiceDetails($invoice),
+			'payments' => $invoice->payments,
+		]);
 	}
 }

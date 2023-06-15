@@ -43,7 +43,7 @@ class LoanController extends Controller
 				}
 			}
 		}
-		return (object)$loanStr;
+		return $loanStr;
 	}
 
 	public static function getLoanCalculation($loanAmount, $interestRate, $loanPeriod, $initialDeposit){
@@ -159,12 +159,9 @@ class LoanController extends Controller
 	}
 
 	protected function index(string $status = 'ALL'){
-		$loanStr = array();
 		$applications = ApplicationController::getUserApplications(Auth::user()->user_type);
-		$loanStr = LoanController::getLoans($applications, $status);
-		
 		return view('loan.list', [
-			'loanStr' => $loanStr,
+			'loanStr' => LoanController::getLoans($applications, $status),
 		]);
 	}
 

@@ -16,21 +16,28 @@ use stdClass;
 
 class ApplicationController extends Controller
 {
+	public static function getApplicationDetails($application){
+		$tempJSON = new stdClass();
+		$tempJSON->id = $application->id;
+		$applicationData = $application->userData->applicationData;
+		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->application_type = $application->application_type;
+		$tempJSON->application_code = $application->application_code;
+		$tempJSON->application_remark = $application->application_remark;
+		$tempJSON->admin_remark = $application->admin_remark;
+		$currentApplicationStatus = $application->currentStatus->application_status;
+		$tempJSON->application_status = $currentApplicationStatus;
+		$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
+		$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
+		return $tempJSON;
+	}
+
 	public static function getApplications($applications, String $status = 'ALL'){
 		$applicationStr = array();
 		foreach($applications as $application){
-			$tempJSON = new stdClass();
-			$tempJSON->id = $application->id;
-			$applicationData = $application->userData->applicationData;
-			$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
-			$tempJSON->application_type = $application->application_type;
-			$tempJSON->application_code = $application->application_code;
 			$currentApplicationStatus = $application->currentStatus->application_status;
-			$tempJSON->application_status = $currentApplicationStatus;
-			$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
-			$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
 			if($currentApplicationStatus == $status || $status == 'ALL'){
-				$applicationStr[] = $tempJSON;
+				$applicationStr[] = ApplicationController::getApplicationDetails($application);
 			}
 		}
 		return $applicationStr;
@@ -51,7 +58,7 @@ class ApplicationController extends Controller
 		elseif(Auth::user()->user_type == "ADMIN"){
 			$applications = Application::orderBy('id', 'desc')->get();
 		}
-		elseif(Auth::user()->userType == "STAFF" || Auth::user()->user_type == "AGENT"){
+		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
 			$applications = Application::where('subadmin_id', Auth::id())->orderBy('id', 'desc')->get();
 		}
 		return $applications;
@@ -71,12 +78,9 @@ class ApplicationController extends Controller
 			$userData = $application->userData;
 			//echo($application->currentStatus->application_status);
 			return view('application.view',[
-				'application' => $application,
+				'application' => ApplicationController::getApplicationDetails($application),
 				'allStaff' => UsersController::getStaff(),
-				'applicationStatus' => $application->currentStatus->application_status,
 				'tenant' => $userData->user,
-				'initialDeposit' => ApplicationController::getTotalDeposit($application),
-				'staffAssigned' => ApplicationController::getStaffAssigned($application),
 				'applicationData' => $userData->applicationData,
 				'accomodationData' => $userData->accomodationData,
 				'documentData' => $userData->documentData,

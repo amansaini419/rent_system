@@ -301,54 +301,7 @@
               </div>
             </div>
           </div>
-          {{-- <div class="card">
-            <div class="card-header">
-              <h5 class="sub-title d-block border-0">Monthly Plan</h5>
-            </div>
-            <div class="card-block">
-              <div class="view-info">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="general-info">
-                      <div class="table-responsive">
-                        <table class="table" id="monthlyPlanTable">
-                          <thead>
-                            <tr>
-                              <th>S.N.</th>
-                              <th>Payment Status</th>
-                              <th>Payment Date</th>
-                              <th>Beginning Balance</th>
-                              <th>Payment</th>
-                              <th>Principal</th>
-                              <th>Interest</th>
-                              <th>Ending Balance</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @foreach ($monthlyPlanStr as $monthlyPlan)
-                              <tr>
-                                <td>{{ $monthlyPlan->sn }}</td>
-                                <td><button type="button" class="btn btn-sm btn-link px-0 text-uppercase" data-toggle="modal" data-target="#offlinePaymentModal">Offline Payment</button></td>
-                                <td>{{ $monthlyPlan->due_date }}</td>
-                                <td>{{ $monthlyPlan->beginning_balance }}</td>
-                                <td>{{ $monthlyPlan->payment }}</td>
-                                <td>{{ $monthlyPlan->principal }}</td>
-                                <td>{{ $monthlyPlan->interest }}</td>
-                                <td>{{ $monthlyPlan->ending_balance }}</td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> --}}
         @endif
-        {{-- </div>
-        </div> --}}
       </div>
     </div>
   </div>
@@ -433,10 +386,6 @@
   @endif
 @endsection
 
-@section('theme-script')
-  <script type="text/javascript" src="{{ asset('bower_components/datedropper/js/datedropper.min.js') }}"></script>
-@endsection
-
 @section('own-script')
   <script>
     @if(session('success') === true)
@@ -450,59 +399,6 @@
         swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
       @endif
     @endif
-
-    /* P = Principal Amount
-    R = Interest per annum
-    r = monthly interest rate ( R / 12 / 100 )
-    n = tenure/total installments (in months)
-    adj = (1 + r) ^ n
-
-    EMI = P * r * adj / (adj - 1) */
-
-    $('#generateBtn').click((e) => {
-      e.preventDefault();
-
-      const startingDate = $('#startingDate').val();
-      //console.log(dateFormat(startingDate));
-      const loanAmount = $('#loanAmount').val();
-      const interestRate = $('#interestRate').val();
-      const loanPeriod = $('#loanPeriod').val();
-
-      const monthlyInterest = interestRate / 12 / 100;
-      const totalInstallments = loanPeriod * 12;
-      const adj = Math.pow((1 + monthlyInterest), totalInstallments);
-
-      const monthlyPayment = calculateMonthlyPayment(loanAmount, monthlyInterest, totalInstallments);
-      const totalLoanCost = monthlyPayment * totalInstallments;
-      const totalInterest = totalLoanCost - loanAmount;
-
-      $('#monthlyPaymentCell').text(currencyFormat(monthlyPayment));
-      $('#totalInstallmentCell').text(totalInstallments);
-      $('#totalInterestCell').text(currencyFormat(totalInterest));
-      $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
-
-      let beginningBalance = loanAmount;
-      for (let i = 1; i <= totalInstallments; i++) {
-        moment(startingDate).add(i, 'months');
-        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod / 12);
-        const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
-        let endingBalance = beginningBalance - monthlyPrincipalAmt;
-        const tableRow = '\
-                  <tr>\
-                    <td>' + i + '</td>\
-                    <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-                    <td>' + currencyFormat(beginningBalance) + '</td>\
-                    <td>' + currencyFormat(monthlyPayment) + '</td>\
-                    <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
-                    <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
-                    <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
-                  </tr>\
-                ';
-        $('#monthlyPlanTable tbody').append(tableRow);
-        console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
-        beginningBalance = endingBalance;
-      }
-    });
 
     $('.payment-modal-btn').click(function(){
       $('#monthlyId').val($(this).attr('data-id'));

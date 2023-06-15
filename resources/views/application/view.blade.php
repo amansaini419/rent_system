@@ -77,24 +77,20 @@
                         <td>{{ $application->application_code }}</td>
                       </tr>
                       <tr>
-                        <th>Tenant Email</th>
-                        <td>{{ $tenant->email }}</td>
-                      </tr>
-                      <tr>
                         <th>Application Type</th>
                         <td>{{ $application->application_type }}</td>
                       </tr>
                       <tr>
                         <th>Initial Deposit</th>
-                        <td>{{ $initialDeposit }}</td>
+                        <td>{{ $application->initial_deposit }}</td>
                       </tr>
                       <tr>
                         <th>Application Status</th>
-                        <td>{{ $applicationStatus }}</td>
+                        <td>{{ $application->application_status }}</td>
                       </tr>
                       <tr>
                         <th>Staff Assigned</th>
-                        <td>{{ $staffAssigned }}</td>
+                        <td>{{ $application->subadmin_id }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -104,6 +100,14 @@
                 <div class="table-responsive">
                   <table class="table table-bordered application-table m-0">
                     <tbody>
+                      <tr>
+                        <th>Tenant Email</th>
+                        <td>{{ $tenant->email }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tenant Phone Number</th>
+                        <td>{{ $tenant->phone_number }}</td>
+                      </tr>
                       <tr>
                         <th>Staff Remark</th>
                         <td style="white-space: break-spaces;">{{ $application->application_remark }}</td>
@@ -121,17 +125,17 @@
             <div class="row">
               <div class="col-lg-12">
                 @if (Auth::user()->user_type == "ADMIN")
-                  @if ($applicationStatus == "PENDING")
+                  @if ($application->application_status == "PENDING")
                     <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#assignApplicationModal">assign staff</button>
-                  @elseif ($applicationStatus == "VERIFIED")
+                  @elseif ($application->application_status == "VERIFIED")
                     <button type="button" class="btn btn-sm btn-danger waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#rejectApplicationModal">reject application</button>
                     <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#approveApplicationModal">approve application</button>
                   @endif
-                @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $applicationStatus == "UNDER_VERIFICATION" )
+                @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $application->application_status == "UNDER_VERIFICATION" )
                   <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase" data-toggle="modal" data-target="#reviewApplicationModal">send for approval</button>
                 @endif
                 
-                @if ($applicationStatus == "APPROVED")
+                @if ($application->application_status == "APPROVED")
                   <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase monthly-plan-modal-btn" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
                 @endif
                 <a href="{{ route('application-register', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">update application</a>
@@ -521,7 +525,7 @@
     </div>
   </div>
   @if (Auth::user()->user_type == "ADMIN")
-    @if ($applicationStatus == "PENDING")
+    @if ($application->application_status == "PENDING")
       <div class="modal fade" id="assignApplicationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -552,7 +556,7 @@
           </div>
         </div>
       </div>
-    @elseif ($applicationStatus == "VERIFIED")
+    @elseif ($application->application_status == "VERIFIED")
       <div class="modal fade" id="rejectApplicationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -606,7 +610,7 @@
         </div>
       </div>
     @endif
-  @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $applicationStatus == "UNDER_VERIFICATION" )
+  @elseif ( (Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT") && $application->application_status == "UNDER_VERIFICATION" )
     <div class="modal fade" id="reviewApplicationModal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -636,7 +640,7 @@
     </div>
   @endif
 
-  @if ($applicationStatus == "APPROVED")
+  @if ($application->application_status == "APPROVED")
     <div class="modal fade" id="monthlyPlanModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" style="max-width: 90%;" role="document">
         <div class="modal-content">
@@ -687,7 +691,7 @@
                   </div>
                   <div class="form-group">
                     <label for="initialDeposit">Initital Deposit</label>
-                    <input type="text" name="initialDeposit" id="initialDeposit" class="form-control" readonly value="{{ $initialDeposit }}">
+                    <input type="text" name="initialDeposit" id="initialDeposit" class="form-control" readonly value="{{ $application->initial_deposit }}">
                   </div>
                   <div class="form-group">
                     <label for="totalInterest">Total Interest</label>
@@ -818,9 +822,5 @@
         beginningBalance = endingBalance;
       }
     });
-
-    /*
-    Add new page for monthly plan, loan
-    */
   </script>
 @endsection
