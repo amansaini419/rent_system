@@ -226,10 +226,8 @@ class LoanController extends Controller
 		$loan->save();
 
 		$application = $loan->application;
-		if($application){
-			if(ApplicationStatusController::getCurrentApplicationStatus($application) == 'LOAN_STARTED'){
-				ApplicationStatusController::new($application->id, 'LOAN_CLOSED');
-			}
+		if($application && ApplicationStatusController::getCurrentApplicationStatus($application) == 'LOAN_STARTED'){
+			ApplicationStatusController::new($application->id, 'LOAN_CLOSED');
 		}
 	}
 }
