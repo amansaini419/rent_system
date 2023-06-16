@@ -70,9 +70,11 @@ Route::group(['middleware' => ['auth']], function(){
     });
 
     Route::group(['middleware' => ['user-role:STAFF']], function(){
+        //
     });
 
     Route::group(['middleware' => ['user-role:AGENT']], function(){
+        //
     });
 
     Route::group(['middleware' => ['user-role:ADMIN']], function(){
