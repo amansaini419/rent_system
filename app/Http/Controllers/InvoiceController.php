@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class InvoiceController extends Controller
@@ -38,7 +39,21 @@ class InvoiceController extends Controller
 	}
 
 	public static function getInvoiceDetails($invoice){
-		$applicationData = $invoice->user->applicationData;
+		//DB::enableQueryLog();
+		if($invoice->invoice_type == "RENT"){
+			$userData = $invoice->loan->userData;
+		}
+		elseif($invoice->invoice_type == "REGISTRATION"){
+			$userData = $invoice->userData;
+		}
+		elseif($invoice->invoice_type == "INITIAL_DEPOSIT"){
+			$userData = $invoice->application->userData;
+			//dd(DB::getQueryLog());
+		}
+		//dd(DB::getQueryLog());
+		//echo json_encode($applicationData);
+		//echo "<br>";
+		$applicationData = $userData->applicationData;
 		$tempJSON = new stdClass();
 		$tempJSON->id = $invoice->id;
 		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
