@@ -73,14 +73,13 @@ class Users extends Authenticatable
     return $this->hasManyThrough(Application::class, UserData::class);
   }
 
-  public function loans(): HasOneThrough
-  {
-    return $this->hasOneThrough(Loan::class, Application::class)->latest();
-  }
-
   public function allUserData(): HasMany
   {
     return $this->hasMany(UserData::class);
+  }
+
+  public function latestApplications(): HasManyThrough{
+    return $this->hasManyThrough(Application::class, UserData::class)->orderBy('id', 'desc');
   }
 
   public function userData(): HasOne

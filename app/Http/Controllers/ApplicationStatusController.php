@@ -13,4 +13,8 @@ class ApplicationStatusController extends Controller
 			'application_status' => $applicationStatus,
 		]);
 	}
+
+	public static function getCurrentApplicationStatus($application){
+		return ($application && $application->currentStatus) ? $application->currentStatus->application_status : "";
+	}
 }

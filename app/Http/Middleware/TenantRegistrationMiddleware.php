@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationStatusController;
+use App\Http\Controllers\UserDataController;
 use App\Models\Application;
 use App\Models\UserData;
 use Closure;
@@ -58,17 +59,9 @@ class TenantRegistrationMiddleware
 				}
 			} else {
 				// create user data
-				$userData = UserData::create([
-					'users_id' => Auth::id(),
-				]);
-				// create application data, accomodation data, document data, landlord data
+				$userData = UserDataController::new(Auth::id());
 				// create application
-				$applicationCode = ApplicationController::createApplicationCode();
-				$application = Application::create([
-					'user_data_id' => $userData->id,
-					'application_type' => 'NEW',
-					'application_code' => $applicationCode,
-				]);
+				$application = ApplicationController::new($userData->id, 'NEW');
 				// create application status
 				ApplicationStatusController::new($application->id, 'INCOMPLETE');
 			}

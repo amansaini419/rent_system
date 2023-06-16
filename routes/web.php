@@ -64,15 +64,15 @@ Route::group(['middleware' => ['auth']], function(){
         Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
         Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
         Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
+        Route::post('/application/reapply', [ApplicationController::class, 'reapply'])->name('application-reapply');
+
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
     });
 
     Route::group(['middleware' => ['user-role:STAFF']], function(){
-        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
     });
 
     Route::group(['middleware' => ['user-role:AGENT']], function(){
-        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
     });
 
     Route::group(['middleware' => ['user-role:ADMIN']], function(){
@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
         Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');
+        Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
         Route::post('/application/loan', [LoanController::class, 'new'])->name('application-loan');
         
         Route::get('/loan/list/{status?}', [LoanController::class, 'index'])->name('loan-list');

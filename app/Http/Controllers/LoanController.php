@@ -137,8 +137,7 @@ class LoanController extends Controller
 				MonthlyPlanController::generate($loan, $loanCalculation->totalInstallments);
 
 				// create LOAN_STARTED status
-				$currentApplicationStatus = $application->currentStatus->application_status;
-				if($currentApplicationStatus === 'APPROVED'){
+				if(ApplicationStatusController::getCurrentApplicationStatus($application) === 'APPROVED'){
 					ApplicationStatus::create([
 						'application_id' => $application->id,
 						'application_status' => 'LOAN_STARTED',
@@ -228,8 +227,7 @@ class LoanController extends Controller
 
 		$application = $loan->application;
 		if($application){
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus == 'LOAN_STARTED'){
+			if(ApplicationStatusController::getCurrentApplicationStatus($application) == 'LOAN_STARTED'){
 				ApplicationStatusController::new($application->id, 'LOAN_CLOSED');
 			}
 		}

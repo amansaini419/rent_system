@@ -42,17 +42,37 @@
   </div>
   <div class="page-body">
     @if(Auth::user()->user_type == "TENANT")
-      <div class="card">
-        <div class="card-header">
-          <h5>Reapply Application</h5>
+      @if ($latestApplicationStatus == "LOAN_CLOSED")
+        <div class="card">
+          <div class="card-header">
+            <h5>Reapply Application</h5>
+          </div>
+          <div class="card-block">
+            <form method="POST" action="{{ route('application-reapply') }}">
+              @csrf
+              <div class="form-group">
+                <div class="form-radio">
+                  <div class="radio radiofill radio-inline">
+                    <label>
+                        <input type="radio" name="applicationType" value="NEW" checked="checked">
+                        <i class="helper"></i>New Place
+                    </label>
+                  </div>
+                  <div class="radio radiofill radio-inline">
+                    <label>
+                        <input type="radio" name="applicationType" value="RENEW">
+                        <i class="helper"></i>Existing Place
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-sm btn-primary text-uppercase">submit</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="card-block">
-          <p>
-            <button type="button" class="btn btn-sm btn-primary">NEW PLACE</button>
-            <button type="button" class="btn btn-sm btn-primary">EXISTING PLACE</button>
-          </p>
-        </div>
-      </div>
+      @endif
       <div class="card">
         <div class="card-header">
           <h5>All Applications</h5>
@@ -79,32 +99,13 @@
                     <td>{{ $application->application_status }}</td>
                     <td>{{ $application->initial_deposit }}</td>
                     <td>{{ $application->subadmin_id }}</td>
-                    <td><button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal" data-applicationId="{{ $application->application_code }}" data-toggle="modal" data-target="#depositModal">Initial Deposit</button></td>
+                    <td>
+                      @if ($application->application_status == "PENDING")
+                      <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal" data-applicationId="{{ $application->application_code }}" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
+                      @endif
+                    </td>
                   </tr>
                 @endforeach
-                {{-- <tr>
-                  <td>GHYGDSHABDH</td>
-                  <td>RENEW</td>
-                  <td>PENDING</td>
-                  <td>0</td>
-                  <td>None</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</a>
-                    <button type="button" class="btn btn-sm btn-primary text-uppercase" data-toggle="modal" data-target="#depositModal">Initial Deposit</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>GHYGDSHABDH</td>
-                  <td>NEW</td>
-                  <td>LOAN_CLOSED</td>
-                  <td>0</td>
-                  <td>Staff 1</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr> --}}
               </tbody>
             </table>
           </div>
@@ -142,66 +143,6 @@
                     <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
                   </tr>
                 @endforeach
-                {{-- <tr>
-                  <td>1</td>
-                  <td>Abc Xyz</td>
-                  <td>RENEW</td>
-                  <td>PENDING</td>
-                  <td>100</td>
-                  <td>None</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Abc Xyz</td>
-                  <td>NEW</td>
-                  <td>UNDER_REVIEW</td>
-                  <td>0</td>
-                  <td>Staff 1</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Abc Xyz</td>
-                  <td>NEW</td>
-                  <td>APPROVED</td>
-                  <td>0</td>
-                  <td>Staff 2</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Abc Xyz</td>
-                  <td>NEW</td>
-                  <td>PENDING</td>
-                  <td>0</td>
-                  <td>None</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Abc Xyz</td>
-                  <td>NEW</td>
-                  <td>INCOMPLETE</td>
-                  <td>0</td>
-                  <td>None</td>
-                  <td>
-                    <a href="{{ route('application-view', ['status' => $applicationStatus, 'id' => 1]) }}"
-                      class="btn btn-sm btn-primary">VIEW</button>
-                  </td>
-                </tr> --}}
               </tbody>
             </table>
           </div>
@@ -257,6 +198,18 @@
 
 @section('own-script')
   <script>
+    @if(session('success') === true)
+      @if(session('message'))
+        swal('{{ session('title') }}', '{{ session('message') }}', '{{ session('alert') }}');
+      @endif
+    @elseif (session('success') === false)
+      @if(session('error'))
+        swal('{{ session('title') }}', '{{ session('error') }}', '{{ session('alert') }}');
+      @elseif (session('errors'))
+        swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
+      @endif
+    @endif
+
     $(document).on('click', '.initial-deposit-modal', function(e){
       e.preventDefault();
       const applicationId = $(this).attr('data-applicationId');

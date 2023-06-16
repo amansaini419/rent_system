@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class LandlordDataController extends Controller
 {
-    public function update(Request $request){
+	public function update(Request $request){
 		//var_dump($request->all);
 		$validator = Validator::make($request->all(), [
 			'userDataId' => 'required',

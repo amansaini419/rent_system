@@ -16,6 +16,14 @@ use stdClass;
 
 class ApplicationController extends Controller
 {
+	public static function new($userDataid, $applicationType){
+		return Application::create([
+			'user_data_id' => $userDataid,
+			'application_type' => $applicationType,
+			'application_code' => ApplicationController::createApplicationCode(),
+		]);
+	}
+
 	public static function getApplicationDetails($application){
 		$tempJSON = new stdClass();
 		$tempJSON->id = $application->id;
@@ -25,8 +33,7 @@ class ApplicationController extends Controller
 		$tempJSON->application_code = $application->application_code;
 		$tempJSON->application_remark = $application->application_remark;
 		$tempJSON->admin_remark = $application->admin_remark;
-		$currentApplicationStatus = $application->currentStatus->application_status;
-		$tempJSON->application_status = $currentApplicationStatus;
+		$tempJSON->application_status = ApplicationStatusController::getCurrentApplicationStatus($application);
 		$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
 		$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
 		return $tempJSON;
@@ -35,8 +42,7 @@ class ApplicationController extends Controller
 	public static function getApplications($applications, String $status = 'ALL'){
 		$applicationStr = array();
 		foreach($applications as $application){
-			$currentApplicationStatus = $application->currentStatus->application_status;
-			if($currentApplicationStatus == $status || $status == 'ALL'){
+			if(ApplicationStatusController::getCurrentApplicationStatus($application) == $status || $status == 'ALL'){
 				$applicationStr[] = ApplicationController::getApplicationDetails($application);
 			}
 		}
@@ -63,12 +69,61 @@ class ApplicationController extends Controller
 		}
 		return $applications;
 	}
+
+	protected function reapply(Request $request){
+		$validator = Validator::make($request->all(), [
+			'applicationType' => 'required',
+		]);
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+		$latestApplication = Auth::user()->latestApplications->first();
+		if(ApplicationStatusController::getCurrentApplicationStatus($latestApplication) != "LOAN_CLOSED"){
+			return back()->with([
+				'success' => false,
+				'title' => 'Reapply Error',
+				'error' => 'Invalid reapply application.',
+				'alert' => 'error'
+			]);
+		}
+		
+		if($request->applicationType == "NEW"){
+			// create new data id
+			$userData = UserDataController::new(Auth::id());
+			// create application record
+			$application = ApplicationController::new($userData->id, 'NEW');
+			// create application status
+			ApplicationStatusController::new($application->id, 'INCOMPLETE');
+		}
+		elseif($request->applicationType == "RENEW"){
+			// get old userdata
+			$userData = Auth::user()->userData;
+			// create application record
+			$application = ApplicationController::new($userData->id, 'RENEW');
+			// create application status
+			ApplicationStatusController::new($application->id, 'PENDING');
+		}
+		
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Reaaply Application',
+			'message' => 'You have successfully reapply for the application.',
+			'alert' => 'success'
+		]);
+	}
 	
 	protected function index(string $status = 'ALL'){
+		$latestApplication = Auth::user()->latestApplications->first();
 		$applications = ApplicationController::getUserApplications();
-		
 		return view('application.list', [
 			'applicationStr' => ApplicationController::getApplications($applications, $status),
+			'latestApplicationStatus' => ApplicationStatusController::getCurrentApplicationStatus($latestApplication),
 		]);
 	}
 
@@ -114,8 +169,7 @@ class ApplicationController extends Controller
 				'alert' => 'error'
 			]);
 		}
-		$currentApplicationStatus = $application->currentStatus->application_status;
-		if($currentApplicationStatus === 'PENDING'){
+		if(ApplicationStatusController::getCurrentApplicationStatus($application) === 'PENDING'){
 			if($application->subadmin_id == 0){
 				$updated = $application->update(['subadmin_id' => $request->staffId]);
 				if($updated === 0){
@@ -162,8 +216,7 @@ class ApplicationController extends Controller
 				'alert' => 'error'
 			]);
 		}
-		$currentApplicationStatus = $application->currentStatus->application_status;
-		if($currentApplicationStatus === 'UNDER_VERIFICATION'){
+		if(ApplicationStatusController::getCurrentApplicationStatus($application) === 'UNDER_VERIFICATION'){
 			$updated = $application->update(['application_remark' => $request->applicationRemark]);
 			if($updated === 0){
 				return back()->with([
@@ -208,8 +261,7 @@ class ApplicationController extends Controller
 				'alert' => 'error'
 			]);
 		}
-		$currentApplicationStatus = $application->currentStatus->application_status;
-		if($currentApplicationStatus === 'VERIFIED'){
+		if(ApplicationStatusController::getCurrentApplicationStatus($application) === 'VERIFIED'){
 			$updated = $application->update(['admin_remark' => $request->adminRemark]);
 			if($updated === 0){
 				return back()->with([
@@ -254,8 +306,7 @@ class ApplicationController extends Controller
 				'alert' => 'error'
 			]);
 		}
-		$currentApplicationStatus = $application->currentStatus->application_status;
-		if($currentApplicationStatus === 'VERIFIED'){
+		if(ApplicationStatusController::getCurrentApplicationStatus($application) === 'VERIFIED'){
 			$updated = $application->update(['admin_remark' => $request->adminRemark]);
 			if($updated === 0){
 				return back()->with([
