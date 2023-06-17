@@ -122,9 +122,10 @@ class UsersController extends Controller
 	protected function subadminNew(Request $request){
 		$validator = Validator::make($request->all(), [
 			'email' => 'required|email',
+			'password' => 'required',
 			'name' => 'required',
 			'type' => 'required',
-			'phone' => 'required',
+			'phone' => 'required|integer',
 		]);
 
 		if ($validator->fails()) {
@@ -135,6 +136,27 @@ class UsersController extends Controller
 				'alert' => 'warning'
 			]);
 		}
-	}
 
+		$subadmin = Users::create([
+			'email' => $request->email,
+			'password' => $request->password,
+			'name' => $request->name,
+			'phone_number' => $request->phone,
+			'user_type' => $request->type,
+		]);
+		if($subadmin){
+			return back()->with([
+				'success' => true,
+				'title' => 'New Subadmin',
+				'message' => 'Successfully added new subadmin.',
+				'alert' => 'success'
+			]);
+		}
+		return back()->with([
+			'success' => false,
+			'title' => 'New Subadmin',
+			'message' => 'Error coming in adding subadmin.',
+			'alert' => 'error'
+		]);
+	}
 }

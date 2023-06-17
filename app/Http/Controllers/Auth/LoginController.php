@@ -24,7 +24,7 @@ class LoginController extends Controller
         $credentials['is_active'] = 1;
         $credentials['is_deleted'] = 0;
         
-        //dd($credentials); die();
+        //dd(Auth::validate($credentials));
         
         if(!Auth::validate($credentials)){
             return redirect()

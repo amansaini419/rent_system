@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class Users extends Authenticatable
@@ -33,6 +34,7 @@ class Users extends Authenticatable
     'password',
     'phone_number',
     'user_type',
+    'name'
   ];
 
   /**
@@ -60,7 +62,7 @@ class Users extends Authenticatable
    */
   public function setPasswordAttribute($value)
   {
-    $this->attributes['password'] = bcrypt($value);
+    $this->attributes['password'] = Hash::make($value);
   }
 
   public function applications(): HasManyThrough

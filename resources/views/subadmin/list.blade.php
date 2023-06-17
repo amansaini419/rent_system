@@ -43,7 +43,7 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
-        <h5>Admins List <a href="{{ route('subadmin-new') }}" class="btn btn-primary btn-sm ml-4 text-uppercase"><i class="ti-plus"></i></a></h5>
+        <h5>Admins List <button type="button" class="btn btn-primary btn-sm ml-4 text-uppercase" data-toggle="modal" data-target="#newSubadminModal"><i class="ti-plus"></i></button></h5>
       </div>
       <div class="card-block">
         <div class="dt-responsive table-responsive">
@@ -78,7 +78,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="newSubadmin" tabindex="-1" role="dialog">
+  <div class="modal fade" id="newSubadminModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -91,28 +91,30 @@
           <form method="POST" action="{{ route('subadmin-new') }}">
             @csrf
             <div class="form-group">
-              <label for="paymentAmount">Payment Amount</label>
-              <input type="text" name="paymentAmount" id="paymentAmount" class="form-control" readonly>
+              <label for="email">Email</label>
+              <input type="email" name="email" id="email" class="form-control" required>
             </div>
             <div class="form-group">
-              <label for="penaltyAmount">Penalty Amount</label>
-              <input type="text" name="penaltyAmount" id="penaltyAmount" class="form-control" readonly>
+              <label for="password">Password</label>
+              <input type="password" name="password" id="password" class="form-control" required>
             </div>
             <div class="form-group">
-              <label for="totalAmount">Total Amount</label>
-              <input type="text" name="totalAmount" id="totalAmount" class="form-control" readonly>
-              <input type="hidden" name="monthlyId" id="monthlyId">
+              <label for="name">Name</label>
+              <input type="text" name="name" id="name" class="form-control" required>
             </div>
             <div class="form-group">
-              <label for="paymentChannel">Payment Channel</label>
-              <select name="paymentChannel" id="paymentChannel" class="form-control">
-                <option value="MOMO">MOMO</option>
-                <option value="CASH">CASH</option>
-                <option value="CARD">CARD</option>
+              <label for="phone">Phone Number</label>
+              <input type="text" name="phone" id="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="type">Type</label>
+              <select name="type" id="type" class="form-control">
+                <option value="STAFF">STAFF</option>
+                <option value="AGENT">AGENT</option>
               </select>
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Accept Payment</button>
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Submit</button>
               <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
             </div>
           </form>
@@ -138,6 +140,18 @@
 
 @section('own-script')
   <script>
+    @if(session('success') === true)
+      @if(session('message'))
+        swal('{{ session('title') }}', '{{ session('message') }}', '{{ session('alert') }}');
+      @endif
+    @elseif (session('success') === false)
+      @if(session('error'))
+        swal('{{ session('title') }}', '{{ session('error') }}', '{{ session('alert') }}');
+      @elseif (session('errors'))
+        swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
+      @endif
+    @endif
+
     $('#dataTable').DataTable();
     /* $('#dt-server-processing').DataTable({
       "processing": true,
