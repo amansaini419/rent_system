@@ -10,6 +10,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandlordDataController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,9 +90,8 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/subadmin/new', [UsersController::class, 'subadminNew'])->name('subadmin-new');
         Route::get('/subadmin/view/{id?}', [UsersController::class, 'subadminView'])->name('subadmin-view');
 
-        Route::get('/settings', function () {
-            return view('settings');
-        })->name('settings');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::post('/settings/update', [SettingController::class, 'update'])->name('settings-update');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
