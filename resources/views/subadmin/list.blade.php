@@ -77,6 +77,49 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="newSubadmin" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">New Subadmin</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{{ route('subadmin-new') }}">
+            @csrf
+            <div class="form-group">
+              <label for="paymentAmount">Payment Amount</label>
+              <input type="text" name="paymentAmount" id="paymentAmount" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label for="penaltyAmount">Penalty Amount</label>
+              <input type="text" name="penaltyAmount" id="penaltyAmount" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label for="totalAmount">Total Amount</label>
+              <input type="text" name="totalAmount" id="totalAmount" class="form-control" readonly>
+              <input type="hidden" name="monthlyId" id="monthlyId">
+            </div>
+            <div class="form-group">
+              <label for="paymentChannel">Payment Channel</label>
+              <select name="paymentChannel" id="paymentChannel" class="form-control">
+                <option value="MOMO">MOMO</option>
+                <option value="CASH">CASH</option>
+                <option value="CARD">CARD</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Accept Payment</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('theme-script')

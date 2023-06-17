@@ -57,15 +57,15 @@ class ApplicationController extends Controller
 		return ($application->subadmin_id == 0) ? 'NONE' : User::find($application->subadmin_id)->name;
 	}
 
-	public static function getUserApplications(){
-		if(Auth::user()->user_type == "TENANT"){
+	public static function getUserApplications($userType, $userId = 0){
+		if($userType == "TENANT"){
 			$applications = Auth::user()->applications;
 		}
-		elseif(Auth::user()->user_type == "ADMIN"){
+		elseif($userType == "ADMIN"){
 			$applications = Application::orderBy('id', 'desc')->get();
 		}
-		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
-			$applications = Application::where('subadmin_id', Auth::id())->orderBy('id', 'desc')->get();
+		elseif($userType == "STAFF" || $userType == "AGENT"){
+			$applications = Application::where('subadmin_id', $userId)->orderBy('id', 'desc')->get();
 		}
 		return $applications;
 	}
@@ -120,7 +120,7 @@ class ApplicationController extends Controller
 	
 	protected function index(string $status = 'ALL'){
 		$latestApplication = Auth::user()->latestApplications->first();
-		$applications = ApplicationController::getUserApplications();
+		$applications = ApplicationController::getUserApplications(Auth::user()->user_type, Auth::id());
 		return view('application.list', [
 			'applicationStr' => ApplicationController::getApplications($applications, $status),
 			'latestApplicationStatus' => ApplicationStatusController::getCurrentApplicationStatus($latestApplication),

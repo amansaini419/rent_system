@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use stdClass;
 
 class UsersController extends Controller
@@ -70,7 +71,7 @@ class UsersController extends Controller
 		]);
 	}
 
-	public static function getSubadminDetails($subadmin, $sn){
+	public static function getSubadminDetails($subadmin, $sn = 0){
 		$tempJSON = new stdClass();
 		$tempJSON->sn = $sn;
 		$tempJSON->id = $subadmin->id;
@@ -94,4 +95,46 @@ class UsersController extends Controller
 		$subadmins = UsersController::getStaff();
 		return view('subadmin.list', ['subadminStr' => UsersController::getSubadmins($subadmins)]);
 	}
+
+	protected function subadminView($id){
+		$subadmin = UsersController::checkSubadmin($id);
+		//dd($subadmin);
+		if(!$subadmin){
+			return redirect()->route('subadmin-list');
+		}
+		$applications = ApplicationController::getUserApplications($subadmin->user_type, $id);
+		return view('subadmin.view', [
+			'subadmin' => UsersController::getSubadminDetails($subadmin),
+			'tenants' => '',
+			'applications' => ApplicationController::getApplications($applications),
+			'loans' => LoanController::getLoans($applications),
+		]);
+	}
+
+	public static function checkSubadmin($id){
+		return Users::whereIn('user_type', ['STAFF', 'AGENT'])->where([
+			'id' => $id,
+			'is_active' => 1,
+			'is_deleted' => 0,
+		])->first();
+	}
+
+	protected function subadminNew(Request $request){
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',
+			'name' => 'required',
+			'type' => 'required',
+			'phone' => 'required',
+		]);
+
+		if ($validator->fails()) {
+			return back()->with([
+				'success' => false,
+				'title' => 'Input Error',
+				'errors' => $validator->messages(),
+				'alert' => 'warning'
+			]);
+		}
+	}
+
 }

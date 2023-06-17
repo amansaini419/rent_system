@@ -63,7 +63,7 @@
                     @if (in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']))
                     <tr>
                       <th>Tenant Name</th>
-                      <td>{{ $tenantName }}</td>
+                      <td>{{ $loan->tenant_name }}</td>
                     </tr>
                     @endif
                     <tr>
@@ -72,19 +72,19 @@
                     </tr>
                     <tr>
                       <th>Starting Date</th>
-                      <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatDate($loan->starting_date) !!}</td>
+                      <td>{{ $loan->starting_date }}</td>
                     </tr>
                     <tr>
                       <th>Required Amount</th>
-                      <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($loan->loan_amount) !!}</td>
+                      <td>{{ $loan->required_amount }}</td>
                     </tr>
                     <tr>
                       <th>Loan Amount</th>
-                      <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($loan->loan_amount - $initialDeposit) !!}</td>
+                      <td>{{ $loan->loan_amount }}</td>
                     </tr>
                     <tr>
                       <th>Inital Deposit</th>
-                      <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($initialDeposit) !!}</td>
+                      <td>{{ $loan->initial_deposit }}</td>
                     </tr>
                   </table>
                 </div>
@@ -94,15 +94,15 @@
                   <table class="table loan-table m-0">
                     <tr>
                       <th>Interest rate</th>
-                      <td>{{ $loan->interest_rate }}%</td>
+                      <td>{{ $loan->interest_rate }}</td>
                     </tr>
                     <tr>
                       <th>Monthly Payment</th>
-                      <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($loan->monthly_payment) !!}</td>
+                      <td>{{ $loan->monthly_payment }}</td>
                     </tr>
                     <tr>
                       <th>Number of Payments</th>
-                      <td>{{ $loan->loan_period * 12 }}</td>
+                      <td>{{ $loan->total_installment }}</td>
                     </tr>
                     <tr>
                       <th>Total Interest</th>

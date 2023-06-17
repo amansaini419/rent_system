@@ -69,34 +69,12 @@
                     <td>{{ $loan->loan_code }}</td>
                     <td>{{ $loan->starting_date }}</td>
                     <td>{{ $loan->loan_amount }}</td>
-                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->interest_rate }}</td>
                     <td>{{ $loan->monthly_payment }}</td>
-                    <td>{{ $loan->loan_period * 12 }}</td>
+                    <td>{{ $loan->total_installment }}</td>
                     <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary">VIEW</a></td>
                   </tr>
                 @endforeach
-                {{-- <tr>
-                  <td>ABCDGIH</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>DSHDVBH</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr> --}}
               </tbody>
             </table>
           </div>
@@ -138,75 +116,12 @@
                     <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary">VIEW</a></td>
                   </tr>
                 @endforeach
-                {{-- <tr>
-                  <td>1</td>
-                  <td>Abc Xyz</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Abc Xyz</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Abc Xyz</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Abc Xyz</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 4]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td>Abc Xyz</td>
-                  <td>16-Jun-2023</td>
-                  <td>10,000</td>
-                  <td>24%</td>
-                  <td>640</td>
-                  <td>12</td>
-                  <td>
-                    <a href="{{ route('loan-view', ['status' => $loanStatus, 'id' => 5]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                  </td>
-                </tr> --}}
               </tbody>
             </table>
           </div>
         </div>
       </div>
     @endif
-      
-
-    
   </div>
 @endsection
 

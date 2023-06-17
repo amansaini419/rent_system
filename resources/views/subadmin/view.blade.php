@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  View Admin
+  View Subadmin
 @endsection
 
 @section('theme-style')
@@ -24,14 +24,13 @@
 @endsection
 
 @section('content')
-  @aware(['applicationStatus' => request('status')])
   <div class="page-header card">
     <div class="row align-items-end">
       <div class="col-lg-8">
         <div class="page-header-title">
           <i class="icofont icofont-file-alt bg-c-orenge"></i>
           <div class="d-inline">
-            <h4>View Admin</h4>
+            <h4>View Subadmin</h4>
           </div>
         </div>
       </div>
@@ -43,7 +42,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('admin-list') }}">Admin</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('subadmin-list') }}">Subadmin</a></li>
             <li class="breadcrumb-item"><a href="#!">View</a></li>
           </ul>
         </div>
@@ -61,16 +60,12 @@
                   <table class="table user-table m-0">
                     <tbody>
                       <tr>
-                        <th>Admin ID</th>
-                        <td>1</td>
-                      </tr>
-                      <tr>
                         <th>Admin Name</th>
-                        <td>Abc Xyz</td>
+                        <td>{{ $subadmin->name }}</td>
                       </tr>
                       <tr>
                         <th>Admin Type</th>
-                        <td>STAFF</td>
+                        <td>{{ $subadmin->user_type }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -82,11 +77,11 @@
                     <tbody>
                       <tr>
                         <th>Admin Email</th>
-                        <td>abc@xyz</td>
+                        <td>{{ $subadmin->email }}</td>
                       </tr>
                       <tr>
                         <th>Admin Phone No.</th>
-                        <td>5435435</td>
+                        <td>{{ $subadmin->phone_number }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -95,7 +90,7 @@
             </div>
           </div>
         </div>
-        <div class="card">
+        {{-- <div class="card">
           <div class="card-header">
             <h5 class="sub-title d-block border-0">All tenants</h5>
           </div>
@@ -143,7 +138,7 @@
               </table>
             </div>
           </div>
-        </div>
+        </div> --}}
         <div class="card">
           <div class="card-header">
             <h5 class="sub-title d-block border-0">All Applications</h5>
@@ -154,6 +149,7 @@
                 <thead>
                   <tr>
                     <th>Application ID</th>
+                    <th>Tenant Name</th>
                     <th>Application Type</th>
                     <th>Application Status</th>
                     <th>Initial Deposit</th>
@@ -161,7 +157,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  @foreach ($applications as $application)
+                    <tr>
+                      <td>{{ $application->application_code }}</td>
+                      <td>{{ $application->tenant_name }}</td>
+                      <td>{{ $application->application_type }}</td>
+                      <td>{{ $application->application_status }}</td>
+                      <td>{{ $application->initial_deposit }}</td>
+                      <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
+                    </tr>
+                  @endforeach
+                  {{-- <tr>
                     <td>GHYGDSHABDH</td>
                     <td>RENEW</td>
                     <td>PENDING</td>
@@ -180,7 +186,7 @@
                       <a href="{{ route('application-view', ['status' => 'LOAN_CLOSED', 'id' => 1]) }}"
                         class="btn btn-sm btn-primary">VIEW</a>
                     </td>
-                  </tr>
+                  </tr> --}}
                 </tbody>
               </table>
             </div>
@@ -196,6 +202,7 @@
                 <thead>
                   <tr>
                     <th>Loan ID</th>
+                    <th>Tenant Name</th>
                     <th>Starting Date</th>
                     <th>Loan Amount</th>
                     <th>Interest Rate</th>
@@ -205,7 +212,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  @foreach ($loans as $loan)
+                    <tr>
+                      <td>{{ $loan->loan_code }}</td>
+                      <td>{{ $loan->tenant_name }}</td>
+                      <td>{{ $loan->starting_date }}</td>
+                      <td>{{ $loan->loan_amount }}</td>
+                      <td>{{ $loan->interest_rate }}</td>
+                      <td>{{ $loan->monthly_payment }}</td>
+                      <td>{{ $loan->total_installment }}</td>
+                      <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
+                    </tr>
+                  @endforeach
+                  {{-- <tr>
                     <td>ABCDGIH</td>
                     <td>16-Jun-2023</td>
                     <td>10,000</td>
@@ -228,7 +247,7 @@
                       <a href="{{ route('loan-view', ['status' => '$loanStatus', 'id' => 2]) }}"
                         class="btn btn-sm btn-primary">VIEW</a>
                     </td>
-                  </tr>
+                  </tr> --}}
                 </tbody>
               </table>
             </div>
@@ -237,81 +256,4 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('theme-script')
-  <script type="text/javascript" src="{{ asset('bower_components/datedropper/js/datedropper.min.js') }}"></script>
-@endsection
-
-@section('own-script')
-  <script>
-    $(".date-dropper").dateDropper({
-      dropWidth: 200,
-      dropPrimaryColor: "#1abc9c",
-      dropBorder: "1px solid #1abc9c"
-    });
-
-
-    /* P = Principal Amount
-    R = Interest per annum
-    r = monthly interest rate ( R / 12 / 100 )
-    n = tenure/total installments (in months)
-    adj = (1 + r) ^ n
-
-    EMI = P * r * adj / (adj - 1) */
-
-
-
-    $('#generateBtn').click((e) => {
-      e.preventDefault();
-      $('#monthlyPlanTable tbody').empty();
-
-      const startingDate = $('#startingDate').val();
-      //console.log(dateFormat(startingDate));
-      const loanAmount = $('#loanAmount').val();
-      const interestRate = $('#interestRate').val();
-      const loanPeriod = $('#loanPeriod').val();
-      const initialDeposit = $('#initialDepositCell').text();
-      const balanceAmount = loanAmount - initialDeposit;
-
-      const monthlyInterest = interestRate / 12 / 100;
-      const totalInstallments = loanPeriod * 12;
-      const adj = Math.pow((1 + monthlyInterest), totalInstallments);
-
-      const monthlyPayment = calculateMonthlyPayment(balanceAmount, monthlyInterest, totalInstallments);
-      const totalLoanCost = monthlyPayment * totalInstallments;
-      const totalInterest = totalLoanCost - balanceAmount;
-
-      $('#monthlyPaymentCell').text(currencyFormat(monthlyPayment));
-      $('#totalInstallmentCell').text(totalInstallments);
-      $('#totalInterestCell').text(currencyFormat(totalInterest));
-      $('#totalLoanCostCell').text(currencyFormat(totalLoanCost));
-
-      let beginningBalance = balanceAmount;
-      for (let i = 1; i <= totalInstallments; i++) {
-        moment(startingDate).add(i, 'months');
-        const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, loanPeriod / 12);
-        const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
-        let endingBalance = beginningBalance - monthlyPrincipalAmt;
-        const tableRow = '\
-            <tr>\
-              <td>' + i + '</td>\
-              <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
-              <td>' + currencyFormat(beginningBalance) + '</td>\
-              <td>' + currencyFormat(monthlyPayment) + '</td>\
-              <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
-              <td>' + currencyFormat(monthlyInterestAmt) + '</td>\
-              <td>' + currencyFormat(endingBalance > 0 ? endingBalance : 0) + '</td>\
-            </tr>\
-          ';
-        $('#monthlyPlanTable tbody').append(tableRow);
-        //console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
-        beginningBalance = endingBalance;
-      }
-    });
-
-    /*
-    Add new page for monthly plan, loan
-    */
-  </script>
 @endsection

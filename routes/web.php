@@ -86,13 +86,8 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
 
         Route::get('/subadmin/list', [UsersController::class, 'subadminIndex'])->name('subadmin-list');
-        Route::get('/subadmin/new', function () {
-            return view('subadmin.new');
-        })->name('subadmin-new');
-        
-        Route::get('/subadmin/view/{id?}', function () {
-            return view('subadmin.view');
-        })->name('subadmin-view');
+        Route::post('/subadmin/new', [UsersController::class, 'subadminNew'])->name('subadmin-new');
+        Route::get('/subadmin/view/{id?}', [UsersController::class, 'subadminView'])->name('subadmin-view');
 
         Route::get('/settings', function () {
             return view('settings');

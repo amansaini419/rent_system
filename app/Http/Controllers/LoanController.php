@@ -19,28 +19,31 @@ class LoanController extends Controller
 		return $loanAmount * $monthlyInterest * $adj / ($adj - 1);
 	}
 
+	public static function getLoanDetails($loan, $application){
+		$tempJSON = new stdClass();
+		$tempJSON->id = $loan->id;
+		$applicationData = $application->userData->applicationData;
+		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->starting_date = FunctionController::formatDate($loan->starting_date);
+		$tempJSON->required_amount = FunctionController::formatCurrencyView($loan->loan_amount);
+		$initialDeposit = ApplicationController::getTotalDeposit($application);
+		$tempJSON->initial_deposit = FunctionController::formatCurrencyView($initialDeposit);
+		$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount - $initialDeposit);
+		$tempJSON->interest_rate = $loan->interest_rate . '%';
+		$tempJSON->loan_period = $loan->loan_period;
+		$tempJSON->total_installment = $loan->loan_period * 12;
+		$tempJSON->monthly_payment = FunctionController::formatCurrencyView($loan->monthly_payment);
+		$tempJSON->loan_code = $loan->loan_code;
+		$tempJSON->loan_status = $loan->loan_status;
+		return $tempJSON;
+	}
+
 	public static function getLoans($applications, $status = "ALL"){
 		$loanStr = array();
 		foreach($applications as $application){
-			$tempJSON = new stdClass();
 			$loan = $application->loan;
-			if($loan){
-				$tempJSON->id = $loan->id;
-				$applicationData = $application->userData->applicationData;
-				$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
-				$tempJSON->starting_date = FunctionController::formatDate($loan->starting_date);
-				$tempJSON->required_amount = FunctionController::formatCurrencyView($loan->loan_amount);
-				$initialDeposit = ApplicationController::getTotalDeposit($application);
-				$tempJSON->initial_deposit = FunctionController::formatCurrencyView($initialDeposit);
-				$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount - $initialDeposit);
-				$tempJSON->interest_rate = $loan->interest_rate;
-				$tempJSON->loan_period = $loan->loan_period;
-				$tempJSON->monthly_payment = FunctionController::formatCurrencyView($loan->monthly_payment);
-				$tempJSON->loan_code = $loan->loan_code;
-				$tempJSON->loan_status = $loan->loan_status;
-				if($loan->loan_status == $status || $status == 'ALL'){
-					$loanStr[] = $tempJSON;
-				}
+			if($loan && ($loan->loan_status == $status || $status == 'ALL')){
+				$loanStr[] = LoanController::getLoanDetails($loan, $application);
 			}
 		}
 		return $loanStr;
@@ -158,7 +161,7 @@ class LoanController extends Controller
 	}
 
 	protected function index(string $status = 'ALL'){
-		$applications = ApplicationController::getUserApplications(Auth::user()->user_type);
+		$applications = ApplicationController::getUserApplications(Auth::user()->user_type, Auth::id());
 		return view('loan.list', [
 			'loanStr' => LoanController::getLoans($applications, $status),
 		]);
@@ -177,15 +180,13 @@ class LoanController extends Controller
 			if($userData->users_id != Auth::user()->id){
 				return redirect()->route('dashboard');
 			}
-			$initialDeposit = ApplicationController::getTotalDeposit($loan->application);
-			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $initialDeposit);
-
-			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $initialDeposit);
+			$application = $loan->application;
+			$loanStr = LoanController::getLoanDetails($loan, $application);
+			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit);
+			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit);
 			
 			return view('loan.view', [
-				'loan' => $loan,
-				//'application' => $loan->application,
-				'initialDeposit' => $initialDeposit,
+				'loan' => $loanStr,
 				'loanCalculation' => $loanCalculation,
 				'monthlyPlanStr' => $monthlyPlanStr,
 			]);
@@ -196,15 +197,12 @@ class LoanController extends Controller
 				return redirect()->route('dashboard');
 			}
 			if( (Auth::user()->user_type == 'ADMIN') || ($application->subadmin_id == Auth::user()->id) ){
-				$initialDeposit = ApplicationController::getTotalDeposit($loan->application);
-				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $initialDeposit);
-				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $initialDeposit);
-				$applicationData = $userData->applicationData;
+				$loanStr = LoanController::getLoanDetails($loan, $application);
+				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $application->initial_deposit);
+				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $application->initial_deposit);
 
 				return view('loan.view', [
-					'loan' => $loan,
-					'tenantName' => $applicationData->first_name . ' ' . $applicationData->surname,
-					'initialDeposit' => $initialDeposit,
+					'loan' => $loanStr,
 					'loanCalculation' => $loanCalculation,
 					'monthlyPlanStr' => $monthlyPlanStr,
 				]);
