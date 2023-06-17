@@ -6,9 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\Loan;
 use App\Models\MonthlyPlan;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use stdClass;
 
 class MonthlyPlanController extends Controller

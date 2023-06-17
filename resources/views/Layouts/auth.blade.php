@@ -18,14 +18,14 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800" rel="stylesheet">
   <!-- Required Fremwork -->
   <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/bootstrap/css/bootstrap.min.css') }}">
+  <!-- sweet alert framework -->
+  <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/sweetalert/css/sweetalert.css') }}">
   <!-- themify-icons line icon -->
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/icon/themify-icons/themify-icons.css') }}">
   <!-- ico font -->
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/icon/icofont/css/icofont.css') }}">
   <!-- Style.css -->
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
-
-
 </head>
 
 <body class="fix-menu">
@@ -56,6 +56,8 @@
   <!-- modernizr js -->
   <script type="text/javascript" src="{{ asset('bower_components/modernizr/js/modernizr.js') }}"></script>
   <script type="text/javascript" src="{{ asset('bower_components/modernizr/js/css-scrollbars.js') }}"></script>
+  <!-- sweet alert js -->
+  <script type="text/javascript" src="{{ asset('bower_components/sweetalert/js/sweetalert.min.js') }}"></script>
   <!-- i18next.min.js -->
   <script type="text/javascript" src="{{ asset('bower_components/i18next/js/i18next.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('bower_components/i18next-xhr-backend/js/i18nextXHRBackend.min.js') }}">
@@ -65,6 +67,8 @@
   </script>
   <script type="text/javascript" src="{{ asset('bower_components/jquery-i18next/js/jquery-i18next.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('assets/js/common-pages.js') }}"></script>
+
+  @yield('script')
 </body>
 
 </html>

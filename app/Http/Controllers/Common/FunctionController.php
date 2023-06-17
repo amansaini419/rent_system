@@ -31,4 +31,13 @@ class FunctionController extends Controller
 	public static function formatCurrencyView($amount, $decimal = 2){
 		return number_format($amount, $decimal);
 	}
+
+	public static function generateOTP($size = 6){
+		return 123456;
+		//return rand(pow(10, $size), (pow(10, $size+1) - 1));
+	}
+
+	public static function sendSMS($phone, $otp){
+		return true;
+	}
 }

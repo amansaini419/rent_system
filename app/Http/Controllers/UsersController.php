@@ -159,4 +159,12 @@ class UsersController extends Controller
 			'alert' => 'error'
 		]);
 	}
+
+	public static function checkEmail($email){
+		return Users::where([
+			'email' => $email,
+			'is_active' => 1,
+			'is_deleted' => 0
+		])->first();
+	}
 }

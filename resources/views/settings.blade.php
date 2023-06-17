@@ -70,6 +70,14 @@
             </div>
           </div>
           <hr />
+          <div class="form-group form-row">
+            <div class="col-md-6">
+              <label for="OTP_EXPIRY_TIME">OTP Expiry (in minutes)</label>
+              <input type="text" name="OTP_EXPIRY_TIME" id="OTP_EXPIRY_TIME" class="form-control"
+                value="{{ $settings->OTP_EXPIRY_TIME }}" required>
+            </div>
+          </div>
+          <hr />
           <div class="form-group">
             <label for="TNC">Terms &amp; Conditions</label>
             <textarea name="TNC" id="TNC" required>{{ html_entity_decode($settings->TNC) }}</textarea>

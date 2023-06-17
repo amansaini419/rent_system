@@ -4,6 +4,7 @@ use App\Http\Controllers\AccomodationDataController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationDataController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentDataController;
 use App\Http\Controllers\InvoiceController;
@@ -34,9 +35,9 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.user');
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/signup', function () {
-    return view('signup');
-})->name('signup');
+Route::get('/signup', [SignupController::class, 'show'])->name('signup');
+Route::post('/signup/otp', [SignupController::class, 'getOTP'])->name('signup-otp');
+Route::post('/signup', [SignupController::class, 'signup'])->name('signup-user');
 
 Route::get('/forgot-password', function () {
     return view('forgot-password');
@@ -119,21 +120,3 @@ Route::group(['middleware' => ['auth']], function(){
         })->name('notifications');
     });
 });
-
-// Staff Route
-/* Route::group(['middleware' => ['auth', 'user-role:staff'], ['prefix', 'staff']], function()
-{
-    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
-}); */
-
-// Agent Route
-/* Route::group(['middleware' => ['auth', 'user-role:agent'], ['prefix', 'agent']], function()
-{
-    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
-}); */
-
-// Super Admin Route
-/* Route::group(['middleware' => ['auth', 'user-role:admin'], ['prefix', 'admin']], function()
-{
-    Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
-}); */

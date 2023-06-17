@@ -37,23 +37,15 @@ class TenantRegistrationMiddleware
 						if ($applicationStatus->application_status != "INCOMPLETE") {
 							$request->merge(['userData' => $userData]);
 							return $next($request);
-						} else {
-							$applicationCode = $application->application_code;
 						}
 					}
 					else{
 						// create application status
 						ApplicationStatusController::new($application->id, 'INCOMPLETE');
-						$applicationCode = $application->application_code;
 					}
 				} else {
 					// create application
-					$applicationCode = ApplicationController::createApplicationCode();
-					$application = Application::create([
-						'user_data_id' => $userData->id,
-						'application_type' => 'NEW',
-						'application_code' => $applicationCode,
-					]);
+					$application = ApplicationController::new($userData->id, 'NEW');
 					// create application status
 					ApplicationStatusController::new($application->id, 'INCOMPLETE');
 				}
@@ -66,6 +58,6 @@ class TenantRegistrationMiddleware
 				ApplicationStatusController::new($application->id, 'INCOMPLETE');
 			}
 		}
-		return redirect()->route('application-register', ['id' => $applicationCode]);
+		return redirect()->route('application-register', ['id' => $application->application_code]);
 	}
 }
