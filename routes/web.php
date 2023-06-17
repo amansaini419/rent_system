@@ -84,6 +84,19 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::get('/tenant/list', [UsersController::class, 'tenantIndex'])->name('tenant-list');
         Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
+
+        Route::get('/subadmin/list', [UsersController::class, 'subadminIndex'])->name('subadmin-list');
+        Route::get('/subadmin/new', function () {
+            return view('subadmin.new');
+        })->name('subadmin-new');
+        
+        Route::get('/subadmin/view/{id?}', function () {
+            return view('subadmin.view');
+        })->name('subadmin-view');
+
+        Route::get('/settings', function () {
+            return view('settings');
+        })->name('settings');
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
@@ -109,24 +122,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/notifications', function () {
             return view('notifications');
         })->name('notifications');
-
-        
-        Route::group(['middleware' => ['user-role:ADMIN']], function(){
-            Route::get('/admin/list', function () {
-                return view('admin.list');
-            })->name('admin-list');
-            Route::get('/admin/new', function () {
-                return view('admin.new');
-            })->name('admin-new');
-            
-            Route::get('/admin/view/{id?}', function () {
-                return view('admin.view');
-            })->name('admin-view');
-
-            Route::get('/settings', function () {
-                return view('settings');
-            })->name('settings');
-        });
     });
 });
 

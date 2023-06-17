@@ -87,7 +87,7 @@
   </a>
 </li>
 <li class="">
-  <a href="{{ route('admin-list') }}">
+  <a href="{{ route('subadmin-list') }}">
     <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
     <span class="pcoded-mtext">Admins</span>
     <span class="pcoded-mcaret"></span>

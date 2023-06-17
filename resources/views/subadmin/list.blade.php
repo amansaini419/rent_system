@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  Admins
+  Subadmins
 @endsection
 
 @section('theme-style')
@@ -22,7 +22,7 @@
         <div class="page-header-title">
           <i class="icofont icofont-file-alt bg-c-orenge"></i>
           <div class="d-inline">
-            <h4>Admins</h4>
+            <h4>Subadmins</h4>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
                 <i class="icofont icofont-home"></i>
               </a>
             </li>
-            <li class="breadcrumb-item"><a href="#!">Admins</a></li>
+            <li class="breadcrumb-item"><a href="#!">Subadmins</a></li>
           </ul>
         </div>
       </div>
@@ -43,14 +43,14 @@
   <div class="page-body">
     <div class="card">
       <div class="card-header">
-        <h5>Admins List <a href="{{ route('admin-new') }}" class="btn btn-primary btn-sm ml-4 text-uppercase"><i class="ti-plus"></i></a></h5>
+        <h5>Admins List <a href="{{ route('subadmin-new') }}" class="btn btn-primary btn-sm ml-4 text-uppercase"><i class="ti-plus"></i></a></h5>
       </div>
       <div class="card-block">
         <div class="dt-responsive table-responsive">
           <table id="dataTable" class="table table-striped table-bordered nowrap">
             <thead>
               <tr>
-                <th>Admin ID</th>
+                <th>S.N.</th>
                 <th>Admin Email</th>
                 <th>Admin Name</th>
                 <th>Admin Type</th>
@@ -59,36 +59,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Abc Xyz</td>
-                <td>dsd</td>
-                <td>STAFF</td>
-                <td>7657657</td>
-                <td>
-                  <a href="{{ route('admin-view', ['id' => 1]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Abc Xyz</td>
-                <td>dsd</td>
-                <td>AGENT</td>
-                <td>765889956</td>
-                <td>
-                  <a href="{{ route('admin-view', ['id' => 2]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Abc Xyz</td>
-                <td>dsd</td>
-                <td>STAFF</td>
-                <td>586568789</td>
-                <td>
-                  <a href="{{ route('admin-view', ['id' => 3]) }}" class="btn btn-sm btn-primary">VIEW</a>
-                </td>
-              </tr>
+              @foreach ($subadminStr as $subadmin)
+                <tr>
+                  <td>{{ $subadmin->sn }}</td>
+                  <td>{{ $subadmin->email }}</td>
+                  <td>{{ $subadmin->name }}</td>
+                  <td>{{ $subadmin->user_type }}</td>
+                  <td>{{ $subadmin->phone_number }}</td>
+                  <td>
+                    <a href="{{ route('subadmin-view', ['id' => $subadmin->id]) }}" class="btn btn-sm btn-primary">VIEW</a>
+                  </td>
+                </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
