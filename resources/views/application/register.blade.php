@@ -623,7 +623,7 @@
               const errors = response.errors;
               const errorsKeys = Object.keys(errors);
               console.log(errors);
-              let message;
+              let message = '';
               errorsKeys.forEach( (key) => {
                 console.log(key, errors[key][0]);
                 message = message + errors[key][0] + '\n';
