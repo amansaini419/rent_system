@@ -108,7 +108,11 @@
           success: function(response){
             let message = '';
             if(response.errors !== undefined){
-              message = response.errors;
+              errorsKeys.forEach( (key) => {
+                //console.log(key, errors[key][0]);
+                //$('#' + key).addClass('error');
+                message = message + errors[key][0] + '\n';
+              });
             }
             else if(response.error !== undefined){
               message = response.error;

@@ -626,6 +626,7 @@
               let message = '';
               errorsKeys.forEach( (key) => {
                 console.log(key, errors[key][0]);
+                $('#' + key).addClass('error');
                 message = message + errors[key][0] + '\n';
               });
               swal('', message, 'warning');
@@ -639,6 +640,7 @@
         console.log($('#applicationDataForm').serialize());
         let formData = $('#applicationDataForm').serializeArray();
         let type = "PUT";
+        $('input').removeClass('error');
         const response = await $.ajax({
           type: type,
           url: '{{ route('applicationData-update') }}',
