@@ -1,3 +1,11 @@
+@section('own-style')
+  <style>
+    .card-dash{
+      height: 450px;
+    }
+  </style>
+@endsection
+
 @section('content')
   <div class="page-body">
     <div class="row">
@@ -7,7 +15,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-pie-chart bg-c-blue card1-icon"></i>
             <span class="text-c-blue f-w-600">Week's Applications</span>
-            <h4>678</h4>
+            <h4>{{ $weeksApplication }}</h4>
             <div>
               <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
             </div>
@@ -21,7 +29,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-ui-home bg-c-pink card1-icon"></i>
             <span class="text-c-pink f-w-600">Month's Applications</span>
-            <h4>1,678</h4>
+            <h4>{{ $monthsApplication }}</h4>
             <div>
               <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
             </div>
@@ -35,7 +43,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-warning-alt bg-c-green card1-icon"></i>
             <span class="text-c-green f-w-600">Quarter's Applications</span>
-            <h4>4,600</h4>
+            <h4>{{ $quartersApplication }}</h4>
             <div>
               <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
             </div>
@@ -49,7 +57,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-social-twitter bg-c-yellow card1-icon"></i>
             <span class="text-c-yellow f-w-600">Year's Applications</span>
-            <h4>8,678</h4>
+            <h4>{{ $yearsApplication }}</h4>
             <div>
               <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
             </div>
@@ -66,7 +74,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-pie-chart bg-c-blue card1-icon"></i>
             <span class="text-c-blue f-w-600">Year's Registration Fees</span>
-            <h4>GHs 2,500</h4>
+            <h4>{{ $yearsRegistrationFees }}</h4>
           </div>
         </div>
       </div>
@@ -77,7 +85,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-ui-home bg-c-pink card1-icon"></i>
             <span class="text-c-pink f-w-600">Year's Rent Disbursement</span>
-            <h4>GHs 83,000</h4>
+            <h4>{{ $yearsRentDisbursement }}</h4>
           </div>
         </div>
       </div>
@@ -88,7 +96,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-warning-alt bg-c-green card1-icon"></i>
             <span class="text-c-green f-w-600">Year's Re-payments</span>
-            <h4>GHs 123,000</h4>
+            <h4>{{ $yearsRepayments }}</h4>
           </div>
         </div>
       </div>
@@ -99,7 +107,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-social-twitter bg-c-yellow card1-icon"></i>
             <span class="text-c-yellow f-w-600">Year's Approved Applications</span>
-            <h4>5,678</h4>
+            <h4>{{ $yearsApprovedApplication }}</h4>
           </div>
         </div>
       </div>
@@ -108,7 +116,7 @@
 
     <div class="row">
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Approved vs Pending vs Rejected</h5>
@@ -118,7 +126,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div id="applicationStatusPieChart" class="project-overview-chart" style="height:250px;"></div>
+                  <div id="applicationStatusPieChart" class="project-overview-chart" style="height: 300px;"></div>
                 </div>
               </div>
             </div>
@@ -126,7 +134,7 @@
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Approved: Gender Chart</h5>
@@ -136,7 +144,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div id="genderPieChart" class="project-overview-chart" style="height:250px;"></div>
+                  <div id="genderPieChart" class="project-overview-chart" style="height: 300px;"></div>
                 </div>
               </div>
             </div>
@@ -144,7 +152,7 @@
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Current Month</h5>
@@ -186,7 +194,7 @@
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Shortcuts</h5>
@@ -215,7 +223,7 @@
 
     <div class="row">
       <div class="col-md-6 col-xl-9">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Last 50 Registrations</h5>
@@ -260,7 +268,7 @@
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Approved vs Pending vs Rejected<br>Last 50</h5>
@@ -270,7 +278,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div id="applicationStatusLast50PieChart" class="project-overview-chart" style="height:250px;"></div>
+                  <div id="applicationStatusLast50PieChart" class="project-overview-chart" style="height: 300px;"></div>
                 </div>
               </div>
             </div>
@@ -281,7 +289,7 @@
 
     <div class="row">
       <div class="col-md-6 col-xl-9">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Last 50 Rent Payments</h5>
@@ -291,7 +299,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div class="table-responsive" style="height:250px;">
+                  <div class="table-responsive" style="height: 300px;">
                     <table class="table table-bordered m-0">
                       <tr>
                         <th>Full Name</th>
@@ -326,7 +334,7 @@
         </div>
       </div>
       <div class="col-md-6 col-xl-3">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Payment Channel<br>MoMo vs Cash vs Card</h5>
@@ -336,7 +344,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div id="paymentChannelPieChart" class="project-overview-chart" style="height:250px;"></div>
+                  <div id="paymentChannelPieChart" class="project-overview-chart" style="height: 300px;"></div>
                 </div>
               </div>
             </div>
@@ -347,7 +355,7 @@
 
     <div class="row">
       <div class="col-md-12 col-xl-12">
-        <div class="card card-overview">
+        <div class="card card-overview card-dash">
           <div class="card-header">
             <div class="card-header-left">
               <h5>Last 50 Outstanding Rent Payments</h5>
@@ -357,7 +365,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div class="table-responsive" style="height:250px;">
+                  <div class="table-responsive" style="height: 300px;">
                     <table class="table table-bordered m-0">
                       <tr>
                         <th>Full Name</th>
@@ -414,20 +422,23 @@
       "hideCredits": true,
       "theme": "light",
       "dataProvider": [{
-        "country": "Approved",
+        "status": "Approved",
         "color": '#93be52',
-        "value": 201
+        "value": {{ $applicationStatusPieChart->approved }}
       }, {
-        "country": "Rejected",
+        "status": "Rejected",
         "color": '#Fb5959',
-        "value": 65
+        "value": {{ $applicationStatusPieChart->rejected }}
       }, {
-        "country": "Pending",
+        "status": "Pending",
         "color": '#FFB64D',
-        "value": 39
+        "value": {{ $applicationStatusPieChart->pending }}
       }],
+      "legend": {
+        "useGraphSettings": false
+      },
       "valueField": "value",
-      "titleField": "country",
+      "titleField": "status",
       "labelsEnabled": false,
       "autoMargins": false,
       "marginTop": 0,
@@ -447,16 +458,19 @@
       "hideCredits": true,
       "theme": "light",
       "dataProvider": [{
-        "country": "Male",
+        "gender": "Male",
         "color": '#4680ff',
-        "value": 201
+        "value": {{ $genderPieChart->male }}
       }, {
-        "country": "Fenmale",
+        "gender": "Fenmale",
         "color": '#ef67a4',
-        "value": 65
+        "value": {{ $genderPieChart->female }}
       }],
+      "legend": {
+        "useGraphSettings": false
+      },
       "valueField": "value",
-      "titleField": "country",
+      "titleField": "gender",
       "labelsEnabled": false,
       "autoMargins": false,
       "marginTop": 0,
@@ -488,6 +502,9 @@
         "color": '#FFB64D',
         "value": 39
       }],
+      "legend": {
+        "useGraphSettings": false
+      },
       "valueField": "value",
       "titleField": "country",
       "labelsEnabled": false,
@@ -521,6 +538,9 @@
         "color": '#FFB64D',
         "value": 39
       }],
+      "legend": {
+        "useGraphSettings": false
+      },
       "valueField": "value",
       "titleField": "country",
       "labelsEnabled": false,

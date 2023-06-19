@@ -8,6 +8,7 @@ use App\Models\ApplicationData;
 use App\Models\AccomodationData;
 use App\Models\DocumentData;
 use App\Models\LandlordData;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -400,5 +401,10 @@ class ApplicationController extends Controller
 			return $code;
 		}
 		return ApplicationController::createApplicationCode();
+	}
+
+	public static function getTotalApplications($type = ''){
+		$dateRange = FunctionController::getDateRange($type);
+		return ($type != '') ? Application::whereBetween('created_at', [$dateRange->from, $dateRange->to])->count() : Application::all();
 	}
 }

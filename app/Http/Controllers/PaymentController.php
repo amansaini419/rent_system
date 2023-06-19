@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Models\Invoice;
+use App\Models\MonthlyPlan;
 use App\Models\Payment;
 use App\Models\UserData;
 use Carbon\Carbon;
@@ -200,5 +202,24 @@ class PaymentController extends Controller
 
 	public static function getTotalPaymentByInvoice($invoiceId){
 		return Payment::where('invoice_id', $invoiceId)->sum('payment_amount');
+	}
+
+	public static function getTotalRepayments($type = ''){
+		$dateRange = FunctionController::getDateRange($type);
+		$invoices = ($type != '') ? Invoice::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : Invoice::all();
+		return $invoices->where('invoice_type', 'RENT')->sum('invoice_amount');
+	}
+
+	public static function getNumberOfRents($rentType = 'total', $type = ''){
+		$dateRange = FunctionController::getDateRange($type);
+		$plans = ($type != '') ? MonthlyPlan::whereBetween('due_date', [$dateRange->from, $dateRange->to]) : MonthlyPlan::all();
+		
+		return array(
+			'total' => $plans->count(),
+			'paid' => $plans->where('invoice_id', '>', 0)->count(),
+			'outstanding' => $plans->where('due_date', '<', Carbon::now()->endOfDay()->format("Y-m-d H:i:s"))->count(),
+			'zero' => 0,
+			'partial' => 0,
+		);
 	}
 }

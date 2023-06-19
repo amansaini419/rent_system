@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
+use App\Models\Invoice;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -227,5 +228,12 @@ class LoanController extends Controller
 		if($application && ApplicationStatusController::getCurrentApplicationStatus($application) == 'LOAN_STARTED'){
 			ApplicationStatusController::new($application->id, 'LOAN_CLOSED');
 		}
+	}
+
+	public static function getTotalDisbursement($type = ''){
+		$dateRange = FunctionController::getDateRange($type);
+		$invoices = ($type != '') ? Invoice::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : Invoice::all();
+		$loans = ($type != '') ? Loan::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : Loan::all();
+		return $loans->sum('loan_amount') - $invoices->where('invoice_type', 'INITIAL_DEPOSIT')->sum('invoice_amount');
 	}
 }

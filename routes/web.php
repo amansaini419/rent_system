@@ -57,7 +57,6 @@ Route::get('/blank', function () {
     Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
 }); */
 Route::group(['middleware' => ['auth']], function(){
-
     Route::group(['middleware' => ['user-role:TENANT']], function(){
         Route::get('/application/register/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-register');
         Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
@@ -96,7 +95,7 @@ Route::group(['middleware' => ['auth']], function(){
     });
 
     Route::group(['middleware' => ['tenant-register']], function(){
-        Route::get('/dashboard', [DashboardController::class, 'tenantDashboard'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
         Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');

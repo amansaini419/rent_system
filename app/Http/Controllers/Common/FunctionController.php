@@ -29,7 +29,10 @@ class FunctionController extends Controller
 	}
 
 	public static function formatCurrencyView($amount, $decimal = 2){
-		return number_format($amount, $decimal);
+		if($decimal == 0){
+			return number_format($amount, $decimal);
+		}
+		return 'GHs ' . number_format($amount, $decimal);
 	}
 
 	public static function generateOTP($size = 6){
@@ -39,5 +42,32 @@ class FunctionController extends Controller
 
 	public static function sendSMS($phone, $otp){
 		return true;
+	}
+
+	public static function getDateRange($type){
+		switch($type){
+			case 'week':
+				$from = Carbon::now()->startOfWeek(Carbon::MONDAY)->format("Y-m-d H:i:s");
+				$to = Carbon::now()->endOfWeek(Carbon::SUNDAY)->format("Y-m-d H:i:s");
+				break;
+			case 'month':
+				$from = Carbon::now()->startOfMonth()->format("Y-m-d H:i:s");
+				$to = Carbon::now()->endOfMonth()->format("Y-m-d H:i:s");
+				break;
+			case 'quarter':
+				$from = Carbon::now()->startOfQuarter()->format("Y-m-d H:i:s");
+				$to = Carbon::now()->endOfQuarter()->format("Y-m-d H:i:s");
+				break;
+			case 'year':
+				$from = Carbon::now()->startOfYear()->format("Y-m-d H:i:s");
+				$to = Carbon::now()->endOfYear()->format("Y-m-d H:i:s");
+				break;
+			default:
+				$from = $to = '';
+		}
+		return (object) array(
+			'from' => $from,
+			'to' => $to,
+		);
 	}
 }
