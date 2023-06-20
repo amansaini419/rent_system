@@ -165,23 +165,23 @@
                   <table class="table table-bordered m-0">
                     <tr>
                       <td>Total Rents</td>
-                      <th>55</th>
+                      <th>{{ $monthRentPayment->total }}</th>
                     </tr>
                     <tr>
                       <td>Paid Rent</td>
-                      <th>15</th>
+                      <th>{{ $monthRentPayment->paid }}</th>
                     </tr>
                     <tr>
                       <td>Outstanding Rent</td>
-                      <th>40</th>
+                      <th>{{ $monthRentPayment->outstanding }}</th>
                     </tr>
                     <tr>
                       <td>Zero Payment</td>
-                      <th>25</th>
+                      <th>{{ $monthRentPayment->zero }}</th>
                     </tr>
                     <tr>
                       <td>Partial Payment</td>
-                      <th>15</th>
+                      <th>{{ $monthRentPayment->partial }}</th>
                     </tr>
                   </table>
                   <div>
@@ -205,11 +205,11 @@
               <div class="row">
                 <div class="col-sm-12">
                   <ul class="nav flex-column">
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">New Registration</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Review Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10">New Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10">Review Registration</a></li>
                     <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Accept Payment</a></li>
                     <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Payment List</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Applicant List</a></li>
+                    <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10">Applicant List</a></li>
                     <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Reports</a></li>
                     <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Check Outstanding</a></li>
                   </ul>
@@ -233,7 +233,7 @@
             <div class="m-b-50">
               <div class="row justify-content-md-center">
                 <div class="col-sm-12">
-                  <div class="table-responsive" style="height:250px;">
+                  <div class="table-responsive" style="height:280px;">
                     <table class="table table-bordered m-0">
                       <tr>
                         <th>Full Name</th>
@@ -242,20 +242,15 @@
                         <th>Account Type</th>
                         <th>Link</th>
                       </tr>
-                      <tr>
-                        <td>Mr. Yaw Julius</td>
-                        <td>02-Mar-2023</td>
-                        <td>Pending</td>
-                        <td>2-bedroom</td>
-                        <td><a href="#">View</a></td>
-                      </tr>
-                      <tr>
-                        <td>Mr. Yaw Julius</td>
-                        <td>02-Mar-2023</td>
-                        <td>Rejected</td>
-                        <td>Single</td>
-                        <td><a href="#">View</a></td>
-                      </tr>
+                      @foreach ($last50Registration as $application)
+                        <tr>
+                          <td>{{ $application->tenant_name }}</td>
+                          <td>{{ $application->application_date }}</td>
+                          <td>{{ $application->application_status }}</td>
+                          <td>{{ $application->account_type }}</td>
+                          <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}">View</a></td>
+                        </tr>
+                      @endforeach
                     </table>
                   </div>
                   <div>
@@ -308,7 +303,16 @@
                         <th>Amount Paid</th>
                         <th>Link</th>
                       </tr>
-                      <tr>
+                      @foreach ($last50RentPayment as $payment)
+                        <tr>
+                          <td>{{ $payment->tenant_name }}</td>
+                          <td>{{ $payment->payment_date }}</td>
+                          <td>{{ $payment->payment_channel }}</td>
+                          <td>{{ $payment->payment_amount }}</td>
+                          <td><a href="#">View</a></td>
+                        </tr>
+                      @endforeach
+                      {{-- <tr>
                         <td>Mr. Yaw Julius</td>
                         <td>02-Mar-2023</td>
                         <td>MoMo</td>
@@ -321,7 +325,7 @@
                         <td>Cash</td>
                         <td>GHs 1,500</td>
                         <td><a href="#">View</a></td>
-                      </tr>
+                      </tr> --}}
                     </table>
                   </div>
                   <div>
@@ -376,7 +380,18 @@
                         <th>New Amount</th>
                         <th>Link</th>
                       </tr>
-                      <tr>
+                      @foreach ($last50OutstandingPayment as $payment)
+                        <tr>
+                          <td>{{ $payment->tenant_name }}</td>
+                          <td>{{ $payment->account_type }}</td>
+                          <td>{{ $payment->due_date }}</td>
+                          <td>{{ $payment->days_over }}</td>
+                          <td>{{ $payment->penalty }}</td>
+                          <td>{{ $payment->total_amount }}</td>
+                          <td><a href="#">View</a></td>
+                        </tr>
+                      @endforeach
+                      {{-- <tr>
                         <td>Mr. Yaw Julius</td>
                         <td>2-Bedroom</td>
                         <td>01-Mar-2023</td>
@@ -393,7 +408,7 @@
                         <td>YES</td>
                         <td>GHs 1,500</td>
                         <td><a href="#">View</a></td>
-                      </tr>
+                      </tr> --}}
                     </table>
                   </div>
                   <div>
@@ -462,7 +477,7 @@
         "color": '#4680ff',
         "value": {{ $genderPieChart->male }}
       }, {
-        "gender": "Fenmale",
+        "gender": "Female",
         "color": '#ef67a4',
         "value": {{ $genderPieChart->female }}
       }],
@@ -492,15 +507,15 @@
       "dataProvider": [{
         "country": "Approved",
         "color": '#93be52',
-        "value": 201
+        "value": {{ $applicationStatusLast50PieChart->approved }}
       }, {
         "country": "Rejected",
         "color": '#Fb5959',
-        "value": 65
+        "value": {{ $applicationStatusLast50PieChart->rejected }}
       }, {
         "country": "Pending",
         "color": '#FFB64D',
-        "value": 39
+        "value": {{ $applicationStatusLast50PieChart->pending }}
       }],
       "legend": {
         "useGraphSettings": false
@@ -528,15 +543,15 @@
       "dataProvider": [{
         "country": "MoMo",
         "color": '#93be52',
-        "value": 201
+        "value": {{ $paymentChannelPieChart->MOMO }}
       }, {
         "country": "Cash",
         "color": '#Fb5959',
-        "value": 65
+        "value": {{ $paymentChannelPieChart->CASH }}
       }, {
         "country": "Card",
         "color": '#FFB64D',
-        "value": 39
+        "value": {{ $paymentChannelPieChart->CARD }}
       }],
       "legend": {
         "useGraphSettings": false

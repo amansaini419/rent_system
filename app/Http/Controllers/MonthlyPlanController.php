@@ -82,4 +82,30 @@ class MonthlyPlanController extends Controller
 			->where('invoice_id', 0)
 			->count();
 	}
+
+	public static function getMonthlyPlanDetails($monthlyPlan){
+		$tempJSON = new stdClass();
+		$loan = $monthlyPlan->loan;
+		$userData = $loan->userData;
+		$applicationData = $userData->applicationData;
+		$accomodationData = $userData->accomodationData;
+		$penalty = MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment);
+		$tempJSON->account_type = $accomodationData->property_type;
+		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->due_date = FunctionController::formatDate($monthlyPlan->due_date);
+		$tempJSON->days_over = Carbon::parse($monthlyPlan->due_date)->diffInDays(Carbon::now(), false);
+		$tempJSON->penalty = $penalty == 0 ? 'NO' : 'YES';
+		$tempJSON->payment_amount = FunctionController::formatCurrencyView($loan->monthly_payment);
+		$tempJSON->total_amount = FunctionController::formatCurrencyView($loan->monthly_payment + $penalty);
+		$tempJSON->penalty_amount = FunctionController::formatCurrencyView($penalty);
+		return $tempJSON;
+	}
+
+	public static function getMonthlyPlans($monthlyPlans){
+		$monthlyPlanStr = array();
+		foreach($monthlyPlans as $monthlyPlan){
+			$monthlyPlanStr[] = MonthlyPlanController::getMonthlyPlanDetails($monthlyPlan);
+		}
+		return $monthlyPlanStr;
+	}
 }

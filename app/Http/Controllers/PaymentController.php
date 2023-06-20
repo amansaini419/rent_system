@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
 class PaymentController extends Controller
@@ -210,16 +211,98 @@ class PaymentController extends Controller
 		return $invoices->where('invoice_type', 'RENT')->sum('invoice_amount');
 	}
 
-	public static function getNumberOfRents($rentType = 'total', $type = ''){
+	public static function getOutstandingRent($limit = 50){
+		$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+		$responseStr = array();
+		//$total = count($monthlyPlans);
+		$counter = 1;
+		//$limit = ($total < $limit) ? $total : ;
+		foreach($monthlyPlans as $monthlyPlan){
+			if($counter >= $limit){
+				break;
+			}
+			if($monthlyPlan->invoice_id == 0){
+				$responseStr[] = $monthlyPlan;
+				$counter++;
+			}
+			else{
+				$invoiceAmount = $monthlyPlan->invoice->invoice_amount;
+				$totalPayment = $monthlyPlan->payments->sum('payment_amount');
+				if($totalPayment < $invoiceAmount){
+					$responseStr[] = $monthlyPlan;
+					$counter++;
+				}
+			}
+		}
+		return $responseStr;
+	}
+
+	public static function getNumberOfRents($type = ''){
 		$dateRange = FunctionController::getDateRange($type);
-		$plans = ($type != '') ? MonthlyPlan::whereBetween('due_date', [$dateRange->from, $dateRange->to]) : MonthlyPlan::all();
-		
+		$monthlyPlans = ($type != '') ? MonthlyPlan::whereBetween('due_date', [$dateRange->from, $dateRange->to])->get() : MonthlyPlan::all();
+		$total = $paid = $outstanding = $zero = $partial = 0;
+		foreach($monthlyPlans as $plan){
+			$total++;
+			if($plan->invoice_id == 0){
+				$outstanding++;
+				$zero++;
+			}
+			else{
+				$invoiceAmount = $plan->invoice->invoice_amount;
+				$totalPayment = $plan->payments->sum('payment_amount');
+				//dd($totalPayment);
+				if($totalPayment >= $invoiceAmount){
+					$paid++;
+				}
+				elseif($totalPayment == 0){
+					$outstanding++;
+					$zero++;
+				}
+				else{
+					$outstanding++;
+					$partial++;
+				}
+			}
+		}
 		return array(
-			'total' => $plans->count(),
-			'paid' => $plans->where('invoice_id', '>', 0)->count(),
-			'outstanding' => $plans->where('due_date', '<', Carbon::now()->endOfDay()->format("Y-m-d H:i:s"))->count(),
-			'zero' => 0,
-			'partial' => 0,
+			'total' => $total,
+			'paid' => $paid,
+			'outstanding' => $outstanding,
+			'zero' => $zero,
+			'partial' => $partial,
 		);
+	}
+
+	public static function getTotalPaymentChannelWise(){
+		$paymentChannels = Payment::groupBy('payment_channel')->select('payment_channel', DB::raw('count(*) AS total'))->get();
+		//dd($paymentChannels);
+		$responseStr = array();
+		foreach($paymentChannels as $paymentChannel){
+			$responseStr[$paymentChannel->payment_channel] = $paymentChannel->total;
+		}
+		//dd($responseStr);
+		return (object)$responseStr;
+	}
+
+	public static function getPaymentDetails($payment){
+		$tempJSON = new stdClass();
+		$invoice = Invoice::find($payment->id);
+		$userData = InvoiceController::getInvoiceUserData($invoice, 'RENT');
+		$applicationData = $userData->applicationData;
+		$tempJSON->invoice_id = $payment->id;
+		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->payment_date = FunctionController::formatDate($payment->created_at);
+		$tempJSON->payment_channel = $payment->payment_channel;
+		$tempJSON->payment_amount = FunctionController::formatCurrencyView($payment->payment_amount);
+		$tempJSON->payment_ref = $payment->payment_ref;
+		return $tempJSON;
+	}
+
+	public static function getPayments($payments){
+		$paymentStr = array();
+		foreach($payments as $payment){
+			$paymentStr[] = PaymentController::getPaymentDetails($payment);
+		}
+		return $paymentStr;
 	}
 }

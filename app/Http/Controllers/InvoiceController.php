@@ -36,21 +36,22 @@ class InvoiceController extends Controller
 		return (PaymentController::getTotalPaymentByInvoice($invoice->id) >= $invoice->invoice_amount) ? "PAID" : "PENDING";
 	}
 
-	public static function getInvoiceDetails($invoice){
-		//DB::enableQueryLog();
-		if($invoice->invoice_type == "RENT"){
+	public static function getInvoiceUserData($invoice, $invoiceType){
+		if($invoiceType == "RENT"){
 			$userData = $invoice->loan->userData;
 		}
-		elseif($invoice->invoice_type == "REGISTRATION"){
+		elseif($invoiceType == "REGISTRATION"){
 			$userData = $invoice->userData;
 		}
-		elseif($invoice->invoice_type == "INITIAL_DEPOSIT"){
+		elseif($invoiceType == "INITIAL_DEPOSIT"){
 			$userData = $invoice->application->userData;
 			//dd(DB::getQueryLog());
 		}
-		//dd(DB::getQueryLog());
-		//echo json_encode($applicationData);
-		//echo "<br>";
+		return $userData;
+	}
+
+	public static function getInvoiceDetails($invoice){
+		$userData = InvoiceController::getInvoiceUserData($invoice, $invoice->invoice_type);
 		$applicationData = $userData->applicationData;
 		$tempJSON = new stdClass();
 		$tempJSON->id = $invoice->id;
@@ -80,7 +81,7 @@ class InvoiceController extends Controller
 			//dd($invoices);
 		}
 		elseif(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
-			$applications = ApplicationController::getUserApplications();
+			$applications = ApplicationController::getUserApplications(Auth::user()->user_type);
 			$userIds = array();
 			foreach($applications as $application){
 				$userData = $application->userData;

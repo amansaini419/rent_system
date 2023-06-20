@@ -20,9 +20,58 @@ class ApplicationStatusController extends Controller
 		return ($application && $application->currentStatus) ? $application->currentStatus->application_status : "";
 	}
 
-	public static function getTotalApplicationByStatus($status = '', $type = ''){
+	public static function getTotalApplicationByStatus($status = '', $type = '', $countFlag = 1){
 		$dateRange = FunctionController::getDateRange($type);
-		$invoices = ($type != '') ? ApplicationStatus::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : ApplicationStatus::all();
-		return ($status != '') ? $invoices->where('application_status', $status)->count() : Application::all()->count();
+		$applicationStatuses = ($type != '') ? ApplicationStatus::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : ApplicationStatus::all();
+		$applicationStatuses = ($status != '') ? $applicationStatuses->where('application_status', $status)->pluck('application_id') : Application::all();
+		//dd($applicationStatuses);
+		return ($countFlag == 1) ? $applicationStatuses->count() : $applicationStatuses;
+	}
+
+	public static function getTotalApprovedApplicationGenderWise($approvedApplications){
+		$maleCount = $femaleCount = 0;
+		$applications = Application::whereIn('id', $approvedApplications)->get();
+		//dd($applications);
+		foreach($applications as $application){
+			//dd($application);
+			$applicationData = $application->applicationData;
+			//echo $application->id;
+			if($applicationData){
+				//echo $applicationData->gender;
+				if($applicationData->gender == "male"){
+					$maleCount++;
+				}
+				elseif($applicationData->gender == "female"){
+					$femaleCount++;
+				}
+			}
+		}
+		return (object)array(
+			'male' => $maleCount,
+			'female' => $femaleCount,
+		);
+	}
+
+	public static function getTotalApplicationStatusWise($applications){
+		$total = $approved = $rejected = $pending = 0;
+		foreach($applications as $application){
+			$total++;
+			$applicationStatus = $application->currentStatus->application_status;
+			if(in_array($applicationStatus, ['APPROVED', 'LOAN_STARTED', 'LOAN_CLOSED'])){
+				$approved++;
+			}
+			elseif($applicationStatus == 'REJECTED'){
+				$rejected++;
+			}
+			elseif(in_array($applicationStatus, ['INCOMPLETE', 'PENDING', 'UNDER_VERIFICATION', 'VERIFIED'])){
+				$pending++;
+			}
+		}
+		return (object)array(
+			'total' => $total,
+			'approved' => $approved,
+			'rejected' => $rejected,
+			'pending' => $pending,
+		);
 	}
 }

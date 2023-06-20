@@ -29,7 +29,10 @@ class ApplicationController extends Controller
 		$tempJSON = new stdClass();
 		$tempJSON->id = $application->id;
 		$applicationData = $application->userData->applicationData;
+		$accomodationData = $application->userData->accomodationData;
 		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->account_type = $accomodationData->property_type;
+		$tempJSON->application_date = FunctionController::formatDate($application->created_at);
 		$tempJSON->application_type = $application->application_type;
 		$tempJSON->application_code = $application->application_code;
 		$tempJSON->application_remark = $application->application_remark;
@@ -407,4 +410,6 @@ class ApplicationController extends Controller
 		$dateRange = FunctionController::getDateRange($type);
 		return ($type != '') ? Application::whereBetween('created_at', [$dateRange->from, $dateRange->to])->count() : Application::all();
 	}
+
+	/* public static function getLast50 */
 }

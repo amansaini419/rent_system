@@ -3,13 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Models\Application;
+use App\Models\ApplicationStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class DashboardController extends Controller
 {
 	public function index(){
-		$approvedStatusApplication = ApplicationStatusController::getTotalApplicationByStatus('APPROVED', 'year');
+		// SELECT A.* FROM application_statuses A JOIN ( SELECT application_id, MAX(created_at) AS latest_date FROM application_statuses GROUP BY application_id) AS AST ON AST.application_id = A.application_id AND AST.latest_date = A.created_at ORDER BY A.application_id;
+		$last50Applications = Application::orderBy('id', 'desc')->limit(50)->get();
+		$last50RentPayment = DB::table('invoices AS I')
+			->join('payments AS P', 'I.id', '=', 'P.invoice_id')
+			->select('I.id', 'P.created_at', 'P.payment_channel', 'P.payment_amount', 'P.payment_ref')
+			->where('I.invoice_type', 'RENT')
+			->orderBy('P.created_at', 'desc')
+			->limit(50)
+			->get();
+		$last50OutstandingRent = PaymentController::getOutstandingRent();
+		//dd(PaymentController::getTotalRepayments($last50RentPayment));
+		//dd(ApplicationController::getApplications($applications));
+		$approvedStatusApplication = ApplicationStatusController::getTotalApplicationByStatus('APPROVED', '', 0);
+		$totalApprovedStatusApplication = count($approvedStatusApplication);
 		$allStatusApplication = ApplicationStatusController::getTotalApplicationByStatus();
 		$data = array(
 			'weeksApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('week'), 0),
@@ -19,17 +36,19 @@ class DashboardController extends Controller
 			'yearsRegistrationFees' => FunctionController::formatCurrencyView(RegistrationFeeController::getTotalFees('year')),
 			'yearsRentDisbursement' => FunctionController::formatCurrencyView(LoanController::getTotalDisbursement('year')),
 			'yearsRepayments' => FunctionController::formatCurrencyView(PaymentController::getTotalRepayments('year')),
-			'yearsApprovedApplication' => FunctionController::formatCurrencyView($approvedStatusApplication, 0),
+			'yearsApprovedApplication' => FunctionController::formatCurrencyView(ApplicationStatusController::getTotalApplicationByStatus('APPROVED', 'year'), 0),
 			'applicationStatusPieChart' => (object)array(
-				'pending' => $allStatusApplication - $approvedStatusApplication,
+				'pending' => $allStatusApplication - $totalApprovedStatusApplication,
 				'rejected' => ApplicationStatusController::getTotalApplicationByStatus('REJECTED', 'year'),
-				'approved' => $approvedStatusApplication,
+				'approved' => $totalApprovedStatusApplication,
 			),
-			'genderPieChart' => (object)array(
-				'male' => 0,
-				'female' => 0,
-			),
-			''
+			'genderPieChart' => ApplicationStatusController::getTotalApprovedApplicationGenderWise($approvedStatusApplication),
+			'monthRentPayment' => (object)PaymentController::getNumberOfRents('month'),
+			'last50Registration' => ApplicationController::getApplications($last50Applications),
+			'applicationStatusLast50PieChart' => ApplicationStatusController::getTotalApplicationStatusWise($last50Applications),
+			'last50RentPayment' => PaymentController::getPayments($last50RentPayment),
+			'paymentChannelPieChart' => PaymentController::getTotalPaymentChannelWise(),
+			'last50OutstandingPayment' => MonthlyPlanController::getMonthlyPlans($last50OutstandingRent),
 		);
 		return view('dashboard', $data);
 	}

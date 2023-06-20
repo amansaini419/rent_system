@@ -28,12 +28,23 @@ class Application extends Model
 
 	public function userData(): BelongsTo
 	{
-		return $this->BelongsTo(UserData::class, 'user_data_id');
+		return $this->belongsTo(UserData::class, 'user_data_id');
+	}
+
+	public function applicationData(): HasOneThrough{
+		return $this->hasOneThrough(
+			ApplicationData::class,
+			UserData::class,
+			'id',
+			'user_data_id',
+			'user_data_id',
+			'id'
+		);
 	}
 
 	public function currentStatus(): HasOne
 	{
-		return $this->HasOne(ApplicationStatus::class)->latestOfMany();
+		return $this->hasOne(ApplicationStatus::class)->latestOfMany();
 	}
 
 	/* public function initialDeposits(): HasMany{
