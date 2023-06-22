@@ -73,6 +73,10 @@ class FunctionController extends Controller
 
 	public static function getDateRange($type){
 		switch($type){
+			case 'today':
+				$from = Carbon::now()->startOfDay()->format("Y-m-d H:i:s");
+				$to = Carbon::now()->endOfDay()->format("Y-m-d H:i:s");
+				break;
 			case 'week':
 				$from = Carbon::now()->startOfWeek(Carbon::MONDAY)->format("Y-m-d H:i:s");
 				$to = Carbon::now()->endOfWeek(Carbon::SUNDAY)->format("Y-m-d H:i:s");

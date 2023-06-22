@@ -110,7 +110,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/invoice/list', [InvoiceController::class, 'index'])->name('invoice-list');
         Route::get('/invoice/view/{id?}', [InvoiceController::class, 'view'])->name('invoice-view');
         
-        Route::get('/payment/list', [PaymentController::class, 'index'])->name('payment-list');
+        Route::get('/payment/list/{type?}', [PaymentController::class, 'index'])->name('payment-list');
         Route::get('/payment/outstanding', [PaymentController::class, 'outstanding'])->name('payment-outstanding');
         Route::get('/payment/accept', [PaymentController::class, 'accept'])->name('payment-accept');
 

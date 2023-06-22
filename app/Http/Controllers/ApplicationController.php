@@ -408,7 +408,12 @@ class ApplicationController extends Controller
 
 	public static function getTotalApplications($type = ''){
 		$dateRange = FunctionController::getDateRange($type);
-		return ($type != '') ? Application::whereBetween('created_at', [$dateRange->from, $dateRange->to])->count() : Application::all();
+		if(Auth::user()->user_type == 'ADMIN'){
+			return ($type != '') ? Application::whereBetween('created_at', [$dateRange->from, $dateRange->to])->count() : Application::count();
+		}
+		elseif(Auth::user()->user_type == 'STAFF' || Auth::user()->user_type == 'AGENT'){
+			return ($type != '') ? Application::where('subadmin_id', Auth::id())->whereBetween('created_at', [$dateRange->from, $dateRange->to])->count() : Application::where('subadmin_id', Auth::id())->count();
+		}
 	}
 
 	/* public static function getLast50 */

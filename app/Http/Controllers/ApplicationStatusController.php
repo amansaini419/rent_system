@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationStatusController extends Controller
 {
@@ -22,9 +23,15 @@ class ApplicationStatusController extends Controller
 
 	public static function getTotalApplicationByStatus($status = '', $type = '', $countFlag = 1){
 		$dateRange = FunctionController::getDateRange($type);
-		$applicationStatuses = ($type != '') ? ApplicationStatus::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : ApplicationStatus::all();
-		$applicationStatuses = ($status != '') ? $applicationStatuses->where('application_status', $status)->pluck('application_id') : Application::all();
-		//dd($applicationStatuses);
+		if(Auth::user()->user_type == 'ADMIN'){
+			$applicationStatuses = ($type != '') ? ApplicationStatus::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : ApplicationStatus::all();
+			$applicationStatuses = ($status != '') ? $applicationStatuses->where('application_status', $status)->pluck('application_id') : Application::all();
+		}
+		elseif(Auth::user()->user_type == 'STAFF' || Auth::user()->user_type == 'AGENT'){
+			$applicationIdStr = ApplicationController::getUserApplications(Auth::user()->user_type, Auth::id())->pluck('id');
+			$applicationStatuses = ($type != '') ? ApplicationStatus::whereIn('application_id', $applicationIdStr)->whereBetween('created_at', [$dateRange->from, $dateRange->to]) : ApplicationStatus::whereIn('application_id', $applicationIdStr)->get();
+			$applicationStatuses = ($status != '') ? $applicationStatuses->where('application_status', $status)->pluck('application_id') : $applicationIdStr;
+		}
 		return ($countFlag == 1) ? $applicationStatuses->count() : $applicationStatuses;
 	}
 

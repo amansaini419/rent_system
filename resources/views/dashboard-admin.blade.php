@@ -1,11 +1,3 @@
-@section('own-style')
-  <style>
-    .card-dash{
-      height: 450px;
-    }
-  </style>
-@endsection
-
 @section('content')
   <div class="page-body">
     <div class="row">
@@ -207,7 +199,7 @@
                   <ul class="nav flex-column">
                     <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
                     <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Review Registration</a></li>
-                    <li><a href="{{ route('payment-accept') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Accept Payment</a></li>
+                    <li><a href="{{ route('payment-outstanding') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Accept Payment</a></li>
                     <li><a href="{{ route('payment-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Payment List</a></li>
                     <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Tenant List</a></li>
                     <li><a href="{{ route('application-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Reports</a></li>
@@ -312,24 +304,10 @@
                           <td><a href="#">View</a></td>
                         </tr>
                       @endforeach
-                      {{-- <tr>
-                        <td>Mr. Yaw Julius</td>
-                        <td>02-Mar-2023</td>
-                        <td>MoMo</td>
-                        <td>GHs 1,800</td>
-                        <td><a href="#">View</a></td>
-                      </tr>
-                      <tr>
-                        <td>Mr. Yaw Julius</td>
-                        <td>02-Mar-2023</td>
-                        <td>Cash</td>
-                        <td>GHs 1,500</td>
-                        <td><a href="#">View</a></td>
-                      </tr> --}}
                     </table>
                   </div>
                   <div>
-                    <a href="{{ route('application-list') }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
+                    <a href="{{ route('payment-list', ['type' => 'RENT']) }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
                   </div>
                 </div>
               </div>
@@ -391,28 +369,10 @@
                           <td><a href="#">View</a></td>
                         </tr>
                       @endforeach
-                      {{-- <tr>
-                        <td>Mr. Yaw Julius</td>
-                        <td>2-Bedroom</td>
-                        <td>01-Mar-2023</td>
-                        <td>4</td>
-                        <td>YES</td>
-                        <td>GHs 1,800</td>
-                        <td><a href="#">View</a></td>
-                      </tr>
-                      <tr>
-                        <td>Miss Lady Mends</td>
-                        <td>Single Room</td>
-                        <td>01-Mar-2023</td>
-                        <td>10</td>
-                        <td>YES</td>
-                        <td>GHs 1,500</td>
-                        <td><a href="#">View</a></td>
-                      </tr> --}}
                     </table>
                   </div>
                   <div>
-                    <a href="{{ route('application-list') }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
+                    <a href="{{ route('payment-outstanding') }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
                   </div>
                 </div>
               </div>
@@ -422,12 +382,6 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('theme-script')
-  <script src="{{ asset('assets/pages/widget/amchart/amcharts.js') }}"></script>
-  <script src="{{ asset('assets/pages/widget/amchart/pie.js') }}"></script>
-  {{-- <script type="text/javascript" src="{{ asset('assets/pages/widget/custom-widget1.js') }}"></script> --}}
 @endsection
 
 @section('own-script')

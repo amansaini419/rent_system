@@ -93,10 +93,31 @@
     <span class="pcoded-mcaret"></span>
   </a>
   <ul class="pcoded-submenu">
-    <li class="{{ (Route::currentRouteName() === 'payment-list') ? 'active' : '' }}">
+    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) == '') ? 'active' : '' }}">
       <a href="{{ route('payment-list') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">All</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'RENT') ? 'active' : '' }}">
+      <a href="{{ route('payment-list', ['type' => 'RENT']) }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">Rent</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'REGISTRATION') ? 'active' : '' }}">
+      <a href="{{ route('payment-list', ['type' => 'REGISTRATION']) }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">Registration</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'INITIAL_DEPOSIT') ? 'active' : '' }}">
+      <a href="{{ route('payment-list', ['type' => 'INITIAL_DEPOSIT']) }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">Initial Deposit</span>
         <span class="pcoded-mcaret"></span>
       </a>
     </li>
@@ -104,13 +125,6 @@
       <a href="{{ route('payment-outstanding') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">Outstanding</span>
-        <span class="pcoded-mcaret"></span>
-      </a>
-    </li>
-    <li class="{{ (Route::currentRouteName() === 'payment-accept') ? 'active' : '' }}">
-      <a href="{{ route('payment-accept') }}">
-        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-        <span class="pcoded-mtext">Accept</span>
         <span class="pcoded-mcaret"></span>
       </a>
     </li>

@@ -40,6 +40,14 @@ class LoanController extends Controller
 		return $tempJSON;
 	}
 
+	public static function getLoanIds($loans){
+		$loanIdStr = array();
+		foreach($loans as $loan){
+			$loanIdStr[] = $loan->id;
+		}
+		return $loanIdStr;
+	}
+
 	public static function getLoans($applications, $status = "ALL"){
 		$loanStr = array();
 		foreach($applications as $application){

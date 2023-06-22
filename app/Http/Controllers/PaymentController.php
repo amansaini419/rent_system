@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Models\Application;
 use App\Models\Invoice;
 use App\Models\MonthlyPlan;
 use App\Models\Payment;
@@ -236,9 +237,22 @@ class PaymentController extends Controller
 		return $responseStr;
 	}
 
-	public static function getNumberOfRents($type = ''){
+	public static function getUserMonthlyPlan($userType, $userId, $type = ''){
 		$dateRange = FunctionController::getDateRange($type);
-		$monthlyPlans = ($type != '') ? MonthlyPlan::whereBetween('due_date', [$dateRange->from, $dateRange->to])->get() : MonthlyPlan::all();
+		if($userType == "ADMIN"){
+			$monthlyPlans = ($type != '') ? MonthlyPlan::whereBetween('due_date', [$dateRange->from, $dateRange->to])->get() : MonthlyPlan::all();
+		}
+		elseif($userType == "TENANT" || $userType == "STAFF" || $userType == "AGENT"){
+			$applications = ApplicationController::getUserApplications($userType, $userId);
+			$loans = LoanController::getLoans($applications);
+			$loanIdStr = LoanController::getLoanIds($loans);
+			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr)->whereBetween('due_date', [$dateRange->from, $dateRange->to])->latest()->get();
+		}
+		return $monthlyPlans;
+	}
+
+	public static function getNumberOfRents($type = ''){
+		$monthlyPlans = PaymentController::getOutstandingMonthlyPlan(Auth::user()->user_type, Auth::id(), $type);
 		$total = $paid = $outstanding = $zero = $partial = 0;
 		foreach($monthlyPlans as $plan){
 			$total++;
@@ -273,7 +287,8 @@ class PaymentController extends Controller
 	}
 
 	public static function getTotalPaymentChannelWise(){
-		$paymentChannels = Payment::groupBy('payment_channel')->select('payment_channel', DB::raw('count(*) AS total'))->get();
+		$paymentsIdStr = PaymentController::getUserPayments(Auth::user()->user_type)->pluck('id');
+		$paymentChannels = Payment::whereIn('id', $paymentsIdStr)->groupBy('payment_channel')->select('payment_channel', DB::raw('count(*) AS total'))->get();
 		//dd($paymentChannels);
 		$responseStr = array();
 		foreach($paymentChannels as $paymentChannel){
@@ -283,9 +298,8 @@ class PaymentController extends Controller
 		return (object)$responseStr;
 	}
 
-	public static function getPaymentDetails($payment){
+	public static function getPaymentDetails($payment, $invoice){
 		$tempJSON = new stdClass();
-		$invoice = Invoice::find($payment->invoice_id);
 		$userData = InvoiceController::getInvoiceUserData($invoice);
 		$applicationData = $userData->applicationData;
 		$tempJSON->id = $payment->id;
@@ -300,40 +314,49 @@ class PaymentController extends Controller
 		return $tempJSON;
 	}
 
-	public static function getPayments($payments){
+	public static function getPayments($payments, $type = 'ALL'){
 		$paymentStr = array();
 		foreach($payments as $payment){
-			$paymentStr[] = PaymentController::getPaymentDetails($payment);
+			$invoice = Invoice::find($payment->invoice_id);
+			if( $type == 'ALL' || ($invoice && $invoice->invoice_type == $type) ){
+				$paymentStr[] = PaymentController::getPaymentDetails($payment, $invoice);
+			}
 		}
 		return $paymentStr;
 	}
 
-	protected function index(){
-		if(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT" || Auth::user()->user_type == "TENANT" ){
-			$payments = Payment::whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest()->get();
-			//dd($payments);
+	public static function getUserPayments($userType, $limit = -1){
+		if($userType == "STAFF" || $userType == "AGENT" || $userType == "TENANT" ){
+			$paymentSql = Payment::whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest();
 		}
-		elseif(Auth::user()->user_type == "ADMIN"){
-			$payments = Payment::latest()->get();
+		elseif($userType == "ADMIN"){
+			$paymentSql = Payment::latest();
 		}
+		return ($limit == -1) ? $paymentSql->get() : $paymentSql->limit($limit)->get();
+	}
+
+	protected function index(string $type = 'ALL'){
+		$payments = PaymentController::getUserPayments(Auth::user()->user_type);
 		return view('payment.list', [
-			'paymentStr' => PaymentController::getPayments($payments)
+			'paymentStr' => PaymentController::getPayments($payments, $type)
 		]);
 	}
 
-	protected function outstanding(){
-		if(Auth::user()->user_type == "ADMIN"){
-			$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+	public static function getOutstandingMonthlyPlan($userType, $userId){
+		if($userType == "ADMIN"){
+			$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->latest()->get();
 		}
-		elseif(Auth::user()->user_type == "TENANT" || Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
-			$applications = ApplicationController::getUserApplications(Auth::user()->user_type, Auth::id());
-			$loanIdStr = array();
+		elseif($userType == "TENANT" || $userType == "STAFF" || $userType == "AGENT"){
+			$applications = ApplicationController::getUserApplications($userType, $userId);
 			$openedLoans = LoanController::getLoans($applications, 'OPENED');
-			foreach($openedLoans as $loan){
-				$loanIdStr[] = $loan->id;
-			}
-			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr)->where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+			$loanIdStr = LoanController::getLoanIds($openedLoans);
+			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr)->where('due_date', '<=', date("Y-m-d"))->latest()->get();
 		}
+		return $monthlyPlans;
+	}
+
+	protected function outstanding(){
+		$monthlyPlans = PaymentController::getOutstandingMonthlyPlan(Auth::user()->user_type, Auth::id());
 		$outstandingRents = PaymentController::getOutstandingRent($monthlyPlans, -1);
 		//dd($outstandingRent);
 		return view('payment.outstanding', [
@@ -341,7 +364,7 @@ class PaymentController extends Controller
 		]);
 	}
 
-	protected function accept(){
+	/* protected function accept(){
 		
-	}
+	} */
 }
