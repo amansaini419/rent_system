@@ -13,11 +13,11 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-pie-chart bg-c-blue card1-icon"></i>
+            <i class="icofont icofont-files bg-c-blue card1-icon"></i>
             <span class="text-c-blue f-w-600">Week's Applications</span>
             <h4>{{ $weeksApplication }}</h4>
             <div>
-              <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
+              <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
             </div>
           </div>
         </div>
@@ -27,11 +27,11 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-ui-home bg-c-pink card1-icon"></i>
+            <i class="icofont icofont-files bg-c-pink card1-icon"></i>
             <span class="text-c-pink f-w-600">Month's Applications</span>
             <h4>{{ $monthsApplication }}</h4>
             <div>
-              <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
+              <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
             </div>
           </div>
         </div>
@@ -41,11 +41,11 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-warning-alt bg-c-green card1-icon"></i>
+            <i class="icofont icofont-files bg-c-green card1-icon"></i>
             <span class="text-c-green f-w-600">Quarter's Applications</span>
             <h4>{{ $quartersApplication }}</h4>
             <div>
-              <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
+              <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
             </div>
           </div>
         </div>
@@ -55,11 +55,11 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-social-twitter bg-c-yellow card1-icon"></i>
+            <i class="icofont icofont-files bg-c-yellow card1-icon"></i>
             <span class="text-c-yellow f-w-600">Year's Applications</span>
             <h4>{{ $yearsApplication }}</h4>
             <div>
-              <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
+              <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-pie-chart bg-c-blue card1-icon"></i>
+            <i class="icofont icofont-money bg-c-blue card1-icon"></i>
             <span class="text-c-blue f-w-600">Year's Registration Fees</span>
             <h4>{{ $yearsRegistrationFees }}</h4>
           </div>
@@ -83,7 +83,7 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-ui-home bg-c-pink card1-icon"></i>
+            <i class="icofont icofont-money bg-c-pink card1-icon"></i>
             <span class="text-c-pink f-w-600">Year's Rent Disbursement</span>
             <h4>{{ $yearsRentDisbursement }}</h4>
           </div>
@@ -94,7 +94,7 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-warning-alt bg-c-green card1-icon"></i>
+            <i class="icofont icofont-money bg-c-green card1-icon"></i>
             <span class="text-c-green f-w-600">Year's Re-payments</span>
             <h4>{{ $yearsRepayments }}</h4>
           </div>
@@ -105,7 +105,7 @@
       <div class="col-md-6 col-xl-3">
         <div class="card widget-card-1">
           <div class="card-block-small">
-            <i class="icofont icofont-social-twitter bg-c-yellow card1-icon"></i>
+            <i class="icofont icofont-files bg-c-yellow card1-icon"></i>
             <span class="text-c-yellow f-w-600">Year's Approved Applications</span>
             <h4>{{ $yearsApprovedApplication }}</h4>
           </div>
@@ -185,7 +185,7 @@
                     </tr>
                   </table>
                   <div>
-                    <a href="{{ route('application-list') }}" class="f-right m-t-10">Read More >>></a>
+                    <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
                   </div>
                 </div>
               </div>
@@ -205,13 +205,13 @@
               <div class="row">
                 <div class="col-sm-12">
                   <ul class="nav flex-column">
-                    <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10">New Registration</a></li>
-                    <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10">Review Registration</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Accept Payment</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Payment List</a></li>
-                    <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10">Applicant List</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Reports</a></li>
-                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10">Check Outstanding</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Review Registration</a></li>
+                    <li><a href="{{ route('payment-accept') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Accept Payment</a></li>
+                    <li><a href="{{ route('payment-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Payment List</a></li>
+                    <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Tenant List</a></li>
+                    <li><a href="{{ route('application-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Reports</a></li>
+                    <li><a href="{{ route('payment-outstanding') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Check Outstanding</a></li>
                   </ul>
                 </div>
               </div>

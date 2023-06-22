@@ -1,13 +1,13 @@
-<li class="">
+<li class="{{ (Route::currentRouteName() === 'tenant-list') ? 'active pcoded-trigger' : '' }}">
   <a href="{{ route('tenant-list') }}">
-    <span class="pcoded-micon"><i class="ti-home"></i><b>T</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-users-alt-2"></i><b>T</b></span>
     <span class="pcoded-mtext">Tenants</span>
     <span class="pcoded-mcaret"></span>
   </a>
 </li>
-<li class="pcoded-hasmenu {{ (Route::currentRouteName() === 'application-list') ? 'active pcoded-trigger' : '' }}">
+<li class="pcoded-hasmenu {{ ( in_array(Route::currentRouteName(), ['application-list', 'application-view']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="javascript:void(0)">
-    <span class="pcoded-micon"><i class="ti-layout"></i><b>A</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-files"></i><b>A</b></span>
     <span class="pcoded-mtext">Applications</span>
     <span class="pcoded-mcaret"></span>
   </a>
@@ -56,21 +56,21 @@
     </li>
   </ul>
 </li>
-<li class="pcoded-hasmenu">
+<li class="pcoded-hasmenu {{ ( in_array(Route::currentRouteName(), ['loan-list', 'loan-view']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="javascript:void(0)">
-    <span class="pcoded-micon"><i class="ti-layout"></i><b>L</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-briefcase-alt-1"></i><b>L</b></span>
     <span class="pcoded-mtext">Loans</span>
     <span class="pcoded-mcaret"></span>
   </a>
   <ul class="pcoded-submenu">
-    <li class=" ">
+    <li class="{{ (Route::currentRouteName() === 'loan-list' && request()->segment(3) == '') ? 'active' : '' }}">
       <a href="{{ route('loan-list') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">All</span>
         <span class="pcoded-mcaret"></span>
       </a>
     </li>
-    <li class=" ">
+    <li class="{{ (Route::currentRouteName() === 'loan-list' && request()->segment(3) === 'OPENED') ? 'active' : '' }}">
       <a href="{{ route('loan-list', ['status' => 'OPENED']) }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">Opened</span>
@@ -79,23 +79,53 @@
     </li>
   </ul>
 </li>
-<li class="">
+<li class="{{ ( in_array(Route::currentRouteName(), ['invoice-list', 'invoice-view']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="{{ route('invoice-list') }}">
-    <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-bill"></i><b>I</b></span>
     <span class="pcoded-mtext">Invoices</span>
     <span class="pcoded-mcaret"></span>
   </a>
 </li>
-<li class="">
+<li class="pcoded-hasmenu {{ ( in_array(Route::currentRouteName(), ['payment-list', 'payment-outstanding', 'payment-accept']) ) ? 'active pcoded-trigger' : '' }}">
+  <a href="javascript:void(0)">
+    <span class="pcoded-micon"><i class="icofont icofont-money"></i><b>I</b></span>
+    <span class="pcoded-mtext">Payments</span>
+    <span class="pcoded-mcaret"></span>
+  </a>
+  <ul class="pcoded-submenu">
+    <li class="{{ (Route::currentRouteName() === 'payment-list') ? 'active' : '' }}">
+      <a href="{{ route('payment-list') }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">All</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'payment-outstanding') ? 'active' : '' }}">
+      <a href="{{ route('payment-outstanding') }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">Outstanding</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'payment-accept') ? 'active' : '' }}">
+      <a href="{{ route('payment-accept') }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">Accept</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="{{ ( in_array(Route::currentRouteName(), ['subadmin-list', 'subadmin-view']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="{{ route('subadmin-list') }}">
-    <span class="pcoded-micon"><i class="ti-user"></i><b>A</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-users-alt-4"></i><b>A</b></span>
     <span class="pcoded-mtext">Admins</span>
     <span class="pcoded-mcaret"></span>
   </a>
 </li>
-<li class="">
+<li class="{{ ( in_array(Route::currentRouteName(), ['settings']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="{{ route('settings') }}">
-    <span class="pcoded-micon"><i class="ti-user"></i><b>I</b></span>
+    <span class="pcoded-micon"><i class="icofont icofont-settings"></i><b>I</b></span>
     <span class="pcoded-mtext">Settings</span>
     <span class="pcoded-mcaret"></span>
   </a>

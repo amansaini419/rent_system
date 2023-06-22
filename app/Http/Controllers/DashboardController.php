@@ -13,18 +13,15 @@ use stdClass;
 class DashboardController extends Controller
 {
 	public function index(){
-		// SELECT A.* FROM application_statuses A JOIN ( SELECT application_id, MAX(created_at) AS latest_date FROM application_statuses GROUP BY application_id) AS AST ON AST.application_id = A.application_id AND AST.latest_date = A.created_at ORDER BY A.application_id;
 		$last50Applications = Application::orderBy('id', 'desc')->limit(50)->get();
 		$last50RentPayment = DB::table('invoices AS I')
 			->join('payments AS P', 'I.id', '=', 'P.invoice_id')
-			->select('I.id', 'P.created_at', 'P.payment_channel', 'P.payment_amount', 'P.payment_ref')
+			->select('P.*')
 			->where('I.invoice_type', 'RENT')
 			->orderBy('P.created_at', 'desc')
 			->limit(50)
 			->get();
 		$last50OutstandingRent = PaymentController::getOutstandingRent();
-		//dd(PaymentController::getTotalRepayments($last50RentPayment));
-		//dd(ApplicationController::getApplications($applications));
 		$approvedStatusApplication = ApplicationStatusController::getTotalApplicationByStatus('APPROVED', '', 0);
 		$totalApprovedStatusApplication = count($approvedStatusApplication);
 		$allStatusApplication = ApplicationStatusController::getTotalApplicationByStatus();

@@ -30,7 +30,7 @@
     <div class="row align-items-end">
       <div class="col-lg-8">
         <div class="page-header-title">
-          <i class="icofont icofont-file-alt bg-c-orenge"></i>
+          <i class="icofont icofont-briefcase-alt-1 bg-c-orenge"></i>
           <div class="d-inline">
             <h4>View Loan</h4>
           </div>

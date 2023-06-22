@@ -255,7 +255,7 @@
           </a>
           <ul class="show-notification profile-notification">
             <li>
-              <a href="#!">
+              <a href="{{ route('settings') }}">
                 <i class="ti-settings"></i> Settings
               </a>
             </li>
@@ -275,7 +275,7 @@
               </a>
             </li>
             <li>
-              <a href="auth-normal-sign-in.html">
+              <a href="{{ route('logout') }}">
                 <i class="ti-layout-sidebar-left"></i> Logout
               </a>
             </li>

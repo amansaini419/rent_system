@@ -20,7 +20,7 @@
     <div class="row align-items-end">
       <div class="col-lg-8">
         <div class="page-header-title">
-          <i class="icofont icofont-file-alt bg-c-orenge"></i>
+          <i class="icofont icofont-users-alt-4 bg-c-orenge"></i>
           <div class="d-inline">
             <h4>Subadmins</h4>
           </div>

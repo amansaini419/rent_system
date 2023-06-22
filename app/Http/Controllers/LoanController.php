@@ -29,6 +29,7 @@ class LoanController extends Controller
 		$tempJSON->required_amount = FunctionController::formatCurrencyView($loan->loan_amount);
 		$initialDeposit = ApplicationController::getTotalDeposit($application);
 		$tempJSON->initial_deposit = FunctionController::formatCurrencyView($initialDeposit);
+		$tempJSON->initial_deposit_db = FunctionController::formatCurrency($initialDeposit);
 		$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount - $initialDeposit);
 		$tempJSON->interest_rate = $loan->interest_rate . '%';
 		$tempJSON->loan_period = $loan->loan_period;
@@ -183,8 +184,8 @@ class LoanController extends Controller
 			}
 			$application = $loan->application;
 			$loanStr = LoanController::getLoanDetails($loan, $application);
-			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit);
-			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit);
+			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
+			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
 			
 			return view('loan.view', [
 				'loan' => $loanStr,
@@ -199,8 +200,8 @@ class LoanController extends Controller
 			}
 			if( (Auth::user()->user_type == 'ADMIN') || ($application->subadmin_id == Auth::user()->id) ){
 				$loanStr = LoanController::getLoanDetails($loan, $application);
-				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $application->initial_deposit);
-				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $application->initial_deposit);
+				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
+				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
 
 				return view('loan.view', [
 					'loan' => $loanStr,

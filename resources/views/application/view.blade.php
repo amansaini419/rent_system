@@ -416,9 +416,13 @@
                                   </tr>
                                   <tr>
                                     <td class="border-0">
+                                      @if ($documentData->passport_picture_path != NULL)
                                       <a href="{{ url($documentData->passport_picture_path) }}" target="_blank" class="document-img-block">
                                         <img src="{{ url($documentData->passport_picture_path) }}" alt="">
                                       </a>
+                                      @else
+                                      NOT UPLOADED
+                                      @endif
                                     </td>
                                   </tr>
                                   <tr>
@@ -426,9 +430,13 @@
                                   </tr>
                                   <tr>
                                     <td class="border-0">
+                                      @if ($documentData->ghana_card_path != NULL)
                                       <a href="{{ url($documentData->ghana_card_path) }}" target="_blank" class="document-img-block">
                                         <img src="{{ url($documentData->ghana_card_path) }}" alt="">
                                       </a>
+                                      @else
+                                      NOT UPLOADED
+                                      @endif
                                     </td>
                                   </tr>
                                   <tr>
@@ -450,9 +458,13 @@
                                   </tr>
                                   <tr>
                                     <td class="border-0">
+                                      @if ($documentData->statement_path != NULL)
                                       <a href="{{ url($documentData->statement_path) }}" target="_blank" class="document-img-block">
                                         <img src="{{ url($documentData->statement_path) }}" alt="">
                                       </a>
+                                      @else
+                                      NOT UPLOADED
+                                      @endif
                                     </td>
                                   </tr>
                                   <tr>
@@ -460,9 +472,13 @@
                                   </tr>
                                   <tr>
                                     <td class="border-0">
+                                      @if ($documentData->employment_letter_path != NULL)
                                       <a href="{{ url($documentData->employment_letter_path) }}" target="_blank" class="document-img-block">
                                         <img src="{{ url($documentData->employment_letter_path) }}" alt="">
                                       </a>
+                                      @else
+                                      NOT UPLOADED
+                                      @endif
                                     </td>
                                   </tr>
                                 </tbody>

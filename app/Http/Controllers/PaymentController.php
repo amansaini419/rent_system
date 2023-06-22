@@ -286,15 +286,18 @@ class PaymentController extends Controller
 
 	public static function getPaymentDetails($payment){
 		$tempJSON = new stdClass();
-		$invoice = Invoice::find($payment->id);
-		$userData = InvoiceController::getInvoiceUserData($invoice, 'RENT');
+		$invoice = Invoice::find($payment->invoice_id);
+		$userData = InvoiceController::getInvoiceUserData($invoice);
 		$applicationData = $userData->applicationData;
-		$tempJSON->invoice_id = $payment->id;
+		$tempJSON->id = $payment->id;
+		$tempJSON->invoice_id = $payment->invoice_id;
+		$tempJSON->invoice_code = $invoice->invoice_code;
 		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
 		$tempJSON->payment_date = FunctionController::formatDate($payment->created_at);
 		$tempJSON->payment_channel = $payment->payment_channel;
 		$tempJSON->payment_amount = FunctionController::formatCurrencyView($payment->payment_amount);
 		$tempJSON->payment_ref = $payment->payment_ref;
+		$tempJSON->invoice_type = $invoice->invoice_type;
 		return $tempJSON;
 	}
 
@@ -304,5 +307,18 @@ class PaymentController extends Controller
 			$paymentStr[] = PaymentController::getPaymentDetails($payment);
 		}
 		return $paymentStr;
+	}
+
+	protected function index(){		
+		if(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT" || Auth::user()->user_type == "TENANT" ){
+			$payments = Payment::whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest()->get();
+			//dd($payments);
+		}
+		else if(Auth::user()->user_type == "ADMIN"){
+			$payments = Payment::latest()->get();
+		}
+		return view('payment.list', [
+			'paymentStr' => PaymentController::getPayments($payments)
+		]);
 	}
 }
