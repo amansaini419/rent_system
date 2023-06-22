@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Common\FunctionController;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
+use App\Models\MonthlyPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,8 @@ class DashboardController extends Controller
 			->orderBy('P.created_at', 'desc')
 			->limit(50)
 			->get();
-		$last50OutstandingRent = PaymentController::getOutstandingRent();
+		$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+		$last50OutstandingRent = PaymentController::getOutstandingRent($monthlyPlans);
 		$approvedStatusApplication = ApplicationStatusController::getTotalApplicationByStatus('APPROVED', '', 0);
 		$totalApprovedStatusApplication = count($approvedStatusApplication);
 		$allStatusApplication = ApplicationStatusController::getTotalApplicationByStatus();

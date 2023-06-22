@@ -211,14 +211,13 @@ class PaymentController extends Controller
 		return $invoices->where('invoice_type', 'RENT')->sum('invoice_amount');
 	}
 
-	public static function getOutstandingRent($limit = 50){
-		$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+	public static function getOutstandingRent($monthlyPlans, $limit = 50){
 		$responseStr = array();
 		//$total = count($monthlyPlans);
 		$counter = 1;
 		//$limit = ($total < $limit) ? $total : ;
 		foreach($monthlyPlans as $monthlyPlan){
-			if($counter >= $limit){
+			if($limit != -1 && $counter >= $limit){
 				break;
 			}
 			if($monthlyPlan->invoice_id == 0){
@@ -309,16 +308,40 @@ class PaymentController extends Controller
 		return $paymentStr;
 	}
 
-	protected function index(){		
+	protected function index(){
 		if(Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT" || Auth::user()->user_type == "TENANT" ){
 			$payments = Payment::whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest()->get();
 			//dd($payments);
 		}
-		else if(Auth::user()->user_type == "ADMIN"){
+		elseif(Auth::user()->user_type == "ADMIN"){
 			$payments = Payment::latest()->get();
 		}
 		return view('payment.list', [
 			'paymentStr' => PaymentController::getPayments($payments)
 		]);
+	}
+
+	protected function outstanding(){
+		if(Auth::user()->user_type == "ADMIN"){
+			$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+		}
+		elseif(Auth::user()->user_type == "TENANT" || Auth::user()->user_type == "STAFF" || Auth::user()->user_type == "AGENT"){
+			$applications = ApplicationController::getUserApplications(Auth::user()->user_type, Auth::id());
+			$loanIdStr = array();
+			$openedLoans = LoanController::getLoans($applications, 'OPENED');
+			foreach($openedLoans as $loan){
+				$loanIdStr[] = $loan->id;
+			}
+			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr)->where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+		}
+		$outstandingRents = PaymentController::getOutstandingRent($monthlyPlans, -1);
+		//dd($outstandingRent);
+		return view('payment.outstanding', [
+			'outstandingRentStr' => MonthlyPlanController::getMonthlyPlans($outstandingRents)
+		]);
+	}
+
+	protected function accept(){
+		
 	}
 }

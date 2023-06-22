@@ -90,14 +90,18 @@ class MonthlyPlanController extends Controller
 		$applicationData = $userData->applicationData;
 		$accomodationData = $userData->accomodationData;
 		$penalty = MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment);
+		$tempJSON->id = $monthlyPlan->id;
 		$tempJSON->account_type = $accomodationData->property_type;
 		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
 		$tempJSON->due_date = FunctionController::formatDate($monthlyPlan->due_date);
 		$tempJSON->days_over = Carbon::parse($monthlyPlan->due_date)->diffInDays(Carbon::now(), false);
 		$tempJSON->penalty = $penalty == 0 ? 'NO' : 'YES';
 		$tempJSON->payment_amount = FunctionController::formatCurrencyView($loan->monthly_payment);
+		$tempJSON->payment_amount_db = FunctionController::formatCurrency($loan->monthly_payment);
 		$tempJSON->total_amount = FunctionController::formatCurrencyView($loan->monthly_payment + $penalty);
+		$tempJSON->total_amount_db = FunctionController::formatCurrency($loan->monthly_payment + $penalty);
 		$tempJSON->penalty_amount = FunctionController::formatCurrencyView($penalty);
+		$tempJSON->penalty_amount_db = FunctionController::formatCurrency($penalty);
 		return $tempJSON;
 	}
 

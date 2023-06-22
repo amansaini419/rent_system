@@ -40,12 +40,5 @@
         <span class="pcoded-mcaret"></span>
       </a>
     </li>
-    <li class="{{ (Route::currentRouteName() === 'payment-accept') ? 'active' : '' }}">
-      <a href="{{ route('payment-accept') }}">
-        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
-        <span class="pcoded-mtext">Accept</span>
-        <span class="pcoded-mcaret"></span>
-      </a>
-    </li>
   </ul>
 </li>
