@@ -290,7 +290,11 @@ class PaymentController extends Controller
 		$paymentsIdStr = PaymentController::getUserPayments(Auth::user()->user_type)->pluck('id');
 		$paymentChannels = Payment::whereIn('id', $paymentsIdStr)->groupBy('payment_channel')->select('payment_channel', DB::raw('count(*) AS total'))->get();
 		//dd($paymentChannels);
-		$responseStr = array();
+		$responseStr = array(
+			'CASH' => 0,
+			'CARD' => 0,
+			'MOMO' => 0,
+		);
 		foreach($paymentChannels as $paymentChannel){
 			$responseStr[$paymentChannel->payment_channel] = $paymentChannel->total;
 		}
