@@ -130,7 +130,7 @@
                   </table>
                 </div>
                 <div>
-                  <a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
+                  <a href="{{ ($loan == null) ? route('loan-list') : route('loan-view', ['id' => $loan->loan_code]) }}" class="m-t-10 btn btn-primary btn-sm">View More</a>
                 </div>
               </div>
             </div>

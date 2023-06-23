@@ -16,7 +16,7 @@ class DashboardController extends Controller
 	public function index(){
 		if(Auth::user()->user_type == 'TENANT'){
 			$application = Auth::user()->latestApplications->first();
-			dd($application);
+			//dd($application);
 			$loan = $application->loan;
 			//dd($loan);
 			//$loanStr = LoanController::getLoanDetails($loan, $application);
