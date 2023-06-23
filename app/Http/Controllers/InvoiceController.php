@@ -33,7 +33,7 @@ class InvoiceController extends Controller
 	}
 
 	public static function checkInvoiceStatus($invoice){
-		return (PaymentController::getTotalPaymentByInvoice($invoice->id) >= $invoice->invoice_amount) ? "PAID" : "PENDING";
+		return ($invoice->payments->sum('payment_amount') >= $invoice->invoice_amount) ? "PAID" : "PENDING";
 	}
 
 	public static function getInvoiceUserData($invoice){

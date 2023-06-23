@@ -37,6 +37,52 @@ class PaymentController extends Controller
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
 		dd($paymentDetails);
+		/* // FOR registration fees
+		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
+		$userDataId = $userData->id;
+		$invoice = InvoiceController::new(Auth::id(), SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
+		$invoiceId = $invoice->id;
+		RegistrationFeeController::new($userDataId, $invoiceId);
+		PaymentController::new($invoiceId, SettingController::getValue('REGISTRATION_FEES'), 'CARD');
+		return redirect()->route('application-register');
+
+		// FOR Initial deposit
+		$application = ApplicationController::checkApplicationCode($request->applicationId);
+		if($application){
+			$invoice = InvoiceController::new(Auth::id(), $request->depositAmount, 'INITIAL_DEPOSIT');
+			$invoiceId = $invoice->id;
+			InitialDepositController::new($application->id, $invoiceId);
+			PaymentController::new($invoiceId, $request->depositAmount, 'CARD');
+		}
+		return redirect()->route('application-list');
+
+		// FOR rent payment
+		// create invoice
+		$invoice = InvoiceController::new(Auth::id(), $totalpayment, 'RENT');
+		// create payment
+		PaymentController::new($invoice->id, $totalpayment, 'CARD');
+		// update monthly plan
+		$monthlyPlan->invoice_id = $invoice->id;
+		$monthlyPlan->payment_date = Carbon::now();
+		$monthlyPlan->penalty = $penaltyAmount;
+		$monthlyPlan->save();
+
+		LoanController::checkLoanClosed($loan);
+
+		$mailData = [
+			'title' => 'Rent Payment',
+			'body' => 'You have successfully paid your rent online.'
+		];
+		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+		$message = $mailData['body'];
+		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+
+		return redirect()->back()->with([
+			'success' => true,
+			'title' => 'Payment',
+			'message' => 'You have successfully done the payment.',
+			'alert' => 'success'
+		]); */
 	}
 
 	public function payRegistrationFees(Request $request){
@@ -57,24 +103,26 @@ class PaymentController extends Controller
 			dd($e);
 			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
 		}
-		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
-		$userDataId = $userData->id;
-		$invoice = InvoiceController::new(Auth::id(), SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
-		$invoiceId = $invoice->id;
-		RegistrationFeeController::new($userDataId, $invoiceId);
-		PaymentController::new($invoiceId, SettingController::getValue('REGISTRATION_FEES'), 'CARD');
-		return Redirect::back();
 	}
 
 	public function payInitialDeposit(Request $request){
-		$application = ApplicationController::checkApplicationCode($request->applicationId);
-		if($application){
-			$invoice = InvoiceController::new(Auth::id(), $request->depositAmount, 'INITIAL_DEPOSIT');
-			$invoiceId = $invoice->id;
-			InitialDepositController::new($application->id, $invoiceId);
-			PaymentController::new($invoiceId, $request->depositAmount, 'CARD');
+		try {
+			$data = array(
+				"amount" => $request->depositAmount * 100,
+				"reference" => PaymentController::createPaymentRef(),
+				"email" => Auth::user()->email,
+				"currency" => "GHS",
+				"metadata" => array(
+					"application_id" => $request->applicationId,
+					"type" => "INITIAL_DEPOSIT"
+				),
+			);
+			//dd($data); die();
+			return Paystack::getAuthorizationUrl($data)->redirectNow();
+		} catch (\Exception $e) {
+			dd($e);
+			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
 		}
-		return Redirect::back();
 	}
 
 	public static function createPaymentRef($length = 10){
@@ -122,32 +170,23 @@ class PaymentController extends Controller
 		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
-		// create invoice
-		$invoice = InvoiceController::new(Auth::id(), $totalpayment, 'RENT');
-		// create payment
-		PaymentController::new($invoice->id, $totalpayment, 'CARD');
-		// update monthly plan
-		$monthlyPlan->invoice_id = $invoice->id;
-		$monthlyPlan->payment_date = Carbon::now();
-		$monthlyPlan->penalty = $penaltyAmount;
-		$monthlyPlan->save();
-
-		LoanController::checkLoanClosed($loan);
-
-		$mailData = [
-			'title' => 'Rent Payment',
-			'body' => 'You have successfully paid your rent online.'
-		];
-		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
-		$message = $mailData['body'];
-		FunctionController::sendSMS(Auth::user()->phone_number, $message);
-
-		return redirect()->back()->with([
-			'success' => true,
-			'title' => 'Payment',
-			'message' => 'You have successfully done the payment.',
-			'alert' => 'success'
-		]);
+		try {
+			$data = array(
+				"amount" => $totalpayment * 100,
+				"reference" => PaymentController::createPaymentRef(),
+				"email" => Auth::user()->email,
+				"currency" => "GHS",
+				"metadata" => array(
+					"monthly_plan_id" => $monthlyPlan->id,
+					"type" => "RENT"
+				),
+			);
+			//dd($data); die();
+			return Paystack::getAuthorizationUrl($data)->redirectNow();
+		} catch (\Exception $e) {
+			dd($e);
+			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
+		}
 	}
 
 	protected function payRentOffline(Request $request){
@@ -224,10 +263,6 @@ class PaymentController extends Controller
 			'message' => 'You have successfully received the payment through ' . $request->paymentChannel . '.',
 			'alert' => 'success'
 		]);
-	}
-
-	public static function getTotalPaymentByInvoice($invoiceId){
-		return Payment::where('invoice_id', $invoiceId)->sum('payment_amount');
 	}
 
 	public static function getTotalRepayments($type = ''){
