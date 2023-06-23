@@ -25,11 +25,11 @@ class PaymentController extends Controller
 		return Payment::where('payment_ref', $code)->first();
 	}
 
-	public static function new($invoiceId, $paymentAmount, $paymentChannel){
+	public static function new($invoiceId, $paymentAmount, $paymentChannel, $paymentRef = ''){
 		return Payment::create([
 			'invoice_id' => $invoiceId,
 			'payment_amount' => $paymentAmount,
-			'payment_ref' => PaymentController::createPaymentRef(),
+			'payment_ref' => $paymentRef == '' ? PaymentController::createPaymentRef() : $paymentRef,
 			'payment_channel' => $paymentChannel,
 		]);
 	}
@@ -37,6 +37,23 @@ class PaymentController extends Controller
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
 		dd($paymentDetails);
+		if($paymentDetails->status){
+			$data = $paymentDetails->data;
+			if($data->metadata->type == 'REGISTRATION'){
+				$amount = $data->amount / 100;
+				$paymentChannel = ($data->channel == 'mobile_money') ? 'MOMO' : 'CARD';
+				$invoice = InvoiceController::new(Auth::id(), $amount, 'REGISTRATION');
+				RegistrationFeeController::new($data->metadata->user_data_id, $invoice->id);
+				PaymentController::new($invoice->id, $amount, $paymentChannel, $data->reference);
+				return redirect()->route('application-register');
+			}
+			elseif($paymentDetails->data->metadata->type == 'INITIAL_DEPOSIT'){
+
+			}
+			elseif($paymentDetails->data->metadata->type == 'RENT'){
+
+			}
+		}
 		/* // FOR registration fees
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		$userDataId = $userData->id;
@@ -86,6 +103,7 @@ class PaymentController extends Controller
 	}
 
 	public function payRegistrationFees(Request $request){
+		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		try {
 			$data = array(
 				"amount" => SettingController::getValue('REGISTRATION_FEES') * 100,
@@ -93,7 +111,7 @@ class PaymentController extends Controller
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
 				"metadata" => array(
-					"user_data_id" => $request->userDataId,
+					"user_data_id" => $userData->id,
 					"type" => "REGISTRATION"
 				),
 			);
