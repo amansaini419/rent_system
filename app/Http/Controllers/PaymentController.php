@@ -35,7 +35,7 @@ class PaymentController extends Controller
 	}
 
 	protected function handleGatewayCallback(){
-		$paymentDetails = Paystack::getPaymentData();
+		$paymentDetails = (object)Paystack::getPaymentData();
 		//dd($paymentDetails);
 		if($paymentDetails->status){
 			$data = $paymentDetails->data;
