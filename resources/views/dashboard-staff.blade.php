@@ -282,15 +282,15 @@
       "hideCredits": true,
       "theme": "light",
       "dataProvider": [{
-        "status": "Approved",
+        "name": "Approved",
         "color": '#93be52',
         "value": {{ $applicationStatusPieChart->approved }}
       }, {
-        "status": "Rejected",
+        "name": "Rejected",
         "color": '#Fb5959',
         "value": {{ $applicationStatusPieChart->rejected }}
       }, {
-        "status": "Pending",
+        "name": "Pending",
         "color": '#FFB64D',
         "value": {{ $applicationStatusPieChart->pending }}
       }],
@@ -298,8 +298,8 @@
         "useGraphSettings": false
       },
       "valueField": "value",
-      "titleField": "status",
-      "labelsEnabled": false,
+      "titleField": "name",
+      "labelsEnabled": true,
       "autoMargins": false,
       "marginTop": 0,
       "marginBottom": 0,
@@ -318,11 +318,11 @@
       "hideCredits": true,
       "theme": "light",
       "dataProvider": [{
-        "gender": "Male",
+        "name": "Male",
         "color": '#4680ff',
         "value": {{ $genderPieChart->male }}
       }, {
-        "gender": "Female",
+        "name": "Female",
         "color": '#ef67a4',
         "value": {{ $genderPieChart->female }}
       }],
@@ -330,8 +330,8 @@
         "useGraphSettings": false
       },
       "valueField": "value",
-      "titleField": "gender",
-      "labelsEnabled": false,
+      "titleField": "name",
+      "labelsEnabled": true,
       "autoMargins": false,
       "marginTop": 0,
       "marginBottom": 0,
@@ -386,15 +386,15 @@
       "hideCredits": true,
       "theme": "light",
       "dataProvider": [{
-        "country": "MoMo",
+        "name": "MoMo",
         "color": '#93be52',
         "value": {{ $paymentChannelPieChart->MOMO }}
       }, {
-        "country": "Cash",
+        "name": "Cash",
         "color": '#Fb5959',
         "value": {{ $paymentChannelPieChart->CASH }}
       }, {
-        "country": "Card",
+        "name": "Card",
         "color": '#FFB64D',
         "value": {{ $paymentChannelPieChart->CARD }}
       }],
@@ -402,8 +402,8 @@
         "useGraphSettings": false
       },
       "valueField": "value",
-      "titleField": "country",
-      "labelsEnabled": false,
+      "titleField": "name",
+      "labelsEnabled": true,
       "autoMargins": false,
       "marginTop": 0,
       "marginBottom": 0,

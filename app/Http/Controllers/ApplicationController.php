@@ -66,10 +66,10 @@ class ApplicationController extends Controller
 			$applications = Auth::user()->applications;
 		}
 		elseif($userType == "ADMIN"){
-			$applications = Application::orderBy('id', 'desc')->get();
+			$applications = Application::latest()->get();
 		}
 		elseif($userType == "STAFF" || $userType == "AGENT"){
-			$applications = Application::where('subadmin_id', $userId)->orderBy('id', 'desc')->get();
+			$applications = Application::where('subadmin_id', $userId)->latest()->get();
 		}
 		return $applications;
 	}

@@ -19,6 +19,7 @@ class MonthlyPlan extends Model
 		'due_date',
 		'payment_date',
 		'penalty',
+		'tenant_note',
 	];
 
 	public function loan(): BelongsTo{

@@ -81,7 +81,7 @@
     @else
     <div class="card">
       <div class="card-header">
-        <h5>All Invoices</h5>
+        <h5>All Payments</h5>
         <span></span>
       </div>
       <div class="card-block">

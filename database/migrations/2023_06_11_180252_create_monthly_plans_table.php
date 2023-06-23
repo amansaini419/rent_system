@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('due_date');
             $table->date('payment_date')->nullable();
             $table->double('penalty')->default(0);
+            $table->string('tenant_note')->nullable();
             $table->timestamps();
         });
     }

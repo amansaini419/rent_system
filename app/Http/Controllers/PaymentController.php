@@ -368,7 +368,83 @@ class PaymentController extends Controller
 		]);
 	}
 
-	/* protected function accept(){
-		
-	} */
+	public static function getLoanPayment($loan){
+		$monthlyPlans = $loan->monthlyPlan;
+		$paid = 0;
+		foreach($monthlyPlans as $plan){
+			if($plan->invoice_id != 0){
+				$invoiceAmount = $plan->invoice->invoice_amount;
+				$totalPayment = $plan->payments->sum('payment_amount');
+				//dd($totalPayment);
+				if($totalPayment >= $invoiceAmount){
+					$paid += $invoiceAmount;
+				}
+				else{
+					$paid += $totalPayment;
+				}
+			}
+		}
+		return $paid;
+	}
+
+	public static function getTenantpaymentDetails($loan, $application){
+		$loanStr = LoanController::getLoanDetails($loan, $application);
+		$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
+
+		$totalAmount = $loanCalculation->totalLoanCost;
+		$totalPayment = PaymentController::getLoanPayment($loan);
+		$totalOutstanding = $totalAmount - $totalPayment;
+
+		$recentPaymentsStr = array();
+		$initialDeposits = $application->initialDeposits;
+		$balanceBF = $totalAmount + $loanStr->initial_deposit_db;
+		foreach($initialDeposits as $deposit){
+			$balanceBF -= $deposit->invoice_amount;
+			$tempJSON = new stdClass();
+			$tempJSON->amount = FunctionController::formatCurrencyView($deposit->invoice_amount);
+			$tempJSON->month = 'DEPOSIT';
+			$tempJSON->due_date = FunctionController::formatDate($deposit->created_at);
+			$tempJSON->date_paid = FunctionController::formatDate($deposit->created_at);
+			$tempJSON->balance_bf = FunctionController::formatCurrencyView($balanceBF);
+			$tempJSON->note = 'SECURITY DEPOSIT';
+			$tempJSON->pay = 'Paid';
+			$recentPaymentsStr[] = $tempJSON;
+		}
+
+		$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
+		//dd($monthlyPlanStr);
+		foreach($monthlyPlanStr as $plan){
+			$payStatus = '';
+			if($plan->payment_date != null){
+				$balanceBF -= $plan->paymentAmount;
+				$payStatus = 'Paid';
+			}
+			$tempJSON = new stdClass();
+			$tempJSON->amount = $plan->payment;
+			$tempJSON->month = strtoupper(FunctionController::formatRentMonth($plan->due_date));
+			$tempJSON->due_date = $plan->due_date;
+			$tempJSON->date_paid = $plan->payment_date;
+			$tempJSON->balance_bf = FunctionController::formatCurrencyView(($balanceBF < 0) ? 0 : $balanceBF);
+			$tempJSON->note = $plan->note;
+			$tempJSON->paymentAmount = $plan->paymentAmount;
+			$tempJSON->penaltyAmount = $plan->penaltyAmount;
+			$tempJSON->id = $plan->id;
+			$tempJSON->pay = $payStatus;
+			$recentPaymentsStr[] = $tempJSON;
+		}
+
+		return (object)array(
+			'total' => FunctionController::formatCurrencyView($totalAmount),
+			'deposit' => $loanStr->initial_deposit,
+			'payment' => FunctionController::formatCurrencyView($totalPayment),
+			'payment_db' => FunctionController::formatCurrency($totalPayment),
+			'outstanding' => FunctionController::formatCurrencyView($totalOutstanding),
+			'outstanding_db' => FunctionController::formatCurrency($totalOutstanding),
+			'recentPaymentsStr' => $recentPaymentsStr,
+		);
+	}
+
+	public static function getRecentPayments(){
+		//
+	}
 }

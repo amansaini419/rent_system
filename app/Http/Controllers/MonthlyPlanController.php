@@ -46,6 +46,7 @@ class MonthlyPlanController extends Controller
 			$tempJSON = new stdClass();
 			$tempJSON->sn = $sn++;
 			$tempJSON->id = $temp->id;
+			$tempJSON->note = $temp->tenant_note;
 			$tempJSON->due_date = FunctionController::formatDate($temp->due_date);
 			$tempJSON->payment_status = $paymentStatus;
 			$tempJSON->payment_date = ($temp->payment_date == null) ? $temp->payment_date : FunctionController::formatDate($temp->payment_date);
