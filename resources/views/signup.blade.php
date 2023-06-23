@@ -91,41 +91,49 @@
         swal(title, message, icon);
       }
 
+      let otpSubmit = 0;
       $('#sendOtpBtn').click(function(e){
         e.preventDefault();
-        const phone = $('#phone').val();
-        console.log(phone);
-        if(phone == ''){
-          alert('Phone Number', 'Phone number cannot be empty.', 'warning');
-          return false;
-        }
-        $.ajax({
-          method: 'POST',
-          url: '{{ route('signup-otp') }}',
-          data: {
-            'phone': phone
-          },
-          success: function(response){
-            let message = '';
-            if(response.errors !== undefined){
-              errorsKeys.forEach( (key) => {
-                //console.log(key, errors[key][0]);
-                //$('#' + key).addClass('error');
-                message = message + errors[key][0] + '\n';
-              });
-            }
-            else if(response.error !== undefined){
-              message = response.error;
-            }
-            else if(response.message !== undefined){
-              message = response.message;
-            }
-            alert(response.title, message, response.alert);
-          },
-          error: function(error){
-            console.error(error);
+        if(otpSubmit == 0){
+          otpSubmit = 1;
+          const btnElement = $('#sendOtpBtn');
+          const btnVal = btnElement.text();
+          btnElement.html('<i class="ti-reload rotate-refresh"></i>')
+          const phone = $('#phone').val();
+          console.log(btnVal, phone);
+          if(phone == ''){
+            alert('Phone Number', 'Phone number cannot be empty.', 'warning');
+            return false;
           }
-        });
+          $.ajax({
+            method: 'POST',
+            url: '{{ route('signup-otp') }}',
+            data: {
+              'phone': phone
+            },
+            success: function(response){
+              let message = '';
+              if(response.errors !== undefined){
+                errorsKeys.forEach( (key) => {
+                  message = message + errors[key][0] + '\n';
+                });
+                otpSubmit = 0;
+              }
+              else if(response.error !== undefined){
+                message = response.error;
+                otpSubmit = 0;
+              }
+              else if(response.message !== undefined){
+                message = response.message;
+              }
+              btnElement.html(btnVal);
+              alert(response.title, message, response.alert);
+            },
+            error: function(error){
+              console.error(error);
+            }
+          });
+        }
       });
     });
   </script>

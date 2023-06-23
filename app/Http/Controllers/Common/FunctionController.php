@@ -45,9 +45,9 @@ class FunctionController extends Controller
 	}
 
 	public static function sendSMS($phone, $message){
-		return true;
+		//return true;
 		// https://smsc.hubtel.com/v1/messages/send?clientsecret=dcbjseub&clientid=datphoqy&from=TechMinds&to=233202997676&content=This+Is+A+Test+Message
-		/* $query = array(
+		$query = array(
 			"clientid" => env('HUBTEL_CLIENT_ID'),
 			"clientsecret" => env('HUBTEL_CLIENT_SECRET'),
 			"from" => env('HUBTEL_SENDER_NICKNAME'),
@@ -69,10 +69,22 @@ class FunctionController extends Controller
 		curl_close($curl);
 		
 		if ($error) {
-			echo "cURL Error #:" . $error;
-		} else {
+			//echo "cURL Error #:" . $error;
+			return response()->json([
+				'title' => 'Send OTP',
+				'success' => false,
+				'error' => $error,
+				'alert' => 'warning',
+			], 200);
+		} /* else {
 			echo $response;
 		} */
+		return response()->json([
+			'title' => 'Send OTP',
+			'success' => true,
+			'message' => 'Please check your mobile number for the OTP.',
+			'alert' => 'success',
+		], 200);
 	}
 
 	public static function getDateRange($type){

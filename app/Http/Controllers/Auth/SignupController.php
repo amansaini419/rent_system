@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Common\FunctionController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\UsersController;
@@ -72,14 +73,9 @@ class SignupController extends Controller
 		}
 
 		$otp = OtpController::new($request->phone);
-
 		if($otp){
-			return response()->json([
-				'title' => 'Send OTP',
-				'success' => true,
-				'message' => 'Please check your mobile number for the OTP.',
-				'alert' => 'success',
-			], 200);
+			$message = "$otp is your one time password (OTP) to verify your mobile number at " . env('WEBSITE_TITLE') . ".";
+			return FunctionController::sendSMS($request->phone, $message);
 		}
 		return response()->json([
 			'title' => 'Send OTP',
