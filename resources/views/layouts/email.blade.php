@@ -43,7 +43,7 @@
           <tr>
             <td>
         <![endif]-->
-  <div style="background: #34495E; padding-top: 30px; padding-bottom: 30px;">
+  <div style="background: #34495E; padding-top: 70px; padding-bottom: 50px;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;" class="content">
       <tr>
         <td align="center" bgcolor="#0073AA"

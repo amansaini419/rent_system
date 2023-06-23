@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
 use App\Mail\RegistrationConfirmationMail;
+use App\Mail\StatusUpdateMail;
 use App\Models\Application;
 use App\Models\ApplicationData;
 use App\Models\AccomodationData;
@@ -281,6 +282,14 @@ class ApplicationController extends Controller
 			ApplicationStatusController::new($application->id, 'REJECTED');
 		}
 
+		$mailData = [
+			'title' => 'Application Status',
+			'body' => 'Your application is rejected.'
+		];
+		Mail::to(Auth::user()->email)->send(new StatusUpdateMail($mailData));
+		$message = $mailData['body'];
+		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+
 		return redirect()->back()->with([
 			'success' => true,
 			'title' => 'Application Rejected',
@@ -325,6 +334,14 @@ class ApplicationController extends Controller
 			// create application status
 			ApplicationStatusController::new($application->id, 'APPROVED');
 		}
+
+		$mailData = [
+			'title' => 'Application Status',
+			'body' => 'Congratulations! Your application is approved.'
+		];
+		Mail::to(Auth::user()->email)->send(new StatusUpdateMail($mailData));
+		$message = $mailData['body'];
+		FunctionController::sendSMS(Auth::user()->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,
@@ -381,6 +398,8 @@ class ApplicationController extends Controller
             'body' => 'You have successfully completed your application.'
 					];
 					Mail::to(Auth::user()->email)->send(new RegistrationConfirmationMail($mailData));
+					$message = $mailData['body'];
+					FunctionController::sendSMS(Auth::user()->phone_number, $message);
 				}
 				return redirect()->route('application-list');
 			}

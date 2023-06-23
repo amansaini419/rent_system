@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Mail\PaymentMail;
 use App\Models\Application;
 use App\Models\Invoice;
 use App\Models\MonthlyPlan;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
@@ -126,6 +128,14 @@ class PaymentController extends Controller
 
 		LoanController::checkLoanClosed($loan);
 
+		$mailData = [
+			'title' => 'Rent Payment',
+			'body' => 'You have successfully paid your rent online.'
+		];
+		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+		$message = $mailData['body'];
+		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+
 		return redirect()->back()->with([
 			'success' => true,
 			'title' => 'Payment',
@@ -193,6 +203,14 @@ class PaymentController extends Controller
 		$monthlyPlan->save();
 
 		LoanController::checkLoanClosed($loan);
+
+		$mailData = [
+			'title' => 'Rent Payment',
+			'body' => 'You have successfully paid your rent offline.'
+		];
+		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+		$message = $mailData['body'];
+		FunctionController::sendSMS(Auth::user()->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,
