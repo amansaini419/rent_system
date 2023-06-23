@@ -37,7 +37,10 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-12">
-
+          <div class="text-center">
+            <img src="{{ asset('images/logo.png') }}" alt="{{ env('WEBSITE_TITLE') }} Logo" style="width: 200px;">
+          </div>
+        
           @yield('content')
 
         </div>
