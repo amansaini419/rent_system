@@ -34,15 +34,21 @@ class PaymentController extends Controller
 		]);
 	}
 
+	protected function handleGatewayCallback(){
+		$paymentDetails = Paystack::getPaymentData();
+		dd($paymentDetails);
+	}
+
 	public function payRegistrationFees(Request $request){
 		try {
 			$data = array(
-				"amount" => SettingController::getValue('REGISTRATION_FEES'),
+				"amount" => SettingController::getValue('REGISTRATION_FEES') * 100,
 				"reference" => PaymentController::createPaymentRef(),
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
 				"metadata" => array(
 					"user_data_id" => $request->userDataId,
+					"type" => "REGISTRATION"
 				),
 			);
 			//dd($data); die();

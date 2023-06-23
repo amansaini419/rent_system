@@ -69,6 +69,8 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
         Route::get('/test', [ApplicationController::class, 'testEmail'])->name('test-email');
+
+        Route::get('/payment/callback', [PaymentController::class, 'handleGatewayCallback'])->name('payback-callback');
     });
 
     Route::group(['middleware' => ['user-role:STAFF']], function(){
