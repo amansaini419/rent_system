@@ -155,7 +155,7 @@ class PaymentController extends Controller
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		try {
 			$data = array(
-				"amount" => SettingController::getValue('REGISTRATION_FEES') * 100,
+				"amount" => (int)(SettingController::getValue('REGISTRATION_FEES') * 100),
 				"reference" => PaymentController::createPaymentRef(),
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
@@ -175,7 +175,7 @@ class PaymentController extends Controller
 	public function payInitialDeposit(Request $request){
 		try {
 			$data = array(
-				"amount" => $request->depositAmount * 100,
+				"amount" => (int)($request->depositAmount * 100),
 				"reference" => PaymentController::createPaymentRef(),
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
@@ -239,7 +239,7 @@ class PaymentController extends Controller
 
 		try {
 			$data = array(
-				"amount" => $totalpayment * 100,
+				"amount" => (int)($totalpayment * 100),
 				"reference" => PaymentController::createPaymentRef(),
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
@@ -249,7 +249,7 @@ class PaymentController extends Controller
 					"penalty" => $penaltyAmount
 				),
 			);
-			dd($data);
+			//dd($data);
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
 			dd($e);
