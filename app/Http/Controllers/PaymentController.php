@@ -71,7 +71,7 @@ class PaymentController extends Controller
 				Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 				$message = $mailData['body'];
 				FunctionController::sendSMS(Auth::user()->phone_number, $message);
-				return redirect()->route('application-list');
+				return redirect()->route('dashboard');
 			}
 			elseif($invoiceType == 'RENT'){
 				$invoice = InvoiceController::new(Auth::id(), $amount, 'RENT');
