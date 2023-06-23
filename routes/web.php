@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/application/reapply', [ApplicationController::class, 'reapply'])->name('application-reapply');
 
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
+        Route::get('/test', [ApplicationController::class, 'testEmail'])->name('test-email');
     });
 
     Route::group(['middleware' => ['user-role:STAFF']], function(){

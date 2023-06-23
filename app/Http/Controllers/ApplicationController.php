@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Common\FunctionController;
+use App\Mail\RegistrationConfirmationMail;
 use App\Models\Application;
 use App\Models\ApplicationData;
 use App\Models\AccomodationData;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -374,6 +376,11 @@ class ApplicationController extends Controller
 					// create application status pending
 					ApplicationStatusController::new($application->id, 'PENDING');
 					//dd($applicationStatus);
+					$mailData = [
+						'title' => 'Application Registration Confirmation',
+            'body' => 'You have successfully completed your application.'
+					];
+					Mail::to(Auth::user()->email)->send(new RegistrationConfirmationMail($mailData));
 				}
 				return redirect()->route('application-list');
 			}
@@ -392,6 +399,14 @@ class ApplicationController extends Controller
 		else{
 			return redirect()->route('dashboard');
 		}
+	}
+
+	protected function testEmail(){
+		$mailData = [
+			'title' => 'Application Registration Confirmation',
+			'body' => 'You have successfully completed your application.'
+		];
+		Mail::to(Auth::user()->email)->send(new RegistrationConfirmationMail($mailData));
 	}
 
 	public static function checkApplicationCode(string $code){

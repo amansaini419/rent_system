@@ -41,7 +41,7 @@ class FunctionController extends Controller
 
 	public static function generateOTP($size = 6){
 		//return 123456;
-		return rand(pow(10, $size), (pow(10, $size+1) - 1));
+		return rand(pow(10, $size-1), (pow(10, $size) - 1));
 	}
 
 	public static function sendSMS($phone, $message){
@@ -51,7 +51,7 @@ class FunctionController extends Controller
 			"clientid" => env('HUBTEL_CLIENT_ID'),
 			"clientsecret" => env('HUBTEL_CLIENT_SECRET'),
 			"from" => env('HUBTEL_SENDER_NICKNAME'),
-			"to" => "233" . $phone,
+			"to" => "233" . (int)$phone,
 			"content" => $message
 		);
 		
@@ -73,7 +73,7 @@ class FunctionController extends Controller
 			return response()->json([
 				'title' => 'Send OTP',
 				'success' => false,
-				'message' => $error,
+				'error' => $error,
 				'alert' => 'warning',
 			], 200);
 		} /* else {
