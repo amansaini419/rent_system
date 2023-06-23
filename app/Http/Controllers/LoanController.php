@@ -245,4 +245,23 @@ class LoanController extends Controller
 		$loans = ($type != '') ? Loan::whereBetween('created_at', [$dateRange->from, $dateRange->to]) : Loan::all();
 		return $loans->sum('loan_amount') - $invoices->where('invoice_type', 'INITIAL_DEPOSIT')->sum('invoice_amount');
 	}
+
+	public static function getLoanPayment($loan){
+		$monthlyPlans = $loan->monthlyPlan;
+		$paid = 0;
+		foreach($monthlyPlans as $plan){
+			if($plan->invoice_id != 0){
+				$invoiceAmount = $plan->invoice->invoice_amount;
+				$totalPayment = $plan->payments->sum('payment_amount');
+				//dd($totalPayment);
+				if($totalPayment >= $invoiceAmount){
+					$paid += $invoiceAmount;
+				}
+				else{
+					$paid += $totalPayment;
+				}
+			}
+		}
+		return $paid;
+	}
 }

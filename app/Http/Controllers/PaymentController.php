@@ -368,31 +368,12 @@ class PaymentController extends Controller
 		]);
 	}
 
-	public static function getLoanPayment($loan){
-		$monthlyPlans = $loan->monthlyPlan;
-		$paid = 0;
-		foreach($monthlyPlans as $plan){
-			if($plan->invoice_id != 0){
-				$invoiceAmount = $plan->invoice->invoice_amount;
-				$totalPayment = $plan->payments->sum('payment_amount');
-				//dd($totalPayment);
-				if($totalPayment >= $invoiceAmount){
-					$paid += $invoiceAmount;
-				}
-				else{
-					$paid += $totalPayment;
-				}
-			}
-		}
-		return $paid;
-	}
-
 	public static function getTenantpaymentDetails($loan, $application){
 		$loanStr = LoanController::getLoanDetails($loan, $application);
 		$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
 
 		$totalAmount = $loanCalculation->totalLoanCost;
-		$totalPayment = PaymentController::getLoanPayment($loan);
+		$totalPayment = LoanController::getLoanPayment($loan);
 		$totalOutstanding = $totalAmount - $totalPayment;
 
 		$recentPaymentsStr = array();
@@ -442,9 +423,5 @@ class PaymentController extends Controller
 			'outstanding_db' => FunctionController::formatCurrency($totalOutstanding),
 			'recentPaymentsStr' => $recentPaymentsStr,
 		);
-	}
-
-	public static function getRecentPayments(){
-		//
 	}
 }
