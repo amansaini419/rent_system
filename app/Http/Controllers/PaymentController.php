@@ -36,22 +36,67 @@ class PaymentController extends Controller
 
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
-		dd($paymentDetails);
+		//dd($paymentDetails);
 		if($paymentDetails->status){
 			$data = $paymentDetails->data;
+			$amount = $data->amount / 100;
+			$paymentChannel = ($data->channel == 'mobile_money') ? 'MOMO' : 'CARD';
 			if($data->metadata->type == 'REGISTRATION'){
-				$amount = $data->amount / 100;
-				$paymentChannel = ($data->channel == 'mobile_money') ? 'MOMO' : 'CARD';
 				$invoice = InvoiceController::new(Auth::id(), $amount, 'REGISTRATION');
 				RegistrationFeeController::new($data->metadata->user_data_id, $invoice->id);
 				PaymentController::new($invoice->id, $amount, $paymentChannel, $data->reference);
+				$mailData = [
+					'title' => 'Registration Fee Payment',
+					'body' => 'You have successfully paid the registration fees.'
+				];
+				Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+				$message = $mailData['body'];
+				FunctionController::sendSMS(Auth::user()->phone_number, $message);
 				return redirect()->route('application-register');
 			}
 			elseif($paymentDetails->data->metadata->type == 'INITIAL_DEPOSIT'){
-
+				$application = ApplicationController::checkApplicationCode($data->metadata->application_id);
+				if($application){
+					$invoice = InvoiceController::new(Auth::id(), $amount, 'INITIAL_DEPOSIT');
+					$invoiceId = $invoice->id;
+					InitialDepositController::new($application->id, $invoiceId);
+					PaymentController::new($invoiceId, $amount, $paymentChannel, $data->reference);
+				}
+				$mailData = [
+					'title' => 'Initial Deposit',
+					'body' => 'You have successfully initially deposited for the loan.'
+				];
+				Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+				$message = $mailData['body'];
+				FunctionController::sendSMS(Auth::user()->phone_number, $message);
+				return redirect()->route('application-list');
 			}
 			elseif($paymentDetails->data->metadata->type == 'RENT'){
+				$invoice = InvoiceController::new(Auth::id(), $amount, 'RENT');
+				PaymentController::new($invoice->id, $amount, $paymentChannel, $data->reference);
+				$monthlyPlan = MonthlyPlan::find($data->metadata->monthly_plan_id);
+				$monthlyPlan->invoice_id = $invoice->id;
+				$monthlyPlan->payment_date = Carbon::now();
+				$monthlyPlan->penalty = $data->metadata->penalty;
+				$monthlyPlan->save();
 
+				$loan = $monthlyPlan->loan;
+				LoanController::checkLoanClosed($loan);
+
+				$mailData = [
+					'title' => 'Rent Payment',
+					'body' => 'You have successfully paid your rent online.'
+				];
+				Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+				$message = $mailData['body'];
+				FunctionController::sendSMS(Auth::user()->phone_number, $message);
+
+				return redirect()->back()->with([
+					'success' => true,
+					'title' => 'Payment',
+					'message' => 'You have successfully done the payment.',
+					'alert' => 'success'
+				]);
 			}
 		}
 		/* // FOR registration fees
@@ -196,7 +241,8 @@ class PaymentController extends Controller
 				"currency" => "GHS",
 				"metadata" => array(
 					"monthly_plan_id" => $monthlyPlan->id,
-					"type" => "RENT"
+					"type" => "RENT",
+					"penalty" => $penaltyAmount
 				),
 			);
 			//dd($data); die();
