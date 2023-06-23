@@ -74,7 +74,7 @@ class SignupController extends Controller
 
 		$otp = OtpController::new($request->phone);
 		if($otp){
-			$message = "$otp is your one time password (OTP) to verify your mobile number at " . env('WEBSITE_TITLE') . ".";
+			$message = "Your one time password (OTP) is $otp to verify your mobile number at " . env('WEBSITE_TITLE') . ".";
 			return FunctionController::sendSMS($request->phone, $message);
 		}
 		return response()->json([

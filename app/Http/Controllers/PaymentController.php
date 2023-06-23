@@ -61,9 +61,8 @@ class PaymentController extends Controller
 					$application = ApplicationController::checkApplicationCode($data["metadata"]["application_id"]);
 					if($application){
 						$invoice = InvoiceController::new(Auth::id(), $amount, 'INITIAL_DEPOSIT');
-						$invoiceId = $invoice->id;
-						InitialDepositController::new($application->id, $invoiceId);
-						PaymentController::new($invoiceId, $amount, $paymentChannel, $paymentRef );
+						InitialDepositController::new($application->id, $invoice->id);
+						PaymentController::new($invoice->id, $amount, $paymentChannel, $paymentRef );
 					}
 					$mailData = [
 						'title' => 'Initial Deposit',
@@ -72,7 +71,7 @@ class PaymentController extends Controller
 					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
 					FunctionController::sendSMS(Auth::user()->phone_number, $message);
-					return redirect()->route('dashboard');
+					return redirect()->route('application-list');
 				}
 				elseif($invoiceType == 'RENT'){
 					$invoice = InvoiceController::new(Auth::id(), $amount, 'RENT');
@@ -236,7 +235,7 @@ class PaymentController extends Controller
 
 		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
 		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
-		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
+		echo $totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		try {
 			$data = array(
