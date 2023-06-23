@@ -235,7 +235,7 @@ class PaymentController extends Controller
 
 		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
 		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
-		echo $totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
+		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		try {
 			$data = array(
@@ -249,7 +249,7 @@ class PaymentController extends Controller
 					"penalty" => $penaltyAmount
 				),
 			);
-			//dd($data); die();
+			dd($data);
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
 			dd($e);
