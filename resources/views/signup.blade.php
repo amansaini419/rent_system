@@ -52,6 +52,7 @@
           <button type="button" class="input-group-addon btn btn-primary btn-sm" id="sendOtpBtn">Send OTP</button>
           <span class="md-line"></span>
         </div>
+        <p style="display: none;" class="text-right text-inverse" id="countdown"><span class="text-danger f-w-600">60</span> seconds remaining for Send OTP again.</p>
         <div class="input-group">
           <input type="email" class="form-control" id="email" name="email" placeholder="Your Email Address" value="{{ old('email') }}" required>
           <span class="md-line"></span>
@@ -98,9 +99,9 @@
           otpSubmit = 1;
           const btnElement = $('#sendOtpBtn');
           const btnVal = btnElement.text();
-          btnElement.html('<i class="ti-reload rotate-refresh"></i>')
+          btnElement.html('<i class="ti-reload rotate-refresh"></i>');
           const phone = $('#phone').val();
-          console.log(btnVal, phone);
+          //console.log(btnVal, phone);
           if(phone == ''){
             alert('Phone Number', 'Phone number cannot be empty.', 'warning');
             return false;
@@ -125,6 +126,17 @@
               }
               else if(response.message !== undefined){
                 message = response.message;
+                let timer = 60;
+                $('#countdown').show();
+                const downloadTimer = setInterval(function(){
+                  $('#countdown span').text(timer);
+                  if(timer <= 0){
+                    otpSubmit = 0;
+                    $('#countdown').hide();
+                    clearInterval(downloadTimer);
+                  }
+                  timer--;
+                }, 1000);
               }
               btnElement.html(btnVal);
               alert(response.title, message, response.alert);
@@ -133,6 +145,9 @@
               console.error(error);
             }
           });
+        }
+        else{
+          swal('', 'Please wait for 60 seconds before pressing Send OTP again.');
         }
       });
     });

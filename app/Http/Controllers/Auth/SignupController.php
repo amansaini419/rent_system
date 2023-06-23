@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class SignupController extends Controller
 {
 	protected function show(){
-		return view('signup');
+		return (Auth::user()) ? redirect()->route('dashboard') : view('signup');
 	}
 
 	protected function signup(Request $request){

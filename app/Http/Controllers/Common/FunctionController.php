@@ -40,8 +40,8 @@ class FunctionController extends Controller
 	}
 
 	public static function generateOTP($size = 6){
-		return 123456;
-		//return rand(pow(10, $size), (pow(10, $size+1) - 1));
+		//return 123456;
+		return rand(pow(10, $size), (pow(10, $size+1) - 1));
 	}
 
 	public static function sendSMS($phone, $message){
@@ -73,7 +73,7 @@ class FunctionController extends Controller
 			return response()->json([
 				'title' => 'Send OTP',
 				'success' => false,
-				'error' => $error,
+				'message' => $error,
 				'alert' => 'warning',
 			], 200);
 		} /* else {

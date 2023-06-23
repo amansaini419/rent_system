@@ -13,7 +13,7 @@ class LoginController extends Controller
     use RememberMeExpiration;
 
     protected function show(){
-        return view('login');
+        return (Auth::user()) ? redirect()->route('dashboard') : view('login');
     }
 
     protected function login(Request $request){
