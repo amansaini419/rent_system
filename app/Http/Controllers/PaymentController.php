@@ -93,7 +93,7 @@ class PaymentController extends Controller
 					$message = $mailData['body'];
 					FunctionController::sendSMS(Auth::user()->phone_number, $message);
 
-					return redirect()->back()->with([
+					return redirect()->route('dashboard')->with([
 						'success' => true,
 						'title' => 'Payment',
 						'message' => 'You have successfully done the payment.',
@@ -167,7 +167,7 @@ class PaymentController extends Controller
 			//dd($data); die();
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
-			dd($e);
+			//dd($e);
 			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
 		}
 	}
@@ -187,7 +187,7 @@ class PaymentController extends Controller
 			//dd($data); die();
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
-			dd($e);
+			//dd($e);
 			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
 		}
 	}
@@ -252,7 +252,7 @@ class PaymentController extends Controller
 			//dd($data);
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
-			dd($e);
+			//dd($e);
 			return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
 		}
 	}
