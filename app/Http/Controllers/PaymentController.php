@@ -317,13 +317,14 @@ class PaymentController extends Controller
 
 		LoanController::checkLoanClosed($loan);
 
+		$tenant = $userData->user;
 		$mailData = [
 			'title' => 'Rent Payment',
 			'body' => 'You have successfully paid your rent offline.'
 		];
-		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+		Mail::to($tenant->email)->send(new PaymentMail($mailData));
 		$message = $mailData['body'];
-		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+		FunctionController::sendSMS($tenant->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,
