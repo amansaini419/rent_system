@@ -61,6 +61,10 @@
           <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
           <span class="md-line"></span>
         </div>
+        <div class="input-group">
+          <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Confirm Password" required>
+          <span class="md-line"></span>
+        </div>
         <div class="row m-t-30">
           <div class="col-md-12">
             <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign Up Now</button>
