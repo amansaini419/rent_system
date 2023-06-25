@@ -48,11 +48,11 @@
           <button type="button" class="input-group-addon btn btn-primary btn-sm" id="sendOtpBtn">Verify Number</button>
           <span class="md-line"></span>
         </div>
+        <p style="display: none;" class="text-right text-inverse" id="countdown"><span class="text-danger f-w-600">60</span> seconds remaining for Send OTP again.</p>
         <div class="input-group">
           <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter Verification Code" required>
           <span class="md-line"></span>
         </div>
-        <p style="display: none;" class="text-right text-inverse" id="countdown"><span class="text-danger f-w-600">60</span> seconds remaining for Send OTP again.</p>
         <div class="input-group">
           <input type="email" class="form-control" id="email" name="email" placeholder="Your Email Address" value="{{ old('email') }}" required>
           <span class="md-line"></span>
