@@ -71,9 +71,9 @@ class SignupController extends Controller
 				'alert' => 'warning',
 			], 200);
 		}
-
-		$otp = OtpController::new($request->phone);
-		if($otp){
+		$otp = FunctionController::generateOTP();
+		$otps = OtpController::new($request->phone, $otp);
+		if($otps){
 			$message = "Your one time password (OTP) is $otp to verify your mobile number at " . env('WEBSITE_TITLE') . ".";
 			return FunctionController::sendSMS($request->phone, $message);
 		}
