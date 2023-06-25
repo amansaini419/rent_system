@@ -19,10 +19,18 @@ class SignupController extends Controller
 
 	protected function signup(Request $request){
 		$validator = Validator::make($request->all(), [
-			'phone' => 'required',
-			'otp' => 'required|integer',
+			'phone' => 'required|integer',
+			'otp' => 'required|integer|min:100000|max:999999',
 			'email' => 'required|email',
-			'password' => 'required',
+			'password' => 'required|confirmed',
+			'password_confirmation' => 'required',
+		], [
+			'phone.required' => 'Please enter your phone number',
+			'otp.min' => 'Please enter 6 digits OTP',
+			'otp.max' => 'Please enter 6 digits OTP',
+			'email.required' => 'Please enter valid email address',
+			'email.email' => 'Please enter valid email address',
+			'password.confirmed' => 'Mismatch confirm password',
 		]);
 
 		if ($validator->fails()) {
