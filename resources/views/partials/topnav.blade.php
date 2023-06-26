@@ -21,18 +21,18 @@
           <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a>
           </div>
         </li>
-        <li>
+        {{-- <li>
           <a class="main-search morphsearch-search" href="#">
             <!-- themify icon -->
             <i class="ti-search"></i>
           </a>
-        </li>
-        <li>
+        </li> --}}
+        {{-- <li>
           <a href="#!" onclick="javascript:toggleFullScreen()">
             <i class="ti-fullscreen"></i>
           </a>
-        </li>
-        <li class="mega-menu-top">
+        </li> --}}
+        {{-- <li class="mega-menu-top">
           <a href="#">
             Mega
             <i class="ti-angle-down"></i>
@@ -163,9 +163,9 @@
               </div>
             </li>
           </ul>
-        </li>
+        </li> --}}
       </ul>
-      <ul class="nav-right">
+      {{-- <ul class="nav-right">
         <li class="header-notification lng-dropdown">
           <a href="#" id="dropdown-active-item">
             <img src="{{ asset('assets/images/flags/ENGLISH.jpg ') }}" alt=""> English
@@ -281,7 +281,7 @@
             </li>
           </ul>
         </li>
-      </ul>
+      </ul> --}}
       <!-- search -->
       <div id="morphsearch" class="morphsearch">
         <form class="morphsearch-form">

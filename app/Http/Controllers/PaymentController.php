@@ -55,7 +55,7 @@ class PaymentController extends Controller
 					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
 					FunctionController::sendSMS(Auth::user()->phone_number, $message);
-					return redirect()->route('application-register');
+					return redirect()->route('dashboard');
 				}
 				elseif($invoiceType == 'INITIAL_DEPOSIT'){
 					$application = ApplicationController::checkApplicationCode($data["metadata"]["application_id"]);
