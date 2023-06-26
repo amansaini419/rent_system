@@ -165,8 +165,8 @@
           </ul>
         </li> --}}
       </ul>
-      {{-- <ul class="nav-right">
-        <li class="header-notification lng-dropdown">
+      <ul class="nav-right">
+        {{-- <li class="header-notification lng-dropdown">
           <a href="#" id="dropdown-active-item">
             <img src="{{ asset('assets/images/flags/ENGLISH.jpg ') }}" alt=""> English
           </a>
@@ -192,7 +192,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> --}}
         <li class="header-notification">
           <a href="#!">
             <i class="ti-bell"></i>
@@ -281,7 +281,7 @@
             </li>
           </ul>
         </li>
-      </ul> --}}
+      </ul>
       <!-- search -->
       <div id="morphsearch" class="morphsearch">
         <form class="morphsearch-form">
