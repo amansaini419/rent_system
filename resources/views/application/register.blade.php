@@ -398,10 +398,6 @@
                                 <div class="col-sm-12">
                                   <label for="totalPaybackMonths" class="block">&nbsp;</label>
                                 </div>
-                                {{-- <div class="col-sm-12">
-                                  <button class="btn btn-round btn-block btn-sm btn-inverse text-center">PAY REGISTRATION
-                                    FEES</button>
-                                </div> --}}
                               </div>
                             </div>
                           </div>
@@ -696,14 +692,20 @@
         displayFile(e, '#' + this.id);
       });
 
+      const fees = {{ $fees != null ? 1 : 0 }};
       const submitDocumentData = async () => {
         let formData = new FormData();
-        formData.append('passportPictureFile', $('#passportPictureFile')[0].files[0]);
-        formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files[0]);
-        formData.append('bankStatementFile', $('#bankStatementFile')[0].files[0]);
-        formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files[0]);
-        formData.append('ghanaCard', $('#ghanaCard').val());
-        formData.append('userDataId', $('#documentDataForm input[name="userDataId"]').val());
+        if(fees){
+          formData.append('passportPictureFile', $('#passportPictureFile')[0].files[0]);
+          formData.append('ghanaCardFile', $('#ghanaCardFile')[0].files[0]);
+          formData.append('bankStatementFile', $('#bankStatementFile')[0].files[0]);
+          formData.append('employmentLetterFile', $('#employmentLetterFile')[0].files[0]);
+          formData.append('ghanaCard', $('#ghanaCard').val());
+          formData.append('userDataId', $('#documentDataForm input[name="userDataId"]').val());
+        }
+        else{
+          formData.append('userDataId', $('#paymentForm input[name="userDataId"]').val());
+        }
         //console.log('formData', formData);
         const type = "POST";
         const response = await $.ajax({
@@ -754,9 +756,12 @@
                 stepNext = true;
                 wizard.steps("next");
               }
+              else{
+                hideLoader();
+              }
               //return response;
             });
-            hideLoader();
+            //hideLoader();
             return false;
           }
         }
@@ -774,9 +779,12 @@
                 stepNext = true;
                 wizard.steps("next");
               }
+              else{
+                hideLoader();
+              }
             });
           }
-          hideLoader();
+          //hideLoader();
           return false;
         }
         // ON DOCUMENTATION DATA NEXT
@@ -792,9 +800,12 @@
                 stepNext = true;
                 wizard.steps("next");
               }
+              else{
+                hideLoader();
+              }
             });
           }
-          hideLoader();
+          //hideLoader();
           return false;
         }
         // ON LANDLORD DATA NEXT
@@ -812,9 +823,12 @@
                 const url = window.location;
                 window.location = url;
               }
+              else{
+                hideLoader();
+              }
             });
           }
-          hideLoader();
+          //hideLoader();
           return false;
         }
         hideLoader();
