@@ -54,7 +54,7 @@ class PaymentController extends Controller
 					];
 					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
-					FunctionController::sendSMS(Auth::user()->phone_number, $message);
+					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 					return redirect()->route('dashboard');
 				}
 				elseif($invoiceType == 'INITIAL_DEPOSIT'){
@@ -70,7 +70,7 @@ class PaymentController extends Controller
 					];
 					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
-					FunctionController::sendSMS(Auth::user()->phone_number, $message);
+					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 					return redirect()->route('application-list');
 				}
 				elseif($invoiceType == 'RENT'){
@@ -91,7 +91,7 @@ class PaymentController extends Controller
 					];
 					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
-					FunctionController::sendSMS(Auth::user()->phone_number, $message);
+					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 
 					return redirect()->route('dashboard')->with([
 						'success' => true,
@@ -324,7 +324,7 @@ class PaymentController extends Controller
 		];
 		Mail::to($tenant->email)->send(new PaymentMail($mailData));
 		$message = $mailData['body'];
-		FunctionController::sendSMS($tenant->phone_number, $message);
+		FunctionController::sendSMS($tenant->country_code, $tenant->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,

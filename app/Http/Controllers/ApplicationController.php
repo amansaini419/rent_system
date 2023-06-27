@@ -288,7 +288,7 @@ class ApplicationController extends Controller
 		];
 		Mail::to(Auth::user()->email)->send(new StatusUpdateMail($mailData));
 		$message = $mailData['body'];
-		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+		FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,
@@ -341,7 +341,7 @@ class ApplicationController extends Controller
 		];
 		Mail::to(Auth::user()->email)->send(new StatusUpdateMail($mailData));
 		$message = $mailData['body'];
-		FunctionController::sendSMS(Auth::user()->phone_number, $message);
+		FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 
 		return redirect()->back()->with([
 			'success' => true,
@@ -399,7 +399,7 @@ class ApplicationController extends Controller
 					];
 					Mail::to(Auth::user()->email)->send(new RegistrationConfirmationMail($mailData));
 					$message = $mailData['body'];
-					FunctionController::sendSMS(Auth::user()->phone_number, $message);
+					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 				}
 				return redirect()->route('application-list');
 			}
