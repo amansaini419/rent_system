@@ -20,6 +20,7 @@ class SignupController extends Controller
 	protected function signup(Request $request){
 		$validator = Validator::make($request->all(), [
 			'phone' => 'required|integer',
+			'countryCode' => 'required',
 			'otp' => 'required|integer|min:100000|max:999999',
 			'email' => 'required|email',
 			'password' => 'required|confirmed',
@@ -45,7 +46,7 @@ class SignupController extends Controller
 				->withErrors('Email address is already registerred.');
 		}
 
-		if(!OtpController::checkOTP($request->phone, $request->otp)){
+		if(!OtpController::checkOTP($request->countryCode, $request->phone, $request->otp)){
 			return back()
 				->withInput()
 				->withErrors('Invalid or expired OTP');
@@ -53,6 +54,7 @@ class SignupController extends Controller
 
 		Users::create([
 			'phone_number' => $request->phone,
+			'country_code' => $request->countryCode,
 			'email' => $request->email,
 			'password' => $request->password
 		]);
@@ -68,6 +70,7 @@ class SignupController extends Controller
 
 	protected function getOTP(Request $request){
 		$validator = Validator::make($request->all(), [
+			'countryCode' => 'required',
 			'phone' => 'required',
 		]);
 		
@@ -80,10 +83,10 @@ class SignupController extends Controller
 			], 200);
 		}
 		$otp = FunctionController::generateOTP();
-		$otps = OtpController::new($request->phone, $otp);
+		$otps = OtpController::new($request->countryCode, $request->phone, $otp);
 		if($otps){
 			$message = "Your one time password (OTP) is $otp to verify your mobile number at " . env('WEBSITE_TITLE') . ".";
-			return FunctionController::sendSMS($request->phone, $message);
+			return FunctionController::sendSMS($request->countryCode, $request->phone, $message);
 		}
 		return response()->json([
 			'title' => 'Send OTP',

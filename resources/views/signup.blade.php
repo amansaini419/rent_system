@@ -44,6 +44,10 @@
           @endif
         @endif
         <div class="input-group">
+          <select class="form-control" id="countryCode" name="countryCode" required></select>
+          <span class="md-line"></span>
+        </div>
+        <div class="input-group">
           <input type="text" class="form-control" id="phone" name="phone" placeholder="Your Phone Number" value="{{ old('phone') }}" required>
           <button type="button" class="input-group-addon btn btn-primary btn-sm" id="sendOtpBtn">Verify Number</button>
           <span class="md-line"></span>
@@ -87,6 +91,17 @@
 @section('script')
   <script>
     $(document).ready(function() {
+      //const countryCodes = await $.ajax('{{ asset('json/CountryCodes.json') }}');
+      const countryCodes = setCountryCodes();
+      countryCodes.then((countryCodeObj)=>{
+        countryCodeObj.map( (obj) => {
+          $('#countryCode').append('<option value="' + obj.dial_code + '" ' + (obj.name === "Ghana" ? "selected" : "") + '>' + obj.name + ' (' + obj.dial_code + ')</option>');
+        });
+      });
+      /* console.log(Array.isArray(countryCodes));
+      countryCodes.map( (countryCode) => {
+        console.log(countryCode);
+      }); */
       $.ajaxSetup({
         headers: {
           'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -105,7 +120,9 @@
           const btnVal = btnElement.text();
           btnElement.html('<i class="ti-reload rotate-refresh"></i>');
           const phone = $('#phone').val();
-          //console.log(btnVal, phone);
+          const countryCode = $('#countryCode').val();
+          console.log(countryCode, phone);
+          //return false;
           if(phone == ''){
             alert('Phone Number', 'Phone number cannot be empty.', 'warning');
             return false;
@@ -114,7 +131,8 @@
             method: 'POST',
             url: '{{ route('signup-otp') }}',
             data: {
-              'phone': phone
+              'countryCode': countryCode,
+              'phone': phone,
             },
             success: function(response){
               let message = '';

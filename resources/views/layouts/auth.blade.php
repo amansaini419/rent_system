@@ -26,6 +26,12 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/icon/icofont/css/icofont.css') }}">
   <!-- Style.css -->
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+  <style>
+    .error-500, .error-503, .error-404, .error-400, .error-403, .login{
+      position: relative;
+      padding-top: 70px;
+    }
+  </style>
 </head>
 
 <body class="fix-menu">
@@ -70,7 +76,7 @@
   </script>
   <script type="text/javascript" src="{{ asset('bower_components/jquery-i18next/js/jquery-i18next.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('assets/js/common-pages.js') }}"></script>
-
+  <script type="text/javascript" src="{{ asset('assets/js/aman.js') }}"></script>
   @yield('script')
 </body>
 </html>

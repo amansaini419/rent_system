@@ -9,15 +9,17 @@ use Illuminate\Http\Request;
 
 class OtpController extends Controller
 {
-	public static function new($phone, $otp){
+	public static function new($countryCode, $phone, $otp){
 		return Otp::create([
+			'country_code' => $countryCode,
 			'phone_number' => $phone,
 			'otp' => $otp,
 		]);
 	}
 
-	public static function checkOTP($phone, $otp){
+	public static function checkOTP($countryCode, $phone, $otp){
 		$otpStr = Otp::where([
+			'country_code' => $countryCode,
 			'phone_number' => $phone,
 			'otp' => $otp,
 		])->latest()->first();

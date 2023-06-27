@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('otps', function (Blueprint $table) {
             $table->id();
+            $table->string('country_code');
             $table->string('phone_number');
             $table->string('otp');
             $table->timestamps();

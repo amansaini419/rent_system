@@ -12,6 +12,7 @@ class Otp extends Model
     protected $table = 'otps';
 
 	protected $fillable = [
+		'country_code',
 		'phone_number',
         'otp',
 	];

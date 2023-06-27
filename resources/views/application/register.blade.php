@@ -736,6 +736,7 @@
 
       let stepNext = false;
       const stepChanged = (event, currentIndex, newIndex = 0) => {
+        showLoader();
         event.preventDefault();
         console.log(currentIndex, newIndex);
         console.log('stepNext', stepNext);
@@ -743,6 +744,7 @@
         if (currentIndex == 0 && newIndex == 1) {
           //console.log('submitApplicationData', submitApplicationData());
           if(stepNext){
+            hideLoader();
             return true;
           }
           else{
@@ -754,12 +756,14 @@
               }
               //return response;
             });
+            hideLoader();
             return false;
           }
         }
         // ON ACCOMODATION DATA NEXT
         else if (currentIndex == 1 && newIndex == 2) {
           if(stepNext){
+            hideLoader();
             return true;
           }
           else{
@@ -772,9 +776,13 @@
               }
             });
           }
+          hideLoader();
           return false;
-        } else if (currentIndex == 2 && newIndex == 3) {
+        }
+        // ON DOCUMENTATION DATA NEXT
+        else if (currentIndex == 2 && newIndex == 3) {
           if(stepNext){
+            hideLoader();
             return true;
           }
           else{
@@ -786,9 +794,13 @@
               }
             });
           }
+          hideLoader();
           return false;
-        } else if (currentIndex == 3 && newIndex == 0) {
+        }
+        // ON LANDLORD DATA NEXT
+        else if (currentIndex == 3 && newIndex == 0) {
           if(stepNext){
+            hideLoader();
             return true;
           }
           else{
@@ -802,8 +814,10 @@
               }
             });
           }
+          hideLoader();
           return false;
         }
+        hideLoader();
         return true;
       }
 
@@ -815,11 +829,12 @@
         bodyTag: "section",
         transitionEffect: "slideLeft",
         autoFocus: true,
-        //loadingTemplate: '<h2><i class="fa fa-spin fa-spinner"></i></h2>',
+        //loadingTemplate: showLoader,
         //saveState: true,
         startIndex: startIndex,
         onStepChanging: stepChanged,
         onStepChanged: function (event, currentIndex, priorIndex) {
+          //showLoader();
           stepNext = false;
         },
         /* onStepChanged: function (event, currentIndex, priorIndex) {
