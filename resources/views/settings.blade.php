@@ -4,6 +4,15 @@
   Settings
 @endsection
 
+@section('own-style')
+  <style>
+    hr{
+      margin-top: 3rem;
+      margin-bottom: 3rem;
+    }
+  </style>
+@endsection
+
 @section('content')
   <div class="page-header card">
     <div class="row align-items-end">
@@ -75,6 +84,14 @@
               <label for="OTP_EXPIRY_TIME">OTP Expiry (in minutes)</label>
               <input type="text" name="OTP_EXPIRY_TIME" id="OTP_EXPIRY_TIME" class="form-control"
                 value="{{ $settings->OTP_EXPIRY_TIME }}" required>
+            </div>
+          </div>
+          <hr />
+          <div class="form-group form-row">
+            <div class="col-md-6">
+              <label for="ANNUAL_INTEREST_RATE">Annual Interest Rate (in %)</label>
+              <input type="text" name="ANNUAL_INTEREST_RATE" id="ANNUAL_INTEREST_RATE" class="form-control"
+                value="{{ $settings->ANNUAL_INTEREST_RATE }}" required>
             </div>
           </div>
           <hr />

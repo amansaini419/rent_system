@@ -50,6 +50,7 @@ class SettingController extends Controller
 			'SECOND_PENALTY_DAY' => 'required|integer',
 			'SECOND_PENALTY_PER' => 'required|integer',
 			'OTP_EXPIRY_TIME' => 'required|integer',
+			'ANNUAL_INTEREST_RATE' => 'required|integer',
 			'TNC' => 'required',
 		]);
 
