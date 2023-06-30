@@ -110,7 +110,7 @@
                     <td>{{ $loan->tenant_name }}</td>
                     <td>{{ $loan->starting_date }}</td>
                     <td>{{ $loan->loan_amount }}</td>
-                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->interest_rate }}</td>
                     <td>{{ $loan->monthly_payment }}</td>
                     <td>{{ $loan->loan_period * 12 }}</td>
                     <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary">VIEW</a></td>

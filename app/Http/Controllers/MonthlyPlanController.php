@@ -25,11 +25,11 @@ class MonthlyPlanController extends Controller
 		return $penalty;
 	}
 
-	public static function getMonthlyPlan($loan, $initialDeposit){
+	public static function getMonthlyPlan($loan){
 		$monthlyPlan = $loan->monthlyPlan;
 		$monthlyPlanStr = array();
 		$sn = 1;
-		$beginningBalance = $loan->loan_amount - $initialDeposit;
+		$beginningBalance = $loan->loan_amount;
 		foreach($monthlyPlan as $temp){
 			$monthlyInterestAmt = LoanController::calculateSI($beginningBalance, $loan->interest_rate, 1 / 12);
 			$monthlyPrincipalAmt = $loan->monthly_payment - $monthlyInterestAmt;

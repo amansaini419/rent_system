@@ -35,6 +35,7 @@ class LoanController extends Controller
 		$tempJSON->loan_period = $loan->loan_period;
 		$tempJSON->total_installment = $loan->loan_period * 12;
 		$tempJSON->monthly_payment = FunctionController::formatCurrencyView($loan->monthly_payment);
+		$tempJSON->initial_payment = FunctionController::formatCurrencyView(2 * $loan->monthly_payment);
 		$tempJSON->loan_code = $loan->loan_code;
 		$tempJSON->loan_status = $loan->loan_status;
 		return $tempJSON;
@@ -59,13 +60,12 @@ class LoanController extends Controller
 		return $loanStr;
 	}
 
-	public static function getLoanCalculation($loanAmount, $interestRate, $loanPeriod, $initialDeposit){
-		$balanceAmount = $loanAmount - $initialDeposit;
+	public static function getLoanCalculation($loanAmount, $interestRate, $loanPeriod){
 		$monthlyInterest = $interestRate / 12 / 100;
 		$totalInstallments = $loanPeriod * 12;
-		$monthlyPayment = LoanController::calculateMonthlyPayment($balanceAmount, $monthlyInterest, $totalInstallments);
+		$monthlyPayment = LoanController::calculateMonthlyPayment($loanAmount, $monthlyInterest, $totalInstallments);
 		$totalLoanCost = $monthlyPayment * $totalInstallments;
-		$totalInterest = $totalLoanCost - $balanceAmount;
+		$totalInterest = $totalLoanCost - $loanAmount;
 
 		return (object) array(
 			'totalInstallments' => $totalInstallments,
@@ -133,8 +133,7 @@ class LoanController extends Controller
 				
 				DB::beginTransaction();
 				// create loan
-				$initialDeposit = ApplicationController::getTotalDeposit($application);
-				$loanCalculation = LoanController::getLoanCalculation($request->loanAmount, $request->interestRate, $request->loanPeriod, $initialDeposit);
+				$loanCalculation = LoanController::getLoanCalculation($request->loanAmount, $request->interestRate, $request->loanPeriod);
 				
 				$loan = Loan::create([
 					'application_id' => $request->applicationId,
@@ -192,8 +191,8 @@ class LoanController extends Controller
 			}
 			$application = $loan->application;
 			$loanStr = LoanController::getLoanDetails($loan, $application);
-			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
-			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
+			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period);
+			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan);
 			
 			return view('loan.view', [
 				'loan' => $loanStr,
@@ -208,8 +207,8 @@ class LoanController extends Controller
 			}
 			if( (Auth::user()->user_type == 'ADMIN') || ($application->subadmin_id == Auth::user()->id) ){
 				$loanStr = LoanController::getLoanDetails($loan, $application);
-				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
-				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
+				$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period);
+				$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan);
 
 				return view('loan.view', [
 					'loan' => $loanStr,

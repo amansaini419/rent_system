@@ -474,8 +474,8 @@ class ApplicationController extends Controller
 		return Application::where('application_code', $code)->first();
 	}
 
-	public static function createApplicationCode(int $length = 10){
-		$code = FunctionController::generateCode($length);
+	public static function createApplicationCode(int $length = 6){
+		$code = date("ym") . FunctionController::generateCode($length);
 		if(!ApplicationController::checkApplicationCode($code)){
 			return $code;
 		}

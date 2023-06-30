@@ -75,16 +75,16 @@
                       <td>{{ $loan->starting_date }}</td>
                     </tr>
                     <tr>
-                      <th>Required Amount</th>
-                      <td>{{ $loan->required_amount }}</td>
-                    </tr>
-                    <tr>
-                      <th>Loan Amount</th>
+                      <th>Rent Amount</th>
                       <td>{{ $loan->loan_amount }}</td>
                     </tr>
                     <tr>
-                      <th>Inital Deposit</th>
-                      <td>{{ $loan->initial_deposit }}</td>
+                      <th>Annual Interest</th>
+                      <td>{{ $loan->interest_rate }}</td>
+                    </tr>
+                    <tr>
+                      <th>Period</th>
+                      <td>{{ $loan->total_installment }} months</td>
                     </tr>
                   </table>
                 </div>
@@ -92,10 +92,6 @@
               <div class="col-lg-6">
                 <div class="table-responsive">
                   <table class="table loan-table m-0">
-                    <tr>
-                      <th>Interest rate</th>
-                      <td>{{ $loan->interest_rate }}</td>
-                    </tr>
                     <tr>
                       <th>Monthly Payment</th>
                       <td>{{ $loan->monthly_payment }}</td>
@@ -105,11 +101,23 @@
                       <td>{{ $loan->total_installment }}</td>
                     </tr>
                     <tr>
+                      <th>First Month Deposit</th>
+                      <td>{{ $loan->monthly_payment }}</td>
+                    </tr>
+                    <tr>
+                      <th>Security Deposit (Refundable)</th>
+                      <td>{{ $loan->monthly_payment }}</td>
+                    </tr>
+                    <tr>
+                      <th>Initial Payment before Move-in</th>
+                      <td>{{ $loan->initial_payment }}</td>
+                    </tr>
+                    <tr>
                       <th>Total Interest</th>
                       <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($loanCalculation->totalInterest) !!}</td>
                     </tr>
                     <tr>
-                      <th>Total Cost of Loan</th>
+                      <th>Total Cost of Rent</th>
                       <td>{!! app('App\Http\Controllers\Common\FunctionController')->formatCurrencyView($loanCalculation->totalLoanCost) !!}</td>
                     </tr>
                   </table>

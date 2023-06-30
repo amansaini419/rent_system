@@ -499,7 +499,7 @@ class PaymentController extends Controller
 	public static function getTenantpaymentDetails($loan, $application){
 		if($loan != null){
 			$loanStr = LoanController::getLoanDetails($loan, $application);
-			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period, $loanStr->initial_deposit_db);
+			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period);
 
 			$totalAmount = $loanCalculation->totalLoanCost;
 			$totalPayment = LoanController::getLoanPayment($loan);
@@ -521,7 +521,7 @@ class PaymentController extends Controller
 				$recentPaymentsStr[] = $tempJSON;
 			}
 
-			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan, $loanStr->initial_deposit_db);
+			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan);
 			//dd($monthlyPlanStr);
 			foreach($monthlyPlanStr as $plan){
 				$payStatus = '';
