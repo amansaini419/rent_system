@@ -47,7 +47,7 @@ class FunctionController extends Controller
 	public static function sendSMS($countryCode, $phone, $message){
 		//return true;
 		// https://smsc.hubtel.com/v1/messages/send?clientsecret=dcbjseub&clientid=datphoqy&from=TechMinds&to=233202997676&content=This+Is+A+Test+Message
-		$query = array(
+		/* $query = array(
 			"clientid" => env('HUBTEL_CLIENT_ID'),
 			"clientsecret" => env('HUBTEL_CLIENT_SECRET'),
 			"from" => env('HUBTEL_SENDER_NICKNAME'),
@@ -76,7 +76,7 @@ class FunctionController extends Controller
 				'error' => $error,
 				'alert' => 'warning',
 			], 200);
-		}
+		} */
 		return response()->json([
 			'title' => 'Send OTP',
 			'success' => true,
