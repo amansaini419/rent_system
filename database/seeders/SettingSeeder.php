@@ -46,6 +46,10 @@ class SettingSeeder extends Seeder
                 'setting' => 'SECOND_PENALTY_PER',
                 'value' => '10',
             ],
+            [
+                'setting' => 'ANNUAL_INTEREST_RATE',
+                'value' => '22',
+            ],
         ];
 
         foreach($objs as $obj)
