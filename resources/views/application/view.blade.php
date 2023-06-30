@@ -348,10 +348,10 @@
                             <div class="table-responsive">
                               <table class="table table-bordered application-table m-0">
                                 <tbody>
-                                  <tr>
+                                  {{-- <tr>
                                     <th scope="row">{{ __('application.currenct_accommodation_status') }}</th>
                                     <td>{{ $accomodationData->current_accommodation_status }}</td>
-                                  </tr>
+                                  </tr> --}}
                                   <tr>
                                     <th scope="row">{{ __('application.property_location') }}</th>
                                     <td>{{ $accomodationData->property_location }}</td>

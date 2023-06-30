@@ -13,7 +13,7 @@ class AccomodationDataController extends Controller
 		//var_dump($request->all);
 		$validator = Validator::make($request->all(), [
 			'userDataId' => 'required',
-			'currentAccommodationStatus' => 'required',
+			//'currentAccommodationStatus' => 'required',
 			'propertyLocation' => 'required',
 			'propertyType' => 'required',
 			'monthlyRent' => 'required|decimal:0',
@@ -30,7 +30,7 @@ class AccomodationDataController extends Controller
 		//DB::enableQueryLog();
 		$updated = AccomodationData::where(DB::raw('md5(user_data_id)'), $request->userDataId)
 			->update([
-				'current_accommodation_status' => $request->currentAccommodationStatus,
+				'current_accommodation_status' => '',
 				'property_location' => $request->propertyLocation,
 				'property_type' => $request->propertyType,
 				'monthly_rent' => $request->monthlyRent,

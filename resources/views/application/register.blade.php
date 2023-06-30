@@ -31,6 +31,9 @@
       width: 100%;
       object-fit: contain;
     }
+    .icons-alert::before {
+      top: 10px;
+    }
   </style>
 @endsection
 
@@ -117,11 +120,11 @@
                                 </div>
                                 <div class="col-sm-12">
                                   <select id="gender" name="gender" class="form-control">
-                                    <option value="male" {{ $applicationData->gender == 'male' ?? 'checked' }}>Male
+                                    <option value="male" {{ $applicationData->gender == 'male' ? 'selected' : '' }}>Male
                                     </option>
-                                    <option value="female" {{ $applicationData->gender == 'female' ?? 'checked' }}>Female
+                                    <option value="female" {{ $applicationData->gender == 'female' ? 'selected' : '' }}>Female
                                     </option>
-                                    <option value="others" {{ $applicationData->gender == 'others' ?? 'checked' }}>Others
+                                    <option value="others" {{ $applicationData->gender == 'others' ? 'selected' : '' }}>Others
                                     </option>
                                   </select>
                                 </div>
@@ -146,13 +149,13 @@
                                 <div class="col-sm-12">
                                   <select id="maritalStatus" name="maritalStatus" class="form-control">
                                     <option value="single"
-                                      {{ $applicationData->marital_status == 'single' ?? 'checked' }}>Single</option>
+                                      {{ $applicationData->marital_status == 'single' ? 'selected' : '' }}>Single</option>
                                     <option value="married"
-                                      {{ $applicationData->marital_status == 'married' ?? 'checked' }}>Married</option>
+                                      {{ $applicationData->marital_status == 'married' ? 'selected' : '' }}>Married</option>
                                     <option value="divorced"
-                                      {{ $applicationData->marital_status == 'divorced' ?? 'checked' }}>Divorced</option>
+                                      {{ $applicationData->marital_status == 'divorced' ? 'selected' : '' }}>Divorced</option>
                                     <option value="widowed"
-                                      {{ $applicationData->marital_status == 'widowed' ?? 'checked' }}>Widowed</option>
+                                      {{ $applicationData->marital_status == 'widowed' ? 'selected' : '' }}>Widowed</option>
                                   </select>
                                   {{-- <div class="form-radio">
                                     <div class="radio radiofill radio-inline">
@@ -224,8 +227,13 @@
                                     class="block">{{ __('application.employment_status') }}</label>
                                 </div>
                                 <div class="col-sm-12">
-                                  <input id="employmentStatus" name="employmentStatus" type="text"
-                                    class="form-control" value="{{ $applicationData->employment_status }}" />
+                                  <select id="employmentStatus" name="employmentStatus" class="form-control">
+                                    <option value="Self Employed" {{ $applicationData->employment_status == 'Self Employed' ? 'selected' : '' }}>Self Employed</option>
+                                    <option value="Government Employed" {{ $applicationData->employment_status == 'Government Employed' ? 'selected' : '' }}>Government Employed</option>
+                                    <option value="Student" {{ $applicationData->employment_status == 'Student' ? 'selected' : '' }}>Student</option>
+                                  </select>
+                                  {{-- <input id="employmentStatus" name="employmentStatus" type="text"
+                                    class="form-control" value="{{ $applicationData->employment_status }}" /> --}}
                                 </div>
                               </div>
                               <div class="form-group row">
@@ -257,9 +265,9 @@
                                 <div class="col-sm-12">
                                   <select id="outstandingLoan" name="outstandingLoan" class="form-control">
                                     <option value="no"
-                                      {{ $applicationData->outstanding_loan == 'no' ?? 'checked' }}>No</option>
+                                      {{ $applicationData->outstanding_loan == 'no' ? 'selected' : '' }}>No</option>
                                     <option value="yes"
-                                      {{ $applicationData->outstanding_loan == 'yes' ?? 'checked' }}>Yes</option>
+                                      {{ $applicationData->outstanding_loan == 'yes' ? 'selected' : '' }}>Yes</option>
                                   </select>
                                 </div>
                               </div>
@@ -322,7 +330,7 @@
                           <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
                           <div class="row">
                             <div class="col-md-6">
-                              <div class="form-group row">
+                              {{-- <div class="form-group row">
                                 <div class="col-sm-12">
                                   <label for="currentAccommodationStatus"
                                     class="block">{{ __('application.currenct_accommodation_status') }}</label>
@@ -332,7 +340,7 @@
                                     type="text" class="form-control"
                                     value="{{ $accomodationData->current_accommodation_status }}" />
                                 </div>
-                              </div>
+                              </div> --}}
                               <div class="form-group row">
                                 <div class="col-sm-12">
                                   <label for="propertyLocation"
@@ -407,7 +415,7 @@
                       <section>
                         @if(!$fees)
                         <div class="alert alert-danger icons-alert">
-                          <strong>NOTE:</strong> Pay registration fees, before uploading documents.
+                          <strong>NOTE:</strong> Pay registration fees, then upload your required documents documents.
                         </div>
                         <form id="paymentForm" action="{{ route('application-payment') }}" method="POST" accept-charset="UTF-8">
                           @csrf

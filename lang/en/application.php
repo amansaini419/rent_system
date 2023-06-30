@@ -44,7 +44,7 @@ return [
   'ghana_card' => 'Ghana Card',
   'upload_ghana_card' => 'Upload Ghana Card',
   'upload_bank_statement' => 'Upload 4 months Bank Statement / MoMo Statement',
-  'upload_employment_letter' => 'Upload Employment Letter',
+  'upload_employment_letter' => 'Upload Employment Letter / Staff ID / Payslip',
   //
   //
   'tab4' => 'Landlord Verification',
