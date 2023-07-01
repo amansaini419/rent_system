@@ -20,7 +20,8 @@ return new class extends Migration
             $table->double('interest_rate');
             $table->double('loan_period');
             $table->double('monthly_payment');
-            $table->string('loan_code', 10);
+            $table->double('initial_deposit');
+            $table->string('loan_code', 11);
             $table->enum('loan_status', ['OPENED', 'CLOSED'])->default('OPENED');
             $table->date('closed_date')->nullable();
             $table->timestamps();

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('initial_deposits', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Application::class);
+            $table->foreignIdFor(Loan::class);
             $table->foreignIdFor(Invoice::class);
             $table->timestamps();
         });

@@ -126,11 +126,13 @@
             </div>
           </div>
         </div>
-        
         @if(Auth::user()->user_type == "TENANT")
           <div class="card">
             <div class="card-header">
               <h5 class="sub-title d-block border-0">Payment</h5>
+              {{-- <p>
+                <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Pay Initial Deposit</button>
+              </p> --}}
             </div>
             <div class="card-block">
               <div class="view-info">
@@ -222,6 +224,9 @@
           <div class="card">
             <div class="card-header">
               <h5 class="sub-title d-block border-0">Payment</h5>
+              {{-- <p>
+                <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Accept Initial Deposit</button>
+              </p> --}}
             </div>
             <div class="card-block">
               <div class="view-info">
@@ -245,12 +250,12 @@
                               <tr>
                                 <td>{{ $monthlyPlan->sn }}</td>
                                 <td>{{ $monthlyPlan->payment_status }}</td>
-                                <td>{{ $monthlyPlan->payment }}</td>
-                                <td>{{ $monthlyPlan->penalty }}</td>
+                                <td>{{ $monthlyPlan->paymentAmount }}</td>
+                                <td>{{ $monthlyPlan->penaltyAmount }}</td>
                                 <td>{{ $monthlyPlan->due_date }}</td>
                                 <td>
                                   @if($monthlyPlan->payment_date == null)
-                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#offlinePaymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Offline Payment</button>
+                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#offlinePaymentModal" data-payment="{{ $monthlyPlan->paymentAmountDb }}" data-penalty="{{ $monthlyPlan->penaltyAmountDb }}" data-total="{{ $monthlyPlan->totalAmountDb }}" data-id="{{ md5($monthlyPlan->id) }}">Offline Payment</button>
                                   @else
                                   {{ $monthlyPlan->payment_date }}
                                   @endif
@@ -392,6 +397,35 @@
     </div>
   </div>
   @endif
+  {{-- <div class="modal fade" id="depositModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Initial Deposit</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{{ route('application-initialDeposit') }}">
+            @csrf
+            <div class="form-group">
+              <label for="depositAmount">Loan ID</label>
+              <input type="text" name="loanId" id="loanId" class="form-control" value="{{ $loan->loan_code }}" readonly>
+            </div>
+            <div class="form-group">
+              <label for="depositAmount">How much initial deposit you want to do?</label>
+              <input type="text" name="depositAmount" id="depositAmount" class="form-control" value="{{ $loan->initial_deposit }}" required>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success waves-effect waves-light text-uppercase">Deposit</button>
+              <button type="button" class="btn btn-primary waves-effect " data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> --}}
 @endsection
 
 @section('own-script')

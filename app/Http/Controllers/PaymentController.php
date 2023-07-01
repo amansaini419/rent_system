@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\MonthlyPlan;
 use App\Models\Payment;
 use App\Models\UserData;
+use App\Models\Users;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,16 +46,17 @@ class PaymentController extends Controller
 				$paymentChannel = ($data["channel"] == 'mobile_money') ? 'MOMO' : 'CARD';
 				$invoiceType = $data["metadata"]["type"];
 				if($invoiceType == 'REGISTRATION'){
-					$invoice = InvoiceController::new(Auth::id(), $amount, 'REGISTRATION');
+					$user = Users::find($data["metadata"]["user_id"]);
+					$invoice = InvoiceController::new($user->id, $amount, 'REGISTRATION');
 					RegistrationFeeController::new($data["metadata"]["user_data_id"], $invoice->id);
 					PaymentController::new($invoice->id, $amount, $paymentChannel, $paymentRef );
 					$mailData = [
 						'title' => 'Registration Fee Payment',
 						'body' => 'You have successfully paid the registration fees.'
 					];
-					Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+					Mail::to($user->email)->send(new PaymentMail($mailData));
 					$message = $mailData['body'];
-					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
+					FunctionController::sendSMS($user->country_code, $user->phone_number, $message);
 					return redirect()->route('dashboard');
 				}
 				elseif($invoiceType == 'INITIAL_DEPOSIT'){
@@ -103,65 +105,42 @@ class PaymentController extends Controller
 			}
 		}
 		return redirect()->route('dashboard');
-		/* // FOR registration fees
+	}
+
+	public function payOfflineRegistrationFees(Request $request){
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
-		$userDataId = $userData->id;
-		$invoice = InvoiceController::new(Auth::id(), SettingController::getValue('REGISTRATION_FEES'), 'REGISTRATION');
-		$invoiceId = $invoice->id;
-		RegistrationFeeController::new($userDataId, $invoiceId);
-		PaymentController::new($invoiceId, SettingController::getValue('REGISTRATION_FEES'), 'CARD');
-		return redirect()->route('application-register');
-
-		// FOR Initial deposit
-		$application = ApplicationController::checkApplicationCode($request->applicationId);
-		if($application){
-			$invoice = InvoiceController::new(Auth::id(), $request->depositAmount, 'INITIAL_DEPOSIT');
-			$invoiceId = $invoice->id;
-			InitialDepositController::new($application->id, $invoiceId);
-			PaymentController::new($invoiceId, $request->depositAmount, 'CARD');
-		}
-		return redirect()->route('application-list');
-
-		// FOR rent payment
-		// create invoice
-		$invoice = InvoiceController::new(Auth::id(), $totalpayment, 'RENT');
-		// create payment
-		PaymentController::new($invoice->id, $totalpayment, 'CARD');
-		// update monthly plan
-		$monthlyPlan->invoice_id = $invoice->id;
-		$monthlyPlan->payment_date = Carbon::now();
-		$monthlyPlan->penalty = $penaltyAmount;
-		$monthlyPlan->save();
-
-		LoanController::checkLoanClosed($loan);
-
+		$user = $userData->user;
+		$amount = SettingController::getValue('REGISTRATION_FEES');
+		$paymentChannel = 'CASH';
+		$invoice = InvoiceController::new($user->id, $amount, 'REGISTRATION');
+		RegistrationFeeController::new($userData->id, $invoice->id);
+		PaymentController::new($invoice->id, $amount, $paymentChannel, PaymentController::createPaymentRef());
 		$mailData = [
-			'title' => 'Rent Payment',
-			'body' => 'You have successfully paid your rent online.'
+			'title' => 'Registration Fee Payment',
+			'body' => 'You have successfully paid the registration fees.'
 		];
-		Mail::to(Auth::user()->email)->send(new PaymentMail($mailData));
+		Mail::to($user->email)->send(new PaymentMail($mailData));
 		$message = $mailData['body'];
-		FunctionController::sendSMS(Auth::user()->phone_number, $message);
-
-		return redirect()->back()->with([
+		FunctionController::sendSMS($user->country_code, $user->phone_number, $message);
+		return back()->with([
 			'success' => true,
-			'title' => 'Payment',
-			'message' => 'You have successfully done the payment.',
-			'alert' => 'success'
-		]); */
+			'message' => 'Successfully received the registration fees.'
+		]);
 	}
 
 	public function payRegistrationFees(Request $request){
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
+		$user = (Auth::user()->user_type == 'TENENAT') ? Auth::user() : $userData->user;
 		try {
 			$data = array(
 				"amount" => (int)(SettingController::getValue('REGISTRATION_FEES') * 100),
 				"reference" => PaymentController::createPaymentRef(),
-				"email" => Auth::user()->email,
+				"email" => $user->email,
 				"currency" => "GHS",
 				"metadata" => array(
 					"user_data_id" => $userData->id,
-					"type" => "REGISTRATION"
+					"type" => "REGISTRATION",
+					"user_id" => $user->id,
 				),
 			);
 			//dd($data); die();
@@ -192,8 +171,8 @@ class PaymentController extends Controller
 		}
 	}
 
-	public static function createPaymentRef($length = 10){
-		$code = FunctionController::generateCode($length);
+	public static function createPaymentRef($length = 6){
+		$code = $code = 'P' . date('ym') . str_pad(Payment::count() + 1, $length, '0', STR_PAD_LEFT);
 		if(!PaymentController::checkPaymentRef($code)){
 			return $code;
 		}
@@ -233,8 +212,8 @@ class PaymentController extends Controller
 			]);
 		}
 
-		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
-		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
+		$paymentAmount = FunctionController::formatCurrency($monthlyPlan->payment_amount);
+		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $monthlyPlan->payment_amount));
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		try {
@@ -301,8 +280,8 @@ class PaymentController extends Controller
 			]);
 		}
 
-		$paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
-		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $loan->monthly_payment));
+		$paymentAmount = FunctionController::formatCurrency($monthlyPlan->payment_amount);
+		$penaltyAmount = FunctionController::formatCurrency(MonthlyPlanController::calculatePenalty(Carbon::parse($monthlyPlan->due_date), $monthlyPlan->payment_amount));
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		// create invoice
@@ -474,17 +453,25 @@ class PaymentController extends Controller
 		]);
 	}
 
-	public static function getOutstandingMonthlyPlan($userType, $userId){
+	public static function getOutstandingMonthlyPlan($userType, $userId, $type = ''){
 		if($userType == "ADMIN"){
-			$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->latest()->get();
+			$monthlyPlans = new MonthlyPlan;
 		}
 		elseif($userType == "TENANT" || $userType == "STAFF" || $userType == "AGENT"){
 			$applications = ApplicationController::getUserApplications($userType, $userId);
 			$openedLoans = LoanController::getLoans($applications, 'OPENED');
 			$loanIdStr = LoanController::getLoanIds($openedLoans);
-			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr)->where('due_date', '<=', date("Y-m-d"))->latest()->get();
+			$monthlyPlans = MonthlyPlan::whereIn('loan_id', $loanIdStr);
 		}
-		return $monthlyPlans;
+		if($type != ''){
+			$dateRange = FunctionController::getDateRange($type);
+			$monthlyPlans = $monthlyPlans->whereBetween('due_date', [$dateRange->from, $dateRange->to]);
+		}
+		else{
+			$monthlyPlans = $monthlyPlans->where('due_date', '<=', date("Y-m-d"));
+		}
+		//dd($monthlyPlans->latest()->get());
+		return $monthlyPlans->latest()->get();
 	}
 
 	protected function outstanding(){
@@ -501,36 +488,35 @@ class PaymentController extends Controller
 			$loanStr = LoanController::getLoanDetails($loan, $application);
 			$loanCalculation = LoanController::getLoanCalculation($loan->loan_amount, $loan->interest_rate, $loan->loan_period);
 
-			$totalAmount = $loanCalculation->totalLoanCost;
+			$totalAmount = $loanCalculation->totalLoanCost + $loan->initial_deposit;
 			$totalPayment = LoanController::getLoanPayment($loan);
 			$totalOutstanding = $totalAmount - $totalPayment;
 
 			$recentPaymentsStr = array();
-			$initialDeposits = $application->initialDeposits;
-			$balanceBF = $totalAmount + $loanStr->initial_deposit_db;
-			foreach($initialDeposits as $deposit){
-				$balanceBF -= $deposit->invoice_amount;
-				$tempJSON = new stdClass();
-				$tempJSON->amount = FunctionController::formatCurrencyView($deposit->invoice_amount);
-				$tempJSON->month = 'DEPOSIT';
-				$tempJSON->due_date = FunctionController::formatDate($deposit->created_at);
-				$tempJSON->date_paid = FunctionController::formatDate($deposit->created_at);
-				$tempJSON->balance_bf = FunctionController::formatCurrencyView($balanceBF);
-				$tempJSON->note = 'SECURITY DEPOSIT';
-				$tempJSON->pay = 'Paid';
-				$recentPaymentsStr[] = $tempJSON;
-			}
+			/* $balanceBF = $totalAmount - $loan->initial_deposit;
+			$tempJSON = new stdClass();
+			$tempJSON->amount = FunctionController::formatCurrencyView($loan->initial_deposit);
+			$tempJSON->month = 'DEPOSIT';
+			$tempJSON->due_date = FunctionController::formatDate($loan->starting_date);
+			$tempJSON->date_paid = FunctionController::formatDate($loan->created_at);
+			$tempJSON->balance_bf = FunctionController::formatCurrencyView($balanceBF);
+			$tempJSON->note = 'SECURITY DEPOSIT';
+			$tempJSON->pay = 'Paid';
+			$recentPaymentsStr[] = $tempJSON; */
 
 			$monthlyPlanStr = MonthlyPlanController::getMonthlyPlan($loan);
 			//dd($monthlyPlanStr);
+			//dd($balanceBF);
+			$balanceBF = $totalAmount;
 			foreach($monthlyPlanStr as $plan){
 				$payStatus = '';
 				if($plan->payment_date != null){
-					$balanceBF -= $plan->paymentAmount;
+
+					$balanceBF -= $plan->paymentAmountDb;
 					$payStatus = 'Paid';
 				}
 				$tempJSON = new stdClass();
-				$tempJSON->amount = $plan->payment;
+				$tempJSON->amount = $plan->paymentAmount;
 				$tempJSON->month = strtoupper(FunctionController::formatRentMonth($plan->due_date));
 				$tempJSON->due_date = $plan->due_date;
 				$tempJSON->date_paid = $plan->payment_date;
@@ -538,6 +524,7 @@ class PaymentController extends Controller
 				$tempJSON->note = $plan->note;
 				$tempJSON->paymentAmount = $plan->paymentAmount;
 				$tempJSON->penaltyAmount = $plan->penaltyAmount;
+				$tempJSON->totalAmount = $plan->totalAmount;
 				$tempJSON->id = $plan->id;
 				$tempJSON->pay = $payStatus;
 				$recentPaymentsStr[] = $tempJSON;

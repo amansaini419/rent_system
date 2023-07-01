@@ -21,6 +21,7 @@ class Loan extends Model
 		'interest_rate',
 		'loan_period',
 		'monthly_payment',
+		'initial_deposit',
 		'loan_code',
 		'loan_status',
 		'closed_date',

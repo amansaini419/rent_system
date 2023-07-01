@@ -11,7 +11,7 @@ class ApplicationDataController extends Controller
 {
 	public function store(Request $request)
 	{
-		$validated = $request->validate([
+		$request->validate([
 			'user_data_id' => 'required|integer',
 		]);
 		$applicationData = new ApplicationData();

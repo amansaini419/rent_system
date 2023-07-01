@@ -44,7 +44,7 @@ class DashboardController extends Controller
 			$totalApprovedStatusApplication = count($approvedStatusApplication);
 			$allStatusApplication = ApplicationStatusController::getTotalApplicationByStatus();
 			$data = array(
-				'weeksApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('today'), 0),
+				'todaysApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('today'), 0),
 				'weeksApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('week'), 0),
 				'monthsApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('month'), 0),
 				'quartersApplication' => FunctionController::formatCurrencyView(ApplicationController::getTotalApplications('quarter'), 0),

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Loan::class);
             $table->foreignIdFor(Invoice::class)->default(0);
+            $table->double('payment_amount');
             $table->date('due_date');
             $table->date('payment_date')->nullable();
             $table->double('penalty')->default(0);

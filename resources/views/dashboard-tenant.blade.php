@@ -107,7 +107,7 @@
                       <th>Due Date</th>
                       <th>Date Paid</th>
                       <th>Balance B/F</th>
-                      <th>Note</th>
+                      {{-- <th>Note</th> --}}
                       <th>Pay</th>
                     </tr>
                     @foreach ($paymentDetails->recentPaymentsStr as $payment)
@@ -117,10 +117,10 @@
                         <td>{{ $payment->due_date }}</td>
                         <td>{{ $payment->date_paid }}</td>
                         <td>{{ $payment->balance_bf }}</td>
-                        <td>{{ $payment->note }}</td>
+                        {{-- <td>{{ $payment->note }}</td> --}}
                         <td>
                           @if($payment->pay != 'Paid')
-                          <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $payment->paymentAmount }}" data-penalty="{{ $payment->penaltyAmount }}" data-total="{{ $payment->paymentAmount + $payment->penaltyAmount }}" data-id="{{ md5($payment->id) }}">Pay</button>
+                          <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $payment->paymentAmount }}" data-penalty="{{ $payment->penaltyAmount }}" data-total="{{ $payment->totalAmount }}" data-id="{{ md5($payment->id) }}">Pay</button>
                           @else
                           {{ $payment->pay }}
                           @endif

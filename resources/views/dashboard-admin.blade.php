@@ -197,8 +197,9 @@
               <div class="row">
                 <div class="col-sm-12">
                   <ul class="nav flex-column">
-                    <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
-                    <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Review Registration</a></li>
+                    <li><a href="{{ route('tenant-new') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'PENDING']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Pending Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'VERIFIED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Verified Registration</a></li>
                     <li><a href="{{ route('payment-outstanding') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Accept Payment</a></li>
                     <li><a href="{{ route('payment-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Payment List</a></li>
                     <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Tenant List</a></li>

@@ -14,9 +14,10 @@ class InvoiceController extends Controller
 		return Invoice::where('invoice_code', $code)->first();
 	}
 
-	public static function createInvoiceCode($length = 10)
+	public static function createInvoiceCode($length = 6)
 	{
-		$code = FunctionController::generateCode($length);
+		$code = 'I' . date('ym') . str_pad(Invoice::count() + 1, $length, '0', STR_PAD_LEFT);
+		//$code = FunctionController::generateCode($length);
 		if (!InvoiceController::checkInvoiceCode($code)) {
 			return $code;
 		}

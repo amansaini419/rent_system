@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Common\FunctionController;
 use App\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -166,5 +168,55 @@ class UsersController extends Controller
 			'is_active' => 1,
 			'is_deleted' => 0
 		])->first();
+	}
+
+	public function new(){
+		return view('tenant.new');
+	}
+
+	public function register(Request $request){
+		if(Auth::user()->user_type != "TENANT"){
+			$validator = Validator::make($request->all(), [
+				'phone' => 'required|integer',
+				'countryCode' => 'required',
+				'email' => 'required|email',
+			], [
+				'phone.required' => 'Please enter your phone number',
+				'email.required' => 'Please enter valid email address',
+				'email.email' => 'Please enter valid email address',
+			]);
+
+			if ($validator->fails()) {
+				return back()
+					->withInput()
+					->withErrors($validator->messages());
+			}
+
+			if(UsersController::checkEmail($request->email)){
+				return back()
+					->withInput()
+					->withErrors('Email address is already registerred.');
+			}
+
+			$password = FunctionController::generateCode(10);
+			$tenant = Users::create([
+				'phone_number' => $request->phone,
+				'country_code' => $request->countryCode,
+				'email' => $request->email,
+				'password' => $password
+			]);
+
+			// send email
+
+			// create user data
+			$userData = UserDataController::new($tenant->id);
+			// create application
+			$subadminId = (Auth::user()->user_type == 'ADMIN') ? 0 : Auth::id();
+			$application = ApplicationController::new($userData->id, 'NEW', $subadminId);
+			// create application status
+			ApplicationStatusController::new($application->id, 'INCOMPLETE');
+
+			return to_route('application-edit', ['id' => $application->application_code]);
+		}
 	}
 }

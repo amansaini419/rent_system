@@ -7,7 +7,7 @@
           <div class="card-block-small">
             <i class="icofont icofont-files bg-c-blue card1-icon"></i>
             <span class="text-c-blue f-w-600">Today's Applications</span>
-            <h4>{{ $weeksApplication }}</h4>
+            <h4>{{ $todaysApplication }}</h4>
             <div>
               <a href="{{ route('application-list') }}" class="f-right m-t-10 text-primary">Read More >>></a>
             </div>
@@ -150,8 +150,9 @@
               <div class="row">
                 <div class="col-sm-12">
                   <ul class="nav flex-column">
-                    <li><a href="{{ route('application-list', ['status' => 'UNDER_VERIFICATION']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
-                    <li><a href="{{ route('application-list', ['status' => 'APPROVED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Review Registration</a></li>
+                    <li><a href="{{ route('tenant-new') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> New Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'UNDER_VERIFICATION']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Under Verification Registration</a></li>
+                    <li><a href="{{ route('application-list', ['status' => 'APPROVED']) }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Approved Registration</a></li>
                     <li><a href="{{ route('payment-outstanding') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Accept Payment</a></li>
                     <li><a href="{{ route('payment-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Payment List</a></li>
                     <li><a href="{{ route('tenant-list') }}" class="f-left m-t-10 text-primary"><i class="icofont icofont-thin-right"></i> Tenant List</a></li>

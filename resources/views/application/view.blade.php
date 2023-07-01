@@ -80,10 +80,10 @@
                         <th>Application Type</th>
                         <td>{{ $application->application_type }}</td>
                       </tr>
-                      <tr>
+                      {{-- <tr>
                         <th>Initial Deposit</th>
                         <td>{{ $application->initial_deposit }}</td>
-                      </tr>
+                      </tr> --}}
                       <tr>
                         <th>Application Status</th>
                         <td>{{ $application->application_status }}</td>
@@ -138,7 +138,7 @@
                 @if ($application->application_status == "APPROVED")
                   <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase monthly-plan-modal-btn" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
                 @endif
-                <a href="{{ route('application-register', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">update application</a>
+                <a href="{{ route('application-edit', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">edit application</a>
               </div>
             </div>
           </div>
@@ -681,7 +681,7 @@
                   </div>
                   <div class="form-group">
                     <label for="interestRate">Annual Interest Rate</label>
-                    <input type="text" name="interestRate" id="interestRate" class="form-control">
+                    <input type="text" name="interestRate" id="interestRate" class="form-control" value="{{ $interestRate }}" readonly>
                   </div>
                   <div class="form-group">
                     <label for="loanPeriod">Loan Period in years</label>
@@ -707,7 +707,7 @@
                   </div>
                   <div class="form-group">
                     <label for="initialDeposit">Initital Deposit</label>
-                    <input type="text" name="initialDeposit" id="initialDeposit" class="form-control" readonly value="{{ $application->initial_deposit }}">
+                    <input type="text" name="initialDeposit" id="initialDeposit" class="form-control" readonly value="0">
                   </div>
                   <div class="form-group">
                     <label for="totalInterest">Total Interest</label>
@@ -799,32 +799,35 @@
       const loanAmount = $('#loanAmount').val();
       const interestRate = $('#interestRate').val();
       const loanPeriod = $('#loanPeriod').val();
-      const initialDeposit = $('#initialDeposit').val();
-      const balanceAmount = loanAmount - initialDeposit;
+      //const initialDeposit = $('#initialDeposit').val();
+      const balanceAmount = loanAmount;
 
       const monthlyInterest = interestRate / 12 / 100;
       const totalInstallments = loanPeriod * 12;
       //const adj = Math.pow((1 + monthlyInterest), totalInstallments);
 
       const monthlyPayment = calculateMonthlyPayment(balanceAmount, monthlyInterest, totalInstallments);
+      const initialDeposit = 2 * monthlyPayment;
       const totalLoanCost = monthlyPayment * totalInstallments;
       const totalInterest = totalLoanCost - balanceAmount;
 
       $('#monthlyPayment').val(currencyFormat(monthlyPayment));
       $('#totalInstallment').val(totalInstallments);
+      $('#initialDeposit').val(currencyFormat(initialDeposit));
       $('#totalInterest').val(currencyFormat(totalInterest));
       $('#totalLoanCost').val(currencyFormat(totalLoanCost));
 
       let beginningBalance = balanceAmount;
       $('.after-generate').show();
-      for (let i = 1; i <= totalInstallments; i++) {
+      let sn = 1;
+      for (let i = 0; i < totalInstallments; i++) {
         moment(startingDate).add(i, 'months');
         const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, 1 / 12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const tableRow = '\
           <tr>\
-            <td>' + i + '</td>\
+            <td>' + sn++ + '</td>\
             <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
             <td>' + currencyFormat(beginningBalance) + '</td>\
             <td>' + currencyFormat(monthlyPayment) + '</td>\

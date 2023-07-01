@@ -59,12 +59,7 @@ Route::get('/blank', function () {
 Route::group(['middleware' => ['auth']], function(){
     Route::group(['middleware' => ['user-role:TENANT']], function(){
         Route::get('/application/register/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-register');
-        Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
-        Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
-        Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
-        Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
-        Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
-        Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
+         Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
         Route::post('/application/reapply', [ApplicationController::class, 'reapply'])->name('application-reapply');
 
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
@@ -87,9 +82,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/application/reject', [ApplicationController::class, 'reject'])->name('application-reject');
         Route::post('/application/approve', [ApplicationController::class, 'approve'])->name('application-approve');
 
-        Route::get('/tenant/list', [UsersController::class, 'tenantIndex'])->name('tenant-list');
-        Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
-
         Route::get('/subadmin/list', [UsersController::class, 'subadminIndex'])->name('subadmin-list');
         Route::post('/subadmin/new', [UsersController::class, 'subadminNew'])->name('subadmin-new');
         Route::get('/subadmin/view/{id?}', [UsersController::class, 'subadminView'])->name('subadmin-view');
@@ -101,7 +93,14 @@ Route::group(['middleware' => ['auth']], function(){
     Route::group(['middleware' => ['tenant-register']], function(){
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
+        Route::get('/application/edit/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-edit');
+        Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
+        Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
+        Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
+        Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
+        Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
+        Route::post('/application/register/offlinePayment', [PaymentController::class, 'payOfflineRegistrationFees'])->name('application-offlinePayment');
+       Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
         Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');
         Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
         Route::post('/application/loan', [LoanController::class, 'new'])->name('application-loan');
@@ -110,6 +109,11 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/loan/view/{id}', [LoanController::class, 'view'])->name('loan-view');
         Route::post('/loan/offlinePayment', [PaymentController::class, 'payRentOffline'])->name('loan-offlinePayment');
         
+        Route::get('/tenant/list', [UsersController::class, 'tenantIndex'])->name('tenant-list');
+        Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
+        Route::get('/tenant/new', [UsersController::class, 'new'])->name('tenant-new');
+        Route::post('/tenant/register', [UsersController::class, 'register'])->name('tenant-register');
+
         
         Route::get('/invoice/list', [InvoiceController::class, 'index'])->name('invoice-list');
         Route::get('/invoice/view/{id?}', [InvoiceController::class, 'view'])->name('invoice-view');

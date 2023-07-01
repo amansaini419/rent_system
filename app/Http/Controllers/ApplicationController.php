@@ -20,11 +20,12 @@ use stdClass;
 
 class ApplicationController extends Controller
 {
-	public static function new($userDataid, $applicationType){
+	public static function new($userDataid, $applicationType, $subadminId = 0){
 		return Application::create([
 			'user_data_id' => $userDataid,
 			'application_type' => $applicationType,
 			'application_code' => ApplicationController::createApplicationCode(),
+			'subadmin_id' => $subadminId,
 		]);
 	}
 
@@ -41,7 +42,7 @@ class ApplicationController extends Controller
 		$tempJSON->application_remark = $application->application_remark;
 		$tempJSON->admin_remark = $application->admin_remark;
 		$tempJSON->application_status = ApplicationStatusController::getCurrentApplicationStatus($application);
-		$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
+		//$tempJSON->initial_deposit = $application->initialDeposits->sum('invoice_amount');
 		$tempJSON->subadmin_id = ($application->subadmin_id) == 0 ? 'NONE' : User::find($application->subadmin_id)->name;
 		return $tempJSON;
 	}
@@ -56,9 +57,9 @@ class ApplicationController extends Controller
 		return $applicationStr;
 	}
 
-	public static function getTotalDeposit($application){
+	/* public static function getTotalDeposit($application){
 		return $application->initialDeposits->sum('invoice_amount');
-	}
+	} */
 
 	protected static function getStaffAssigned($application){
 		return ($application->subadmin_id == 0) ? 'NONE' : User::find($application->subadmin_id)->name;
@@ -147,6 +148,7 @@ class ApplicationController extends Controller
 				'accomodationData' => $userData->accomodationData,
 				'documentData' => $userData->documentData,
 				'landlordData' => $userData->landlordData,
+				'interestRate' => SettingController::getValue('ANNUAL_INTEREST_RATE'),
 			]);
 		}
 		return redirect()->route('dashboard');
@@ -356,9 +358,14 @@ class ApplicationController extends Controller
 		return ($application && $application->userData && $application->userData->user && $application->userData->user->id == Auth::id()) ? true : false;
 	}
 
+	protected function verifyStaffApplication(string $id){
+		$application = ApplicationController::checkApplicationCode($id);
+		return ($application && ( $application->subadmin_id ==  Auth::id() )) ? true : false;
+	}
+
 	protected function showRegistrationForm(string $id){
 		$application = ApplicationController::checkApplicationCode($id);
-		if($this->verifyTenantApplication($id)){
+		if( (Auth::user()->user_type == 'TENANT' && $this->verifyTenantApplication($id)) || (in_array(Auth::user()->user_type, ['STAFF', 'AGENT']) && $this->verifyStaffApplication($id)) || (Auth::user()->user_type == 'ADMIN') ){
 			$userData = $application->userData;
 			$applicationData = $userData->applicationData;
 			if(!$applicationData){
@@ -387,7 +394,7 @@ class ApplicationController extends Controller
 			if($documentData->is_filled && $fees){
 				$startIndex = 3;
 			}
-			if($applicationData->is_filled && $accomodationData->is_filled && $documentData->is_filled && $fees && $landlordData->is_filled){
+			if($applicationData->is_filled && $accomodationData->is_filled && $documentData->is_filled && $fees && $landlordData->is_filled && Auth::user()->user_type == 'TENANT'){
 				$applicationStatus = $application->currentStatus;
 				if ($applicationStatus->application_status == "INCOMPLETE") {
 					// create application status pending

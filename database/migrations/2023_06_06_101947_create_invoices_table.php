@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Users::class);
             $table->double('invoice_amount');
-            $table->string('invoice_code', 10)->unique();
+            $table->string('invoice_code', 11)->unique();
             $table->enum('invoice_type', ['REGISTRATION', 'RENT', 'INITIAL_DEPOSIT']);
             $table->timestamps();
         });

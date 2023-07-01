@@ -16,6 +16,7 @@ class MonthlyPlan extends Model
 	protected $fillable = [
 		'loan_id',
 		'invoice_id',
+		'payment_amount',
 		'due_date',
 		'payment_date',
 		'penalty',

@@ -40,35 +40,44 @@ class MonthlyPlanController extends Controller
 				$paymentStatus = "NOT PAID";
 				if(strtotime($temp->due_date) < strtotime(date("Y-m-d"))){
 					$paymentStatus = "DUE";
-					$penalty = MonthlyPlanController::calculatePenalty(Carbon::parse($temp->due_date), $loan->monthly_payment);
+					$penalty = MonthlyPlanController::calculatePenalty(Carbon::parse($temp->due_date), $temp->payment_amount);
 				}
 			}
 			$tempJSON = new stdClass();
 			$tempJSON->sn = $sn++;
 			$tempJSON->id = $temp->id;
 			$tempJSON->note = $temp->tenant_note;
-			$tempJSON->due_date = FunctionController::formatDate($temp->due_date);
 			$tempJSON->payment_status = $paymentStatus;
 			$tempJSON->payment_date = ($temp->payment_date == null) ? $temp->payment_date : FunctionController::formatDate($temp->payment_date);
+			$tempJSON->paymentAmountDb = FunctionController::formatCurrency($temp->payment_amount);
+			$tempJSON->paymentAmount = FunctionController::formatCurrencyView($temp->payment_amount);
+			$tempJSON->penaltyAmount = FunctionController::formatCurrencyView($penalty);
+			$tempJSON->penaltyAmountDb = FunctionController::formatCurrency($penalty);
+			$tempJSON->totalAmountDb = FunctionController::formatCurrency($temp->payment_amount + $penalty);
+			$tempJSON->totalAmount = FunctionController::formatCurrencyView($temp->payment_amount + $penalty);
+
+			/* FOR MONTHLY PLAN TABLE */
+			$tempJSON->due_date = FunctionController::formatDate($temp->due_date);
 			$tempJSON->beginning_balance = FunctionController::formatCurrencyView($beginningBalance);
 			$tempJSON->payment = FunctionController::formatCurrencyView($loan->monthly_payment);
-			$tempJSON->paymentAmount = FunctionController::formatCurrency($loan->monthly_payment);
-			$tempJSON->penaltyAmount = FunctionController::formatCurrency($penalty);
-			$tempJSON->penalty = FunctionController::formatCurrencyView($penalty);
+			$tempJSON->paymentDb = FunctionController::formatCurrency($loan->monthly_payment);
 			$tempJSON->principal = FunctionController::formatCurrencyView($monthlyPrincipalAmt);
 			$tempJSON->interest = FunctionController::formatCurrencyView($monthlyInterestAmt);
 			$tempJSON->ending_balance = FunctionController::formatCurrencyView($endingBalance);
-			$monthlyPlanStr[] = $tempJSON;
-
 			$beginningBalance = $endingBalance;
+			/* FOR MONTHLY PLAN TABLE */
+
+			$monthlyPlanStr[] = $tempJSON;
 		}
 		return (object)$monthlyPlanStr;
 	}
 
 	public static function generate(Loan $loan, $totalInstallments){
-		for ($i = 1; $i <= $totalInstallments; $i++) {
+		for ($i = 0; $i < $totalInstallments; $i++) {
+			$paymentAmount = ($i == 0) ? ($loan->monthly_payment + $loan->initial_deposit) : $loan->monthly_payment;
 			MonthlyPlan::create([
 				'loan_id' => $loan->id,
+				'payment_amount' => FunctionController::formatCurrency($paymentAmount),
 				'due_date' => date("Y-m-d", strtotime("+$i month", strtotime($loan->starting_date))),
 			]);
 		}

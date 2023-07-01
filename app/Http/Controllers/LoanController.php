@@ -27,10 +27,11 @@ class LoanController extends Controller
 		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
 		$tempJSON->starting_date = FunctionController::formatDate($loan->starting_date);
 		$tempJSON->required_amount = FunctionController::formatCurrencyView($loan->loan_amount);
-		$initialDeposit = ApplicationController::getTotalDeposit($application);
-		$tempJSON->initial_deposit = FunctionController::formatCurrencyView($initialDeposit);
-		$tempJSON->initial_deposit_db = FunctionController::formatCurrency($initialDeposit);
-		$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount - $initialDeposit);
+		//$initialDeposit = ApplicationController::getTotalDeposit($application);
+		$tempJSON->initial_deposit = FunctionController::formatCurrencyView($loan->initial_deposit);
+		$tempJSON->initial_deposit_db = FunctionController::formatCurrency($loan->initial_deposit);
+		$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount);
+		//$tempJSON->loan_amount = FunctionController::formatCurrencyView($loan->loan_amount - $initialDeposit);
 		$tempJSON->interest_rate = $loan->interest_rate . '%';
 		$tempJSON->loan_period = $loan->loan_period;
 		$tempJSON->total_installment = $loan->loan_period * 12;
@@ -70,6 +71,7 @@ class LoanController extends Controller
 		return (object) array(
 			'totalInstallments' => $totalInstallments,
 			'monthlyPayment' => $monthlyPayment,
+			'initialDeposit' => $monthlyPayment,
 			'totalLoanCost' => $totalLoanCost,
 			'totalInterest' => $totalInterest,
 		);
@@ -83,8 +85,8 @@ class LoanController extends Controller
 		return Loan::where('loan_code', $code)->first();
 	}
 
-	public static function createLoanCode(int $length = 10){
-		$code = FunctionController::generateCode($length);
+	public static function createLoanCode(int $length = 6){
+		$code = 'R' . date('ym') . str_pad(Loan::count() + 1, $length, '0', STR_PAD_LEFT);
 		if(!LoanController::checkLoanCode($code)){
 			return $code;
 		}
@@ -142,6 +144,7 @@ class LoanController extends Controller
 					'interest_rate' => $request->interestRate,
 					'loan_period' => $request->loanPeriod,
 					'monthly_payment' => FunctionController::formatCurrency($loanCalculation->monthlyPayment),
+					'initial_deposit' => FunctionController::formatCurrency($loanCalculation->initialDeposit),
 					'loan_code' => LoanController::createLoanCode(),
 				]);
 				
@@ -156,7 +159,7 @@ class LoanController extends Controller
 					]);
 				}
 				DB::commit();
-				return redirect()->back()->with([
+				return to_route('loan-view', ['id' => $loan->loan_code])->with([
 					'success' => true,
 					'title' => 'Loan Created',
 					'message' => 'You have successfully created the loan for the application.',
