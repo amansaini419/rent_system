@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -18,6 +19,7 @@ class UsersController extends Controller
 
 	public static function getTenantDetails($tenant, $sn){
 		$tenantName = "";
+		//dd($tenant);
 		$applicationData = $tenant->applicationData;
 		if($applicationData){
 			$tenantName = $applicationData->first_name;
@@ -31,13 +33,35 @@ class UsersController extends Controller
 		return $tempJSON;
 	}
 
+	public static function getStaffAssignedTenants(){
+		$tenants = array();
+		if(Auth::user()->user_type == 'ADMIN'){
+			$tenants = Users::where([
+				'user_type' => 'TENANT',
+				'is_active' => 1,
+				'is_deleted' => 0,
+			])->get();
+		}
+		else if(Auth::user()->user_type == 'AGENT' || Auth::user()->user_type == 'STAFF'){
+			$tenants = Users::select('users.*')
+				->join('user_data AS UD', 'UD.users_id', 'users.id')
+				->join('applications AS A', 'A.user_data_id', 'UD.id')
+				->where([
+					'users.user_type' => 'TENANT',
+					'A.subadmin_id' => Auth::id(),
+					'users.is_active' => 1,
+					'users.is_deleted' => 0,
+				])
+				->groupBy('users.id')
+				->get();
+			//dd($tenants);
+		}
+		return $tenants;
+	}
+
 	public static function getTenants(){
 		$tenantStr = array();
-		$tenants = Users::where([
-			'user_type' => 'TENANT',
-			'is_active' => 1,
-			'is_deleted' => 0,
-		])->get();
+		$tenants = UsersController::getStaffAssignedTenants();
 		$sn = 1;
 		foreach($tenants as $tenant){
 			$tenantStr[] = UsersController::getTenantDetails($tenant, $sn++);
@@ -46,31 +70,52 @@ class UsersController extends Controller
 	}
 
 	protected function tenantIndex(){
-		return view('tenant.list', ['tenantStr' => UsersController::getTenants()]);
+		if(Auth::user()->user_type != 'TENANT'){
+			return view('tenant.list', ['tenantStr' => UsersController::getTenants()]);
+		}
+		return to_route('dashboard');
 	}
 
 	protected function tenantView($id){
-		$tenant = Users::where([
-			'id' => $id,
-			'user_type' => 'TENANT',
-			'is_active' => 1,
-			'is_deleted' => 0,
-		])->first();
-		//dd($tenant);
-		$allApplications = $tenant->allApplications;
-		$applications = ApplicationController::getApplications($allApplications);
-		$loans = LoanController::getLoans($allApplications);
-		$tenantName = "";
-		$applicationData = $tenant->applicationData;
-		if($applicationData){
-			$tenantName = $applicationData->first_name;
+		if(Auth::user()->user_type != 'TENANT'){
+			$tenant = Users::where([
+				'id' => $id,
+				'user_type' => 'TENANT',
+				'is_active' => 1,
+				'is_deleted' => 0,
+			])->first();
+			if(Auth::user()->user_type != 'ADMIN'){
+				$tenant = Users::select('users.*')
+				->join('user_data AS UD', 'UD.users_id', 'users.id')
+				->join('applications AS A', 'A.user_data_id', 'UD.id')
+				->where([
+					'users.user_type' => 'TENANT',
+					'A.subadmin_id' => Auth::id(),
+					'users.is_active' => 1,
+					'users.is_deleted' => 0,
+					'users.id' => $id,
+				])
+				->groupBy('users.id')
+				->first();
+			}
+			if($tenant != null){
+				$allApplications = $tenant->allApplications;
+				$applications = ApplicationController::getApplications($allApplications);
+				$loans = LoanController::getLoans($allApplications);
+				$tenantName = "";
+				$applicationData = $tenant->applicationData;
+				if($applicationData){
+					$tenantName = $applicationData->first_name;
+				}
+				return view('tenant.view', [
+					'tenant' => $tenant,
+					'applications' => $applications,
+					'loans' => $loans,
+					'tenantName' => $tenantName,
+				]);
+			}
 		}
-		return view('tenant.view', [
-			'tenant' => $tenant,
-			'applications' => $applications,
-			'loans' => $loans,
-			'tenantName' => $tenantName,
-		]);
+		return to_route('dashboard');
 	}
 
 	public static function getSubadminDetails($subadmin, $sn = 0){

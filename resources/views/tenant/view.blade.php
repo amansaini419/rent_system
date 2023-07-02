@@ -104,7 +104,7 @@
                     <th>Application ID</th>
                     <th>Application Type</th>
                     <th>Application Status</th>
-                    <th>Initial Deposit</th>
+                    {{-- <th>Initial Deposit</th> --}}
                     <th>Staff Assigned</th>
                     <th>Action</th>
                   </tr>
@@ -115,7 +115,7 @@
                     <td>{{ $application->application_code }}</td>
                     <td>{{ $application->application_type }}</td>
                     <td>{{ $application->application_status }}</td>
-                    <td>{{ $application->initial_deposit }}</td>
+                    {{-- <td>{{ $application->initial_deposit }}</td> --}}
                     <td>{{ $application->subadmin_id }}</td>
                     <td><a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>
                   </tr>
@@ -151,7 +151,7 @@
                     <td>{{ $loan->loan_code }}</td>
                     <td>{{ $loan->starting_date }}</td>
                     <td>{{ $loan->loan_amount }}</td>
-                    <td>{{ $loan->interest_rate }}%</td>
+                    <td>{{ $loan->interest_rate }}</td>
                     <td>{{ $loan->monthly_payment }}</td>
                     <td>{{ $loan->loan_period * 12 }}</td>
                     <td><a href="{{ route('loan-view', ['id' => $loan->loan_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a></td>

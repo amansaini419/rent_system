@@ -1,10 +1,26 @@
-{{-- <li class="{{ (Route::currentRouteName() === 'tenant-list') ? 'active pcoded-trigger' : '' }}">
-  <a href="{{ route('tenant-list') }}">
+<li class="pcoded-hasmenu {{ ( in_array(Route::currentRouteName(), ['tenant-list', 'tenant-view', 'tenant-new']) ) ? 'active pcoded-trigger' : '' }}">
+  <a href="javascript:void(0)">
     <span class="pcoded-micon"><i class="icofont icofont-users-alt-2"></i><b>T</b></span>
     <span class="pcoded-mtext">Tenants</span>
     <span class="pcoded-mcaret"></span>
   </a>
-</li> --}}
+  <ul class="pcoded-submenu">
+    <li class="{{ (Route::currentRouteName() === 'tenant-list') ? 'active' : '' }}">
+      <a href="{{ route('tenant-list') }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">All</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+    <li class="{{ (Route::currentRouteName() === 'tenant-new') ? 'active' : '' }}">
+      <a href="{{ route('tenant-new') }}">
+        <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
+        <span class="pcoded-mtext">New</span>
+        <span class="pcoded-mcaret"></span>
+      </a>
+    </li>
+  </ul>
+</li>
 <li class="pcoded-hasmenu {{ ( in_array(Route::currentRouteName(), ['application-list', 'application-view']) ) ? 'active pcoded-trigger' : '' }}">
   <a href="javascript:void(0)">
     <span class="pcoded-micon"><i class="icofont icofont-files"></i><b>A</b></span>
@@ -93,13 +109,13 @@
         <span class="pcoded-mcaret"></span>
       </a>
     </li>
-    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'INITIAL_DEPOSIT') ? 'active' : '' }}">
+    {{-- <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'INITIAL_DEPOSIT') ? 'active' : '' }}">
       <a href="{{ route('payment-list', ['type' => 'INITIAL_DEPOSIT']) }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">Initial Deposit</span>
         <span class="pcoded-mcaret"></span>
       </a>
-    </li>
+    </li> --}}
     <li class="{{ (Route::currentRouteName() === 'payment-outstanding') ? 'active' : '' }}">
       <a href="{{ route('payment-outstanding') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>

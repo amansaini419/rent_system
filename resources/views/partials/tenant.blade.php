@@ -47,13 +47,13 @@
         <span class="pcoded-mcaret"></span>
       </a>
     </li>
-    <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'INITIAL_DEPOSIT') ? 'active' : '' }}">
+    {{-- <li class="{{ (Route::currentRouteName() === 'payment-list' && request()->segment(3) === 'INITIAL_DEPOSIT') ? 'active' : '' }}">
       <a href="{{ route('payment-list', ['type' => 'INITIAL_DEPOSIT']) }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
         <span class="pcoded-mtext">Initial Deposit</span>
         <span class="pcoded-mcaret"></span>
       </a>
-    </li>
+    </li> --}}
     <li class="{{ (Route::currentRouteName() === 'payment-outstanding') ? 'active' : '' }}">
       <a href="{{ route('payment-outstanding') }}">
         <span class="pcoded-micon"><i class="icon-pie-chart"></i></span>
