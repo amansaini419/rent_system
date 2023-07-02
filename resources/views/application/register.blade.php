@@ -618,6 +618,7 @@
     const accomodationDataUrl = '{{ route('accomodationData-update') }}';
     const documentDataUrl = '{{ route('documentData-update') }}';
     const landlordDataUrl = '{{ route('landlordData-update') }}';
+    const redirectUrl = '{{ route('application-edit', ['id' => $applicationCode]) }}';
     const fees = {{ $fees != null ? 1 : 0 }};
     const startIndex = parseInt('{{ $startIndex }}');
   </script>

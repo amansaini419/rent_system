@@ -363,7 +363,8 @@ class ApplicationController extends Controller
 		return ($application && ( $application->subadmin_id ==  Auth::id() )) ? true : false;
 	}
 
-	protected function showRegistrationForm(string $id){
+	protected function showRegistrationForm(string $id, $edit = null){
+		//dd($edit);
 		$application = ApplicationController::checkApplicationCode($id);
 		if( (Auth::user()->user_type == 'TENANT' && $this->verifyTenantApplication($id)) || (in_array(Auth::user()->user_type, ['STAFF', 'AGENT']) && $this->verifyStaffApplication($id)) || (Auth::user()->user_type == 'ADMIN') ){
 			$userData = $application->userData;
@@ -394,27 +395,43 @@ class ApplicationController extends Controller
 			if($documentData->is_filled && $fees){
 				$startIndex = 3;
 			}
-			if($applicationData->is_filled && $accomodationData->is_filled && $documentData->is_filled && $fees && $landlordData->is_filled && Auth::user()->user_type == 'TENANT'){
+			/* if($edit != null){
+				$startIndex = 0;
+			} */
+			if($applicationData->is_filled && $accomodationData->is_filled && $documentData->is_filled && $fees && $landlordData->is_filled){
 				$applicationStatus = $application->currentStatus;
 				if ($applicationStatus->application_status == "INCOMPLETE") {
 					// create application status pending
 					ApplicationStatusController::new($application->id, 'PENDING');
 					//dd($applicationStatus);
-					$mailData = [
-						'title' => 'Application Registration Confirmation',
-            'body' => 'You have successfully completed your application.'
-					];
+					if(Auth::user()->user_type == 'TENANT'){
+						$mailData = [
+							'title' => 'Application Registration Confirmation',
+							'body' => 'You have successfully completed your application.'
+						];
+					}
+					else{
+						$mailData = [
+							'title' => 'Application Registration Confirmation',
+							'body' => 'Your application is successfully completed.'
+						];
+					}
 					Mail::to(Auth::user()->email)->send(new RegistrationConfirmationMail($mailData));
 					$message = $mailData['body'];
 					FunctionController::sendSMS(Auth::user()->country_code, Auth::user()->phone_number, $message);
 				}
-				return redirect()->route('application-list');
+				if(Auth::user()->user_type == 'TENANT'){
+					return redirect()->route('application-list');
+				}
+				elseif($edit == null){
+					return to_route('application-view', ['id' => $id]);
+				}
 			}
 			//var_dump($applicationData); die();
 			return view('application.register', [
 				'userDataId' => $userData->id,
 				'startIndex' => $startIndex,
-				'aaplicationCode' => $id,
+				'applicationCode' => $id,
 				'fees' => $fees,
 				'applicationData' => $applicationData,
 				'accomodationData' => $accomodationData,

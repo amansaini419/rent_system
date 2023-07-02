@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Setting;
+use App\Models\Users;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -31,11 +32,11 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'setting' => 'TNC',
-                'value' => '50',
+                'value' => '&lt;h1&gt;TERMS&amp;nbsp;&amp;amp;&amp;nbsp;CONDITION&lt;/h1&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;This&amp;nbsp;is&amp;nbsp;the&amp;nbsp;dummy&amp;nbsp;terms&amp;nbsp;and&amp;nbsp;conditions.&amp;nbsp;Ignore&amp;nbsp;it.&lt;/p&gt;',
             ],
             [
                 'setting' => 'RESET_PASSWORD_TOKEN_EXPIRY',
-                'value' => '15',
+                'value' => '123456',
             ],
             [
                 'setting' => 'FIRST_PENALTY_DAY',
@@ -50,9 +51,22 @@ class DatabaseSeeder extends Seeder
                 'value' => '9',
             ],
             [
-                'setting' => 'SECONDA_PENALTY_PER',
+                'setting' => 'SECOND_PENALTY_PER',
                 'value' => '10',
             ],
+            [
+                'setting' => 'ANNUAL_INTEREST_RATE',
+                'value' => '22',
+            ],
+        ]);
+
+        Users::create([
+            'name' => 'ADMIN',
+            'email' => 'admin@email.com',
+            'password' => '123456',
+            'country_code' => '+91',
+            'phone_number' => '987654321',
+            'user_type' => 'ADMIN',
         ]);
     }
 }

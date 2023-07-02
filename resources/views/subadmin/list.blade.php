@@ -103,6 +103,10 @@
               <input type="text" name="name" id="name" class="form-control" required>
             </div>
             <div class="form-group">
+              <label for="countryCode">Country Code</label>
+              <select class="form-control" id="countryCode" name="countryCode" required></select>
+            </div>
+            <div class="form-group">
               <label for="phone">Phone Number</label>
               <input type="text" name="phone" id="phone" class="form-control" required>
             </div>
@@ -151,6 +155,13 @@
         swal('{{ session('title') }}', '{{ session('errors') }}', '{{ session('alert') }}');
       @endif
     @endif
+
+    const countryCodes = setCountryCodes();
+    countryCodes.then((countryCodeObj)=>{
+      countryCodeObj.map( (obj) => {
+        $('#countryCode').append('<option value="' + obj.dial_code + '" ' + (obj.name === "Ghana" ? "selected" : "") + '>' + obj.name + ' (' + obj.dial_code + ')</option>');
+      });
+    });
 
     $('#dataTable').DataTable();
     /* $('#dt-server-processing').DataTable({

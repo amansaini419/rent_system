@@ -173,6 +173,7 @@ class UsersController extends Controller
 			'name' => 'required',
 			'type' => 'required',
 			'phone' => 'required|integer',
+			'countryCode' => 'required',
 		]);
 
 		if ($validator->fails()) {
@@ -189,6 +190,7 @@ class UsersController extends Controller
 			'password' => $request->password,
 			'name' => $request->name,
 			'phone_number' => $request->phone,
+			'country_code' => $request->countryCode,
 			'user_type' => $request->type,
 		]);
 		if($subadmin){

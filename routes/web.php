@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::group(['middleware' => ['tenant-register']], function(){
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/application/edit/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-edit');
+        Route::get('/application/edit/{id}/{edit?}', [ApplicationController::class, 'showRegistrationForm'])->name('application-edit');
         Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
         Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
         Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');

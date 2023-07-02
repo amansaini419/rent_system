@@ -38,7 +38,7 @@ class DashboardController extends Controller
 		elseif(Auth::user()->user_type == 'STAFF' || Auth::user()->user_type == 'AGENT' || Auth::user()->user_type == 'ADMIN'){
 			$last50Applications = Application::orderBy('id', 'desc')->limit(50)->get();
 			$last50RentPayment = PaymentController::getUserPayments(Auth::user()->user_type, 50);
-			$monthlyPlans = MonthlyPlan::where('due_date', '<=', date("Y-m-d"))->orderBy('created_at', 'desc')->get();
+			$monthlyPlans = PaymentController::getOutstandingMonthlyPlan(Auth::user()->user_type, Auth::id());
 			$last50OutstandingRent = PaymentController::getOutstandingRent($monthlyPlans);
 			$approvedStatusApplication = ApplicationStatusController::getTotalApplicationByStatus('APPROVED', '', 0);
 			$totalApprovedStatusApplication = count($approvedStatusApplication);

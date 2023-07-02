@@ -141,8 +141,8 @@
                     {{-- <td>{{ $application->initial_deposit }}</td> --}}
                     <td>{{ $application->subadmin_id }}</td>
                     <td>
-                      <a href="{{ route('application-edit', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary">EDIT</a>
-                      <a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary" target="_blank">VIEW</a>
+                      <a href="{{ route('application-edit', ['id' => $application->application_code, 'edit' => 1]) }}" class="btn btn-sm btn-primary">EDIT</a>
+                      <a href="{{ route('application-view', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary">VIEW</a>
                     </td>
                   </tr>
                 @endforeach

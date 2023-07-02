@@ -219,9 +219,11 @@ $(document).ready(function() {
           console.log(response);
           if(response){
             stepNext = true;
-            swal('APPLICATION COMPLETED', 'You have successfully submitted the application.', 'success');
-            const url = window.location;
-            window.location = url;
+            swal('APPLICATION COMPLETED', 'You have successfully completed the application.', 'success');
+            hideLoader();
+            setTimeout(() => {
+              window.location = redirectUrl;
+            }, 3*1000);
           }
           else{
             hideLoader();

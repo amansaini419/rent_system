@@ -14,6 +14,7 @@
     .table.application-table td,
     .table.application-table th {
       width: 50%;
+      text-transform: uppercase;
     }
 
     .dd-w,
@@ -102,7 +103,7 @@
                     <tbody>
                       <tr>
                         <th>Tenant Email</th>
-                        <td>{{ $tenant->email }}</td>
+                        <td class="text-lowercase">{{ $tenant->email }}</td>
                       </tr>
                       <tr>
                         <th>Tenant Phone Number</th>
@@ -138,7 +139,7 @@
                 @if ($application->application_status == "APPROVED")
                   <button type="button" class="btn btn-sm btn-success waves-effect md-trigger text-uppercase monthly-plan-modal-btn" data-toggle="modal" data-target="#monthlyPlanModal">monthly plan</button>
                 @endif
-                <a href="{{ route('application-edit', ['id' => $application->application_code]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">edit application</a>
+                <a href="{{ route('application-edit', ['id' => $application->application_code, 'edit' => 1]) }}" class="btn btn-sm btn-primary waves-effect md-trigger text-uppercase">edit application</a>
               </div>
             </div>
           </div>
@@ -522,7 +523,7 @@
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_email') }}</th>
-                                    <td>{{ $landlordData->landlord_email }}</td>
+                                    <td class="text-lowercase">{{ $landlordData->landlord_email }}</td>
                                   </tr>
                                 </tbody>
                               </table>
