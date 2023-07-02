@@ -42,7 +42,7 @@ class UsersController extends Controller
 				'is_deleted' => 0,
 			])->get();
 		}
-		else if(Auth::user()->user_type == 'AGENT' || Auth::user()->user_type == 'STAFF'){
+		elseif(Auth::user()->user_type == 'AGENT' || Auth::user()->user_type == 'STAFF'){
 			$tenants = Users::select('users.*')
 				->join('user_data AS UD', 'UD.users_id', 'users.id')
 				->join('applications AS A', 'A.user_data_id', 'UD.id')

@@ -63,7 +63,7 @@ class FunctionController extends Controller
 			CURLOPT_CUSTOMREQUEST => "GET",
 		]);
 		
-		$response = curl_exec($curl);
+		curl_exec($curl);
 		$error = curl_error($curl);
 		
 		curl_close($curl);

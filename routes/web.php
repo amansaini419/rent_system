@@ -68,6 +68,11 @@ Route::group(['middleware' => ['auth']], function(){
 
         Route::get('/payment/callback', [PaymentController::class, 'handleGatewayCallback'])->name('payback-callback');
     });
+    Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
+    Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
+    Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
+    Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
+    Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
 
     Route::group(['middleware' => ['user-role:STAFF']], function(){
         //
@@ -94,11 +99,6 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('/application/edit/{id}/{edit?}', [ApplicationController::class, 'showRegistrationForm'])->name('application-edit');
-        Route::put('/application/register/applicationData', [ApplicationDataController::class, 'update'])->name('applicationData-update');
-        Route::put('/application/register/accomodationData', [AccomodationDataController::class, 'update'])->name('accomodationData-update');
-        Route::post('/application/register/documentData', [DocumentDataController::class, 'update'])->name('documentData-update');
-        Route::put('/application/register/landlordData', [LandlordDataController::class, 'update'])->name('landlordData-update');
-        Route::post('/application/register/payment', [PaymentController::class, 'payRegistrationFees'])->name('application-payment');
         Route::post('/application/register/offlinePayment', [PaymentController::class, 'payOfflineRegistrationFees'])->name('application-offlinePayment');
        Route::get('/application/list/{status?}', [ApplicationController::class, 'index'])->name('application-list');
         Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');
