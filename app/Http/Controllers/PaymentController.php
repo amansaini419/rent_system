@@ -35,6 +35,17 @@ class PaymentController extends Controller
 		]);
 	}
 
+	public static function update($invoiceId, $paymentAmount, $paymentChannel, $paymentRef){
+		return Payment::where([
+			'payment_ref' => $paymentRef,
+		])->update([
+			'invoice_id' => $invoiceId,
+			'payment_amount' => $paymentAmount,
+			'payment_channel' => $paymentChannel,
+			'payment_status' => 1,
+		]);
+	}
+
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
 		//dd($paymentDetails);
@@ -49,7 +60,7 @@ class PaymentController extends Controller
 					$user = Users::find($data["metadata"]["user_id"]);
 					$invoice = InvoiceController::new($user->id, $amount, 'REGISTRATION');
 					RegistrationFeeController::new($data["metadata"]["user_data_id"], $invoice->id);
-					PaymentController::new($invoice->id, $amount, $paymentChannel, $paymentRef );
+					PaymentController::update($invoice->id, $amount, $paymentChannel, $paymentRef);
 					$mailData = [
 						'title' => 'Registration Fee Payment',
 						'body' => 'You have successfully paid the registration fees.'
@@ -64,7 +75,7 @@ class PaymentController extends Controller
 					if($application){
 						$invoice = InvoiceController::new(Auth::id(), $amount, 'INITIAL_DEPOSIT');
 						InitialDepositController::new($application->id, $invoice->id);
-						PaymentController::new($invoice->id, $amount, $paymentChannel, $paymentRef );
+						PaymentController::update($invoice->id, $amount, $paymentChannel, $paymentRef);
 					}
 					$mailData = [
 						'title' => 'Initial Deposit',
@@ -77,7 +88,7 @@ class PaymentController extends Controller
 				}
 				elseif($invoiceType == 'RENT'){
 					$invoice = InvoiceController::new(Auth::id(), $amount, 'RENT');
-					PaymentController::new($invoice->id, $amount, $paymentChannel, $paymentRef );
+					PaymentController::update($invoice->id, $amount, $paymentChannel, $paymentRef);
 					$monthlyPlan = MonthlyPlan::find($data["metadata"]["monthly_plan_id"]);
 					$monthlyPlan->invoice_id = $invoice->id;
 					$monthlyPlan->payment_date = Carbon::now();
@@ -133,14 +144,13 @@ class PaymentController extends Controller
 		$user = (Auth::user()->user_type == 'TENENAT') ? Auth::user() : $userData->user;
 		try {
 			// Create pending payment
-			//
 			$amount = SettingController::getValue('REGISTRATION_FEES');
 			$paymentRef = PaymentController::createPaymentRef();
 			PaymentController::new(0, $amount, 'CASH', $paymentRef);
 
 			$data = array(
 				"amount" => (int)($amount * 100),
-				"reference" => PaymentController::createPaymentRef(), // $paymentRef
+				"reference" => $paymentRef,
 				"email" => $user->email,
 				"currency" => "GHS",
 				"metadata" => array(
@@ -160,9 +170,14 @@ class PaymentController extends Controller
 
 	public function payInitialDeposit(Request $request){
 		try {
+			// Create pending payment
+			$amount = $request->depositAmount;
+			$paymentRef = PaymentController::createPaymentRef();
+			PaymentController::new(0, $amount, 'CASH', $paymentRef);
+
 			$data = array(
 				"amount" => (int)($request->depositAmount * 100),
-				"reference" => PaymentController::createPaymentRef(),
+				"reference" => $paymentRef,
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
 				"metadata" => array(
@@ -224,9 +239,13 @@ class PaymentController extends Controller
 		$totalpayment = FunctionController::formatCurrency($paymentAmount + $penaltyAmount);
 
 		try {
+			// Create pending payment
+			$paymentRef = PaymentController::createPaymentRef();
+			PaymentController::new(0, $totalpayment, 'CASH', $paymentRef);
+
 			$data = array(
 				"amount" => (int)($totalpayment * 100),
-				"reference" => PaymentController::createPaymentRef(),
+				"reference" => $paymentRef,
 				"email" => Auth::user()->email,
 				"currency" => "GHS",
 				"metadata" => array(
