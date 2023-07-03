@@ -16,5 +16,6 @@ class Payment extends Model
         'payment_amount',
         'payment_ref',
         'payment_channel',
+        'payment_status'
 	];
 }

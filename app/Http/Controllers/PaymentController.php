@@ -132,9 +132,15 @@ class PaymentController extends Controller
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		$user = (Auth::user()->user_type == 'TENENAT') ? Auth::user() : $userData->user;
 		try {
+			// Create pending payment
+			//
+			$amount = SettingController::getValue('REGISTRATION_FEES');
+			$paymentRef = PaymentController::createPaymentRef();
+			PaymentController::new(0, $amount, 'CASH', $paymentRef);
+
 			$data = array(
-				"amount" => (int)(SettingController::getValue('REGISTRATION_FEES') * 100),
-				"reference" => PaymentController::createPaymentRef(),
+				"amount" => (int)($amount * 100),
+				"reference" => PaymentController::createPaymentRef(), // $paymentRef
 				"email" => $user->email,
 				"currency" => "GHS",
 				"metadata" => array(
@@ -143,6 +149,7 @@ class PaymentController extends Controller
 					"user_id" => $user->id,
 				),
 			);
+			
 			//dd($data); die();
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {

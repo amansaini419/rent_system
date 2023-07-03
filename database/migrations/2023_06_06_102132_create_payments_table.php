@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignIdFor(Invoice::class);
             $table->double('payment_amount');
             $table->string('payment_ref', 11)->unique();
-            $table->enum('payment_channel', ['MOMO', 'CASH', 'CARD']);
+            $table->enum('payment_channel', ['MOMO', 'CASH', 'CARD'])->default('CASH');
+            $table->boolean('payment_status')->default(0);
             $table->timestamps();
         });
     }
