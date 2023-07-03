@@ -464,10 +464,11 @@ class PaymentController extends Controller
 
 	public static function getUserPayments($userType, $limit = -1){
 		if($userType == "STAFF" || $userType == "AGENT" || $userType == "TENANT" ){
-			$paymentSql = Payment::whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest();
+			$paymentSql = Payment::where('payment_status', 1)->whereIn('invoice_id', InvoiceController::getUserInvoices()->pluck('id'))->latest();
 		}
 		elseif($userType == "ADMIN"){
-			$paymentSql = Payment::latest();
+			$paymentSql = Payment::where('payment_status', 1)->latest();
+			echo json_encode($paymentSql);
 		}
 		return ($limit == -1) ? $paymentSql->get() : $paymentSql->limit($limit)->get();
 	}
