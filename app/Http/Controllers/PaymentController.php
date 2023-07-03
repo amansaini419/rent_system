@@ -468,7 +468,7 @@ class PaymentController extends Controller
 		}
 		elseif($userType == "ADMIN"){
 			$paymentSql = Payment::where('payment_status', 1)->latest();
-			echo json_encode($paymentSql);
+			//echo json_encode($paymentSql);
 		}
 		return ($limit == -1) ? $paymentSql->get() : $paymentSql->limit($limit)->get();
 	}
