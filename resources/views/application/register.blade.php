@@ -124,8 +124,8 @@
                                     </option>
                                     <option value="female" {{ $applicationData->gender == 'female' ? 'selected' : '' }}>Female
                                     </option>
-                                    <option value="others" {{ $applicationData->gender == 'others' ? 'selected' : '' }}>Others
-                                    </option>
+                                    {{-- <option value="others" {{ $applicationData->gender == 'others' ? 'selected' : '' }}>Others
+                                    </option> --}}
                                   </select>
                                 </div>
                               </div>
