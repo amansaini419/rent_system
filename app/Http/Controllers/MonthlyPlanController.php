@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\FunctionController;
 use App\Models\Loan;
 use App\Models\MonthlyPlan;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -73,14 +74,19 @@ class MonthlyPlanController extends Controller
 	}
 
 	public static function generate(Loan $loan, $totalInstallments){
-		for ($i = 0; $i < $totalInstallments; $i++) {
-			$paymentAmount = ($i == 0) ? ($loan->monthly_payment + $loan->initial_deposit) : $loan->monthly_payment;
+		$paymentDate = Carbon::parse($loan->starting_date);
+		for ($i = 1; $i <= $totalInstallments; $i++) {
+			$paymentAmount = ($i == 1) ? ($loan->monthly_payment + $loan->initial_deposit) : $loan->monthly_payment;
 			MonthlyPlan::create([
 				'loan_id' => $loan->id,
 				'payment_amount' => FunctionController::formatCurrency($paymentAmount),
-				'due_date' => date("Y-m-d", strtotime("+$i month", strtotime($loan->starting_date))),
+				'due_date' => $paymentDate->format('Y-m-d'),
 			]);
+			//echo $paymentDate->format('Y-m-d');
+			$paymentDate = $paymentDate->startOfMonth()->add(CarbonInterval::months(1));
+			//echo "<br>";
 		}
+		//die();
 	}
 
 	public static function getByHashId($id){

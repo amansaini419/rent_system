@@ -423,7 +423,7 @@
                             @csrf
                             <div class="form-group">
                               <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
-                              <button class="btn btn-round d-block mx-auto btn-inverse text-center" type="submit">ACCEPT OFFLINE</button>
+                              <button class="btn btn-round d-block mx-auto btn-inverse text-center" type="submit" onclick="showLoader()">ACCEPT OFFLINE</button>
                             </div>
                           </form>
                           @endif
@@ -431,7 +431,7 @@
                             @csrf
                             <div class="form-group">
                               <input type="hidden" name="userDataId" value="{{ md5($userDataId) }}">
-                              <button class="btn btn-round d-block mx-auto btn-inverse text-center" type="submit">PAY REGISTRATION FEES</button>
+                              <button class="btn btn-round d-block mx-auto btn-inverse text-center" type="submit" onclick="showLoader()">PAY REGISTRATION FEES</button>
                             </div>
                           </form>
                         </div>

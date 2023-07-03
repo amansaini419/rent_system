@@ -818,18 +818,19 @@
       $('#totalInterest').val(currencyFormat(totalInterest));
       $('#totalLoanCost').val(currencyFormat(totalLoanCost));
 
+      let paymentDate = startingDate;
       let beginningBalance = balanceAmount;
       $('.after-generate').show();
       let sn = 1;
-      for (let i = 0; i < totalInstallments; i++) {
-        moment(startingDate).add(i, 'months');
+      for (let i = 1; i <= totalInstallments; i++) {
+        //moment(startingDate).add(i, 'months');
         const monthlyInterestAmt = calculateSI(beginningBalance, interestRate, 1 / 12);
         const monthlyPrincipalAmt = monthlyPayment - monthlyInterestAmt;
         let endingBalance = beginningBalance - monthlyPrincipalAmt;
         const tableRow = '\
           <tr>\
             <td>' + sn++ + '</td>\
-            <td>' + dateFormat(moment(startingDate).add(i, 'months')) + '</td>\
+            <td>' + dateFormat(paymentDate) + '</td>\
             <td>' + currencyFormat(beginningBalance) + '</td>\
             <td>' + currencyFormat(monthlyPayment) + '</td>\
             <td>' + currencyFormat(monthlyPrincipalAmt) + '</td>\
@@ -840,6 +841,8 @@
         $('#monthlyPlanTable tbody').append(tableRow);
         //console.log(i, beginningBalance, monthlyPayment, monthlyPrincipalAmt, monthlyInterestAmt, endingBalance);
         beginningBalance = endingBalance;
+        paymentDate = moment(startingDate).startOf('month').add(i, 'months');
+        //console.log(moment(startingDate).startOf('month').add(i, 'months'));
       }
     });
   </script>

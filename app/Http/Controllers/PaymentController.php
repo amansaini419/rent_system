@@ -532,7 +532,7 @@ class PaymentController extends Controller
 
 			return (object)array(
 				'total' => FunctionController::formatCurrencyView($totalAmount),
-				'deposit' => $loanStr->initial_deposit,
+				'deposit' => FunctionController::formatCurrencyView(2 * $loanStr->initial_deposit_db),
 				'payment' => FunctionController::formatCurrencyView($totalPayment),
 				'payment_db' => FunctionController::formatCurrency($totalPayment),
 				'outstanding' => FunctionController::formatCurrencyView($totalOutstanding),

@@ -126,195 +126,197 @@
             </div>
           </div>
         </div>
-        @if(Auth::user()->user_type == "TENANT")
-          <div class="card">
-            <div class="card-header">
-              <h5 class="sub-title d-block border-0">Payment</h5>
-              {{-- <p>
-                <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Pay Initial Deposit</button>
-              </p> --}}
-            </div>
-            <div class="card-block">
-              <div class="view-info">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="general-info">
-                      <div class="table-responsive">
-                        <table class="table" id="monthlyPlanTable">
-                          <thead>
+        {{-- <div class="card">
+          <div class="card-header">
+            <h5 class="sub-title d-block border-0">Payment</h5>
+            <p>
+              <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Pay Initial Deposit</button>
+            </p>
+          </div>
+          <div class="card-block">
+            <div class="view-info">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="general-info">
+                    <div class="table-responsive">
+                      <table class="table" id="monthlyPlanTable">
+                        <thead>
+                          <tr>
+                            <th>S.N.</th>
+                            <th>Payment Status</th>
+                            <th>Payment</th>
+                            <th>Penalty</th>
+                            <th>Due Date</th>
+                            <th>Payment Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($monthlyPlanStr as $monthlyPlan)
                             <tr>
-                              <th>S.N.</th>
-                              <th>Payment Status</th>
-                              <th>Payment</th>
-                              <th>Penalty</th>
-                              <th>Due Date</th>
-                              <th>Payment Date</th>
+                              <td>{{ $monthlyPlan->sn }}</td>
+                              <td>{{ $monthlyPlan->payment_status }}</td>
+                              <td>{{ $monthlyPlan->payment }}</td>
+                              <td>{{ $monthlyPlan->penalty }}</td>
+                              <td>{{ $monthlyPlan->due_date }}</td>
+                              <td>
+                                @if($monthlyPlan->payment_date == null)
+                                <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Pay</button>
+                                @else
+                                {{ $monthlyPlan->payment_date }}
+                                @endif
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            @foreach ($monthlyPlanStr as $monthlyPlan)
-                              <tr>
-                                <td>{{ $monthlyPlan->sn }}</td>
-                                <td>{{ $monthlyPlan->payment_status }}</td>
-                                <td>{{ $monthlyPlan->payment }}</td>
-                                <td>{{ $monthlyPlan->penalty }}</td>
-                                <td>{{ $monthlyPlan->due_date }}</td>
-                                <td>
-                                  @if($monthlyPlan->payment_date == null)
-                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->paymentAmount + $monthlyPlan->penaltyAmount }}" data-id="{{ md5($monthlyPlan->id) }}">Pay</button>
-                                  @else
-                                  {{ $monthlyPlan->payment_date }}
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="sub-title d-block border-0">Monthly Plan</h5>
+          </div>
+          <div class="card-block">
+            <div class="view-info">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="general-info">
+                    <div class="table-responsive">
+                      <table class="table" id="monthlyPlanTable">
+                        <thead>
+                          <tr>
+                            <th>S.N.</th>
+                            <th>Due Date</th>
+                            <th>Beginning Balance</th>
+                            <th>Payment</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Ending Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($monthlyPlanStr as $monthlyPlan)
+                            <tr>
+                              <td>{{ $monthlyPlan->sn }}</td>
+                              <td>{{ $monthlyPlan->due_date }}</td>
+                              <td>{{ $monthlyPlan->beginning_balance }}</td>
+                              <td>{{ $monthlyPlan->payment }}</td>
+                              <td>{{ $monthlyPlan->principal }}</td>
+                              <td>{{ $monthlyPlan->interest }}</td>
+                              <td>{{ $monthlyPlan->ending_balance }}</td>
+                            </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> --}}
+      
+        <div class="card">
+          <div class="card-header">
+            <h5 class="sub-title d-block border-0">Payment</h5>
+            {{-- <p>
+              <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Accept Initial Deposit</button>
+            </p> --}}
+          </div>
+          <div class="card-block">
+            <div class="view-info">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="general-info">
+                    <div class="table-responsive">
+                      <table class="table" id="monthlyPlanTable">
+                        <thead>
+                          <tr>
+                            <th>S.N.</th>
+                            <th>Payment Status</th>
+                            <th>Payment</th>
+                            <th>Penalty</th>
+                            <th>Due Date</th>
+                            <th>Payment Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($monthlyPlanStr as $monthlyPlan)
+                            <tr>
+                              <td>{{ $monthlyPlan->sn }}</td>
+                              <td>{{ $monthlyPlan->payment_status }}</td>
+                              <td>{{ $monthlyPlan->paymentAmount }}</td>
+                              <td>{{ $monthlyPlan->penaltyAmount }}</td>
+                              <td>{{ $monthlyPlan->due_date }}</td>
+                              <td>
+                                @if($monthlyPlan->payment_date == null)
+                                  @if(Auth::user()->user_type == "TENANT")
+                                    <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#paymentModal" data-payment="{{ $monthlyPlan->paymentAmount }}" data-penalty="{{ $monthlyPlan->penaltyAmount }}" data-total="{{ $monthlyPlan->totalAmountDb }}" data-id="{{ md5($monthlyPlan->id) }}">Pay</button>
+                                  @elseif (in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']))
+                                    <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#offlinePaymentModal" data-payment="{{ $monthlyPlan->paymentAmountDb }}" data-penalty="{{ $monthlyPlan->penaltyAmountDb }}" data-total="{{ $monthlyPlan->totalAmountDb }}" data-id="{{ md5($monthlyPlan->id) }}">Offline Payment</button>
                                   @endif
-                                </td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <h5 class="sub-title d-block border-0">Monthly Plan</h5>
-            </div>
-            <div class="card-block">
-              <div class="view-info">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="general-info">
-                      <div class="table-responsive">
-                        <table class="table" id="monthlyPlanTable">
-                          <thead>
-                            <tr>
-                              <th>S.N.</th>
-                              <th>Due Date</th>
-                              <th>Beginning Balance</th>
-                              <th>Payment</th>
-                              <th>Principal</th>
-                              <th>Interest</th>
-                              <th>Ending Balance</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @foreach ($monthlyPlanStr as $monthlyPlan)
-                              <tr>
-                                <td>{{ $monthlyPlan->sn }}</td>
-                                <td>{{ $monthlyPlan->due_date }}</td>
-                                <td>{{ $monthlyPlan->beginning_balance }}</td>
-                                <td>{{ $monthlyPlan->payment }}</td>
-                                <td>{{ $monthlyPlan->principal }}</td>
-                                <td>{{ $monthlyPlan->interest }}</td>
-                                <td>{{ $monthlyPlan->ending_balance }}</td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        @elseif (in_array(Auth::user()->user_type, ['ADMIN', 'STAFF', 'AGENT']))
-          <div class="card">
-            <div class="card-header">
-              <h5 class="sub-title d-block border-0">Payment</h5>
-              {{-- <p>
-                <button type="button" class="btn btn-sm btn-primary text-uppercase initial-deposit-modal"data-toggle="modal" data-target="#depositModal">Accept Initial Deposit</button>
-              </p> --}}
-            </div>
-            <div class="card-block">
-              <div class="view-info">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="general-info">
-                      <div class="table-responsive">
-                        <table class="table" id="monthlyPlanTable">
-                          <thead>
-                            <tr>
-                              <th>S.N.</th>
-                              <th>Payment Status</th>
-                              <th>Payment</th>
-                              <th>Penalty</th>
-                              <th>Due Date</th>
-                              <th>Payment Date</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @foreach ($monthlyPlanStr as $monthlyPlan)
-                              <tr>
-                                <td>{{ $monthlyPlan->sn }}</td>
-                                <td>{{ $monthlyPlan->payment_status }}</td>
-                                <td>{{ $monthlyPlan->paymentAmount }}</td>
-                                <td>{{ $monthlyPlan->penaltyAmount }}</td>
-                                <td>{{ $monthlyPlan->due_date }}</td>
-                                <td>
-                                  @if($monthlyPlan->payment_date == null)
-                                  <button type="button" class="btn btn-sm btn-link px-0 text-uppercase payment-modal-btn" data-toggle="modal" data-target="#offlinePaymentModal" data-payment="{{ $monthlyPlan->paymentAmountDb }}" data-penalty="{{ $monthlyPlan->penaltyAmountDb }}" data-total="{{ $monthlyPlan->totalAmountDb }}" data-id="{{ md5($monthlyPlan->id) }}">Offline Payment</button>
-                                  @else
+                                @else
                                   {{ $monthlyPlan->payment_date }}
-                                  @endif
-                                </td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <h5 class="sub-title d-block border-0">Monthly Plan</h5>
-            </div>
-            <div class="card-block">
-              <div class="view-info">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="general-info">
-                      <div class="table-responsive">
-                        <table class="table" id="monthlyPlanTable">
-                          <thead>
-                            <tr>
-                              <th>S.N.</th>
-                              <th>Due Date</th>
-                              <th>Beginning Balance</th>
-                              <th>Payment</th>
-                              <th>Principal</th>
-                              <th>Interest</th>
-                              <th>Ending Balance</th>
+                                @endif
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            @foreach ($monthlyPlanStr as $monthlyPlan)
-                              <tr>
-                                <td>{{ $monthlyPlan->sn }}</td>
-                                <td>{{ $monthlyPlan->due_date }}</td>
-                                <td>{{ $monthlyPlan->beginning_balance }}</td>
-                                <td>{{ $monthlyPlan->payment }}</td>
-                                <td>{{ $monthlyPlan->principal }}</td>
-                                <td>{{ $monthlyPlan->interest }}</td>
-                                <td>{{ $monthlyPlan->ending_balance }}</td>
-                              </tr>
-                            @endforeach
-                          </tbody>
-                        </table>
-                      </div>
+                          @endforeach
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        @endif
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="sub-title d-block border-0">Monthly Plan</h5>
+          </div>
+          <div class="card-block">
+            <div class="view-info">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="general-info">
+                    <div class="table-responsive">
+                      <table class="table" id="monthlyPlanTable">
+                        <thead>
+                          <tr>
+                            <th>S.N.</th>
+                            <th>Due Date</th>
+                            <th>Beginning Balance</th>
+                            <th>Payment</th>
+                            <th>Principal</th>
+                            <th>Interest</th>
+                            <th>Ending Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($monthlyPlanStr as $monthlyPlan)
+                            <tr>
+                              <td>{{ $monthlyPlan->sn }}</td>
+                              <td>{{ $monthlyPlan->due_date }}</td>
+                              <td>{{ $monthlyPlan->beginning_balance }}</td>
+                              <td>{{ $monthlyPlan->payment }}</td>
+                              <td>{{ $monthlyPlan->principal }}</td>
+                              <td>{{ $monthlyPlan->interest }}</td>
+                              <td>{{ $monthlyPlan->ending_balance }}</td>
+                            </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
