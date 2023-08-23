@@ -46,6 +46,7 @@ class PaymentController extends Controller
 		]);
 	}
 
+    // handling payment gateway callback
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
 		//dd($paymentDetails);
@@ -139,6 +140,7 @@ class PaymentController extends Controller
 		]);
 	}
 
+    // payment gateway for paying registration fees
 	public function payRegistrationFees(Request $request){
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
 		$user = (Auth::user()->user_type == 'TENENAT') ? Auth::user() : $userData->user;
@@ -146,20 +148,21 @@ class PaymentController extends Controller
 			// Create pending payment
 			$amount = SettingController::getValue('REGISTRATION_FEES');
 			$paymentRef = PaymentController::createPaymentRef();
-			PaymentController::new(0, $amount, 'CASH', $paymentRef);
+			$paymentObj = PaymentController::new(0, $amount, 'CASH', $paymentRef);
 
 			$data = array(
 				"amount" => (int)($amount * 100),
 				"reference" => $paymentRef,
 				"email" => $user->email,
 				"currency" => "GHS",
+                "orderID" => $paymentObj->id,
 				"metadata" => array(
 					"user_data_id" => $userData->id,
 					"type" => "REGISTRATION",
 					"user_id" => $user->id,
 				),
 			);
-			
+
 			//dd($data); die();
 			return Paystack::getAuthorizationUrl($data)->redirectNow();
 		} catch (\Exception $e) {
