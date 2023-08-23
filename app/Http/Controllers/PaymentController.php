@@ -49,7 +49,7 @@ class PaymentController extends Controller
     // handling payment gateway callback
 	protected function handleGatewayCallback(){
 		$paymentDetails = Paystack::getPaymentData();
-		//dd($paymentDetails);
+		dd($paymentDetails);
 		if($paymentDetails["status"]){
 			$data = $paymentDetails["data"];
 			$paymentRef = $data["reference"];
