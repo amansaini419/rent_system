@@ -143,7 +143,7 @@ class PaymentController extends Controller
     // payment gateway for paying registration fees
 	public function payRegistrationFees(Request $request){
 		$userData = UserData::where(DB::raw('md5(id)'), $request->userDataId)->first();
-		$user = (Auth::user()->user_type == 'TENENAT') ? Auth::user() : $userData->user;
+		$user = (Auth::user()->user_type == 'TENANT') ? Auth::user() : $userData->user;
 		try {
 			// Create pending payment
 			$amount = SettingController::getValue('REGISTRATION_FEES');
