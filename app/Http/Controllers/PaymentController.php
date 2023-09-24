@@ -441,11 +441,11 @@ class PaymentController extends Controller
 	public static function getPaymentDetails($payment, $invoice){
 		$tempJSON = new stdClass();
 		$userData = InvoiceController::getInvoiceUserData($invoice);
-		$applicationData = $userData->applicationData;
+		$applicationData = $userData->applicationData ?? '';
 		$tempJSON->id = $payment->id;
 		$tempJSON->invoice_id = $payment->invoice_id;
 		$tempJSON->invoice_code = $invoice->invoice_code;
-		$tempJSON->tenant_name = $applicationData->first_name . ' ' . $applicationData->surname;
+		$tempJSON->tenant_name = $applicationData == '' ? '' : ($applicationData->first_name . ' ' . $applicationData->surname);
 		$tempJSON->payment_date = FunctionController::formatDate($payment->created_at);
 		$tempJSON->payment_channel = $payment->payment_channel;
 		$tempJSON->payment_amount = FunctionController::formatCurrencyView($payment->payment_amount);
