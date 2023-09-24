@@ -56,7 +56,7 @@ class InvoiceController extends Controller
 		$applicationData = $userData->applicationData ?? '';
 		$tempJSON = new stdClass();
 		$tempJSON->id = $invoice->id;
-		$tempJSON->tenant_name = $applicationData ?? ($applicationData->first_name . ' ' . $applicationData->surname);
+		$tempJSON->tenant_name = $applicationData == '' ? '' : ($applicationData->first_name . ' ' . $applicationData->surname);
 		$tempJSON->invoice_amount = FunctionController::formatCurrencyView($invoice->invoice_amount);
 		$tempJSON->invoice_code = $invoice->invoice_code;
 		$tempJSON->invoice_type = $invoice->invoice_type;
