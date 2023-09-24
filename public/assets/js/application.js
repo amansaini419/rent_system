@@ -262,6 +262,12 @@ $(document).ready(function() {
     dropWidth: 200,
     dropPrimaryColor: "#1abc9c",
     dropBorder: "1px solid #1abc9c",
-    format: "Y/m/d"
+    format: "Y/m/d",
+    large: true,
+    largeDefault: true,
+    largeOnly: true,
+    /* expandable: true, */
+    /* expandedDefault: true,
+    expandedOnly: true, */
   });
 });

@@ -30,10 +30,10 @@ return [
   'tab2' => 'Accommodation Data',
   //
   'currenct_accommodation_status' => 'Current Accommodation Status',
-  'property_location' => 'Property Location',
+  'property_location' => 'What is the location of the property that you have found?',
   'property_type' => 'Type of Property',
-  'monthly_rent' => 'Monthly Rent',
-  'rent_years' => 'How many years of rent?',
+  'monthly_rent' => 'What is the monthly rent charge for the property that you have found?',
+  'rent_years' => 'How many years of rent advance?',
   'expected_movein_date' => 'Expected Move in Date',
   'payback_months' => 'How many months do you want to pay back?',
   //

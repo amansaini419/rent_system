@@ -515,7 +515,7 @@
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_number') }}</th>
-                                    <td>{{ $landlordData->landlord_number }}</td>
+                                    <td>0{{ $landlordData->landlord_number }}</td>
                                   </tr>
                                   <tr>
                                     <th scope="row">{{ __('application.landlord_address') }}</th>

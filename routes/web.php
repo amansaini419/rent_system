@@ -60,7 +60,7 @@ Route::get('/blank', function () {
 Route::group(['middleware' => ['auth']], function(){
     Route::group(['middleware' => ['user-role:TENANT']], function(){
         Route::get('/application/register/{id}', [ApplicationController::class, 'showRegistrationForm'])->name('application-register');
-         Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
+        Route::post('/application/initialDeposit', [PaymentController::class, 'payInitialDeposit'])->name('application-initialDeposit');
         Route::post('/application/reapply', [ApplicationController::class, 'reapply'])->name('application-reapply');
 
         Route::post('/loan/payment', [PaymentController::class, 'payRent'])->name('loan-payment');
