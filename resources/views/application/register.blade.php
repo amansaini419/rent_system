@@ -670,9 +670,9 @@ Application Registration Form
                                                         class="block">{{ __('application.landlord_address') }}</label>
                                                 </div>
                                                 <div class="col-sm-12">
-                                                    <textarea id="landlordAddress" name="landlordAddress" type="text"
-                                                        class="form-control" rows="5">
-                                                    {{ $landlordData->landlord_address }}</textarea>
+                                                    <textarea id="landlordAddress" name="landlordAddress" type="text" class="form-control" rows="5">
+                                                        {{ $landlordData->landlord_address }}
+                                                    </textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
