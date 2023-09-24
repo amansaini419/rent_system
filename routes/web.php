@@ -26,10 +26,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('home');
-})->name('home');
+})->name('home'); */
 
+Route::get('/', [LoginController::class, 'show'])->name('home');
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.user');
 
@@ -104,20 +105,20 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/application/view/{id}', [ApplicationController::class, 'view'])->name('application-view');
         Route::post('/application/sendForApproval', [ApplicationController::class, 'sendForApproval'])->name('application-sendForApproval');
         Route::post('/application/loan', [LoanController::class, 'new'])->name('application-loan');
-        
+
         Route::get('/loan/list/{status?}', [LoanController::class, 'index'])->name('loan-list');
         Route::get('/loan/view/{id}', [LoanController::class, 'view'])->name('loan-view');
         Route::post('/loan/offlinePayment', [PaymentController::class, 'payRentOffline'])->name('loan-offlinePayment');
-        
+
         Route::get('/tenant/list', [UsersController::class, 'tenantIndex'])->name('tenant-list');
         Route::get('/tenant/view/{id?}', [UsersController::class, 'tenantView'])->name('tenant-view');
         Route::get('/tenant/new', [UsersController::class, 'new'])->name('tenant-new');
         Route::post('/tenant/register', [UsersController::class, 'register'])->name('tenant-register');
 
-        
+
         Route::get('/invoice/list', [InvoiceController::class, 'index'])->name('invoice-list');
         Route::get('/invoice/view/{id?}', [InvoiceController::class, 'view'])->name('invoice-view');
-        
+
         Route::get('/payment/list/{type?}', [PaymentController::class, 'index'])->name('payment-list');
         Route::get('/payment/outstanding', [PaymentController::class, 'outstanding'])->name('payment-outstanding');
         Route::get('/payment/accept', [PaymentController::class, 'accept'])->name('payment-accept');
@@ -125,7 +126,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/payment/history', function () {
             return view('payment-history');
         })->name('payment-history');
-        
+
         Route::get('/notifications', function () {
             return view('notifications');
         })->name('notifications');

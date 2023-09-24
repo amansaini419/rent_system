@@ -217,6 +217,14 @@ class UsersController extends Controller
 		])->first();
 	}
 
+    public static function checkPhone($phone){
+		return Users::where([
+			'phone_number' => $phone,
+			'is_active' => 1,
+			'is_deleted' => 0
+		])->first();
+	}
+
 	public function new(){
 		return view('tenant.new');
 	}

@@ -40,7 +40,13 @@ class SignupController extends Controller
 				->withErrors($validator->messages());
 		}
 
-		if(UsersController::checkEmail($request->email)){
+        if(UsersController::checkPhone($request->phone)){
+			return back()
+				->withInput()
+				->withErrors('Phone number is already registerred.');
+		}
+
+		if(UsersController::checkEmail($request->phone)){
 			return back()
 				->withInput()
 				->withErrors('Email address is already registerred.');
@@ -73,7 +79,7 @@ class SignupController extends Controller
 			'countryCode' => 'required',
 			'phone' => 'required',
 		]);
-		
+
 		if ($validator->fails()) {
 			return response()->json([
 				'success' => false,
