@@ -50,7 +50,8 @@ Sign Up
             <div class="input-group">
                 <input type="text" class="form-control" id="phone" name="phone" placeholder="Your Phone Number"
                     value="{{ old('phone') }}" required>
-                <button type="button" class="input-group-addon btn btn-primary btn-sm" id="sendOtpBtn">Verify Number</button>
+                <button type="button" class="input-group-addon btn btn-primary btn-sm" id="sendOtpBtn">Verify
+                    Number</button>
                 <span class="md-line"></span>
             </div>
             <p style="display: none;" class="text-right text-inverse" id="countdown"><span
@@ -77,7 +78,8 @@ Sign Up
             </div>
             <div class="row m-t-30">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign Up Now</button>
+                    <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign
+                        Up Now</button>
                 </div>
             </div>
             <hr />
@@ -98,9 +100,9 @@ Sign Up
 @section('script')
 <script>
     $(document).ready(function() {
-      //const countryCodes = await $.ajax('{{ asset('json/CountryCodes.json') }}');
-      const countryCodes = setCountryCodes();
-      countryCodes.then((countryCodeObj)=>{
+        const setCountryCodes = async() => await $.ajax('{{ asset("json/CountryCodes.json") }}');
+        const countryCodes = setCountryCodes();
+        countryCodes.then((countryCodeObj)=>{
         countryCodeObj.map( (obj) => {
           $('#countryCode').append('<option value="' + obj.dial_code + '" ' + (obj.name === "Ghana" ? "selected" : "") + '>' + obj.name + ' (' + obj.dial_code + ')</option>');
         });

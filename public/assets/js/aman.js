@@ -11,7 +11,7 @@ const calculateMonthlyPayment = (loanAmount, monthlyInterest, totalInstallments)
 
 const calculateSI = (principal, rate, time) => ( (principal * rate * time) / 100 );
 
-const setCountryCodes = async() => await $.ajax('../../json/CountryCodes.json');
+/* const setCountryCodes = async() => await $.ajax('../../json/CountryCodes.json'); */
 
 const showLoader = () => $('.theme-loader').fadeIn('slow');
 const hideLoader = () => $('.theme-loader').fadeOut('slow');

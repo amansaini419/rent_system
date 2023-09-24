@@ -255,7 +255,7 @@ Application Registration Form
                                                             </div>
                                                             <div class="col-sm-12">
                                                                 <select id="employmentStatus" name="employmentStatus" class="form-control">
-                                                                    <option value="Self Employed" {{ $applicationData->employment_status == 'Self Employed' ? 
+                                                                    <option value="Self Employed" {{ $applicationData->employment_status == 'Self Employed' ?
                                                                         'selected' : '' }}>Self Employed</option>
                                                                     <option value="Government Employed" {{ $applicationData->employment_status == 'Government Employed' ? 'selected' : '' }}>Government Employed</option>
                                                                     <option value="Private Sector Employment" {{ $applicationData->employment_status == 'Private Sector Employment' ? 'selected' : '' }}>Private Sector Employment</option>
@@ -648,13 +648,19 @@ Application Registration Form
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-12">
-                                                    <label for="landlordNumber"
-                                                        class="block">{{ __('application.landlord_number') }}</label>
+                                                    <label for="countryCode" class="block">Country Code</label>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <select class="form-control" id="countryCode" name="countryCode" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-12">
+                                                    <label for="landlordNumber" class="block">{{ __('application.landlord_number') }}</label>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="input-group">
-                                                        <span class="input-group-addon" style="background: transparent; color: #495057; border-right: none; padding-right: 0; font-size: 14px;">0</span>
-                                                        <input id="landlordNumber" name="landlordNumber" type="text" class="form-control" value="{{ $landlordData->landlord_number }}" style="border-left: none; padding-left: 0;" />
+                                                        <input id="landlordNumber" name="landlordNumber" type="text" class="form-control" value="{{ $landlordData->landlord_number }}" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -733,6 +739,15 @@ Application Registration Form
 @section('own-script')
     <script>
         $(function() {
+            const setCountryCodes = async() => await $.ajax('{{ asset("json/CountryCodes.json") }}');
+            const countryCodes = setCountryCodes();
+            console.log(countryCodes);
+            countryCodes.then((countryCodeObj)=>{
+                countryCodeObj.map( (obj) => {
+                    $('#countryCode').append('<option value="' + obj.dial_code + '" ' + (obj.name === "Ghana" ? "selected" : "") + '>' + obj.name + ' (' + obj.dial_code + ')</option>');
+                });
+            });
+
             $("#dateOfBirth").datepicker({
                 autoSize: true,
                 changeMonth: true,

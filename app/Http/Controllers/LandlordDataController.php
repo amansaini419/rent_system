@@ -14,6 +14,7 @@ class LandlordDataController extends Controller
 		$validator = Validator::make($request->all(), [
 			'userDataId' => 'required',
 			'landlordName' => 'required',
+			'countryCode' => 'required',
 			'landlordNumber' => 'required|integer',
 			'landlordAddress' => 'required',
 			'landlordEmail' => 'required|email',
@@ -28,6 +29,7 @@ class LandlordDataController extends Controller
 		$updated = LandlordData::where(DB::raw('md5(user_data_id)'), $request->userDataId)
 			->update([
 				'landlord_name' => $request->landlordName,
+				'landlord_countrycode' => $request->countryCode,
 				'landlord_number' => $request->landlordNumber,
 				'landlord_address' => $request->landlordAddress,
 				'landlord_email' => $request->landlordEmail,
