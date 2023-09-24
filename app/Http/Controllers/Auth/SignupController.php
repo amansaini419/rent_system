@@ -88,6 +88,16 @@ class SignupController extends Controller
 				'alert' => 'warning',
 			], 200);
 		}
+
+        if(UsersController::checkPhone($request->phone)){
+            return response()->json([
+				'success' => false,
+				'title' => 'Phone number Error',
+				'error' => 'Phone number is already registerred.',
+				'alert' => 'warning',
+			], 200);
+		}
+
 		$otp = FunctionController::generateOTP();
 		$otps = OtpController::new($request->countryCode, $request->phone, $otp);
 		if($otps){
